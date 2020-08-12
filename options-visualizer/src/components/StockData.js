@@ -1,51 +1,69 @@
-import React, { Component } from "react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import * as stockActions from "../store/actions/stockData";
 
-class StockData extends Component {
-  render() {
-    const { data, setPrice } = this.props;
+const StockData = (props) => {
+  const stockData = useSelector((state) => state.stockData);
+  const dispatch = useDispatch();
 
-    return (
-      <div class="panel panel-primary">
-        <div class="panel-heading">Underlying stock</div>
-        <div class="panel-body">
-          <form class="form-horizontal">
-            <div class="form-group">
-              <label class="col-sm-5 control-label">Current price</label>
-              <div class="col-sm-7">
-                <input
-                  type="text"
-                  placeholder="CurrentPrice"
-                  class="form-control"
-                  value={data.price}
-                  onChange={(e) => setPrice(e.target.value)}
-                />
-              </div>
+  console.log(stockData);
+
+  return (
+    <div className="panel panel-primary">
+      <div className="panel-heading">Underlying stock</div>
+
+      <select id="direction" className="form-control">
+        {/* {data.tickers.map((ticker) => (
+          <option key={ticker.value}>{ticker.value}</option>
+        ))} */}
+      </select>
+
+      <div className="panel-body">
+        <form className="form-horizontal">
+          <div className="form-group">
+            <label className="col-sm-5 control-label">Current price</label>
+            <div className="col-sm-7">
+              <input
+                type="number"
+                placeholder="CurrentPrice"
+                className="form-control"
+                value={stockData.currentPrice}
+                onChange={(e) =>
+                  dispatch(stockActions.updatePrice(e.target.value))
+                }
+              />
             </div>
-            <div class="form-group">
-              <label class="col-sm-5 control-label">Volatility</label>
-              <div class="col-sm-7">
-                <input
-                  type="text"
-                  placeholder="Volatility"
-                  class="form-control"
-                />
-              </div>
+          </div>
+          <div className="form-group">
+            <label className="col-sm-5 control-label">Volatility</label>
+            <div className="col-sm-7">
+              <input
+                type="number"
+                placeholder="Volatility"
+                className="form-control"
+                onChange={(e) =>
+                  dispatch(stockActions.updateVolatility(e.target.value))
+                }
+              />
             </div>
-            <div class="form-group">
-              <label class="col-sm-5 control-label">Interest Rate</label>
-              <div class="col-sm-7">
-                <input
-                  type="text"
-                  placeholder="Interest Rate"
-                  class="form-control"
-                />
-              </div>
+          </div>
+          <div className="form-group">
+            <label className="col-sm-5 control-label">Interest Rate</label>
+            <div className="col-sm-7">
+              <input
+                type="number"
+                placeholder="Interest Rate"
+                className="form-control"
+                onChange={(e) =>
+                  dispatch(stockActions.updateInterest(e.target.value))
+                }
+              />
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default StockData;

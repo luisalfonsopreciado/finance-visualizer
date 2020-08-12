@@ -1,15 +1,18 @@
-import React, { useCallback } from "react";
+import React from "react";
 import Option from "../utility/Option";
+import { BlackScholes } from "../utility";
+import { useSelector } from "react-redux";
 
 const Contract = (props) => {
-  const { removeContract, data, updateContract } = props;
+  const { removeContract, data, updateContract, currentPrice } = props;
+  const stockData = useSelector((state) => state.stockData);
 
   return (
     <tr>
       <td>
         <select
           id="direction"
-          class="form-control"
+          className="form-control"
           onChange={(e) =>
             updateContract(data.contractName, "direction", e.target.value)
           }
@@ -22,7 +25,7 @@ const Contract = (props) => {
         <input
           type="number"
           placeholder="Amount"
-          class="form-control form-control-inline"
+          className="form-control form-control-inline"
           onChange={(e) =>
             updateContract(data.contractName, "amount", e.target.value)
           }
@@ -31,7 +34,7 @@ const Contract = (props) => {
       </td>
       <td>
         <select
-          class="form-control"
+          className="form-control"
           onChange={(e) =>
             updateContract(data.contractName, "type", e.target.value)
           }
@@ -45,7 +48,7 @@ const Contract = (props) => {
         <input
           type="number"
           placeholder="Strike"
-          class="form-control form-control-inline"
+          className="form-control form-control-inline"
           onChange={(e) =>
             updateContract(data.contractName, "strike", e.target.value)
           }
@@ -56,7 +59,7 @@ const Contract = (props) => {
         <input
           type="date"
           placeholder="Expiry"
-          class="form-control form-control-inline"
+          className="form-control form-control-inline"
           onChange={(e) =>
             updateContract(data.contractName, "date", e.target.value)
           }
@@ -64,7 +67,17 @@ const Contract = (props) => {
         />
       </td>
       <td style={{ verticalAlign: "middle" }}>
-        <b>0.00</b>
+        {console.log(data.type, +currentPrice, +data.strike)}
+        <b>
+          {BlackScholes(
+            data.type,
+            +stockData.currentPrice,
+            +data.strike,
+            1,
+            +stockData.interest,
+            +stockData.volatility
+          ).toFixed(2)}
+        </b>
       </td>
       <td style={{ verticalAlign: "middle" }}>
         <b>1.00</b>
@@ -73,10 +86,10 @@ const Contract = (props) => {
         <button
           type="button"
           aria-label="Left Align"
-          class="btn btn-danger btn-xs"
+          className="btn btn-danger btn-s"
           onClick={() => removeContract(data.contractName)}
         >
-          <span aria-hidden="true" class="glyphicon glyphicon-trash"></span>
+          <span aria-hidden="true">Remove</span>
         </button>
       </td>
     </tr>
@@ -86,52 +99,60 @@ const Contract = (props) => {
 const DUMMY_DATA = [1, 2, 3, 4];
 
 const Panel = (props) => {
-  const { portfolio, setPortfolio, visualize } = props;
+  const { portfolio, setPortfolio, visualize, currentPrice } = props;
 
   const addOption = () => {
+    const newPortfolio = { ...portfolio };
     const id = new Date().toISOString();
-    portfolio[id] = new Option(id);
-    setPortfolio(portfolio);
+    newPortfolio[id] = new Option(id);
+    setPortfolio(newPortfolio);
   };
 
-  const renderContracts = useCallback(() => {
+  const renderContracts = () => {
     const result = [];
     for (let id in portfolio) {
       result.push(
         <Contract
           removeContract={removeContract}
           updateContract={updateContract}
+          currentPrice={currentPrice}
           data={portfolio[id]}
+          key={id}
         />
       );
     }
     return result;
-  }, []);
+  };
 
   const updateContract = (id, property, value) => {
-    portfolio[id][property] = value;
-    setPortfolio(portfolio);
+    const newPortfolio = { ...portfolio };
+    newPortfolio[id][property] = value;
+    setPortfolio(newPortfolio);
   };
 
   const removeContract = (id) => {
-    delete portfolio[id];
-    setPortfolio(portfolio);
+    const newPortfolio = { ...portfolio };
+    delete newPortfolio[id];
+    setPortfolio(newPortfolio);
   };
 
   return (
-    <div class="panel panel-primary">
-      <div class="panel-heading">Panel</div>
-      <div class="panel-body">
-        <table class="table table-condensed">
+    <div className="panel panel-primary">
+      <div className="panel-heading">Panel</div>
+      <div className="panel-body">
+        <table className="table table-condensed">
           <thead>
             <tr>
-              <th>Direction</th> <th>Amount</th>
-              <th>Kind</th> <th>Strike</th> <th>Expiry</th>
+              <th>Direction</th>
+              <th>Amount</th>
+              <th>Kind</th>
+              <th>Strike</th>
+              <th>Expiry</th>
               <th>Price</th>
               <th>
                 <button
                   type="submit"
-                  class="btn btn-success btn-xs"
+                  className="btn btn-success btn-xs"
                   onClick={addOption}
                 >
                   Add Leg
@@ -141,10 +162,10 @@ const Panel = (props) => {
           </thead>
           <tbody>{renderContracts()}</tbody>
         </table>
-        <div class="pull-right">
+        <div className="pull-right">
           <button
             type="submit"
-            class="btn btn-success btn-xs"
+            className="btn btn-success btn-xs"
             onClick={visualize}
           >
             Generate Payoff

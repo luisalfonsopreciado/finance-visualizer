@@ -1,10 +1,18 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import Payoff from "./components/Payoff";
 import "./App.css";
-import axios from "axios";
 import StockData from "./components/StockData";
 import Panel from "./components/Panel";
 import * as util from "./utility";
+import stockDataReducer from "./store/reducers/stockData";
+import { createStore, combineReducers } from "redux";
+import { Provider } from "react-redux";
+import Navigation from "./components/Navigation";
+
+// const optionData = await axios.get(
+//   "https://finnhub.io/api/v1/stock/option-chain?symbol=AAPL&token=" +
+//     process.env.REACT_APP_API_KEY
+// );
 
 const data1 = [
   {
@@ -30,29 +38,32 @@ const data2 = [
   },
 ];
 
-class App extends Component {
-  state = {
-    currentPrice: "",
-    volatility: "",
-    interest: "",
-    portfolio: {},
-    data: data1,
-    errors: null,
+const rootReducer = combineReducers({
+  stockData: stockDataReducer,
+});
+
+const store = createStore(rootReducer);
+
+const App = () => {
+  const [portfolio, setPortfolio] = useState({});
+  const [data, setData] = useState(data1);
+  const [errors, setErrors] = useState(null);
+  const [tickers, setTickers] = useState([{ value: "Select a Ticker Symbol" }]);
+
+  const fetchData = async () => {
+    // const data = await util.getTickerSymbols();
+    // data.shift({ value: "Select a Ticker Symbol" });
+    // const data2 = data.slice(data.length / 2);
+    // console.log(data2)
+    // console.log(data)
+    // setTickers(data);
   };
 
-  fetchData = async () => {
-    const data = await util.getTickerSymbols();
-    const optionData = await axios.get(
-      "https://finnhub.io/api/v1/stock/option-chain?symbol=AAPL&token=" +
-        process.env.REACT_APP_API_KEY
-    );
+  const visualize = () => {
+    updateData(portfolio);
   };
 
-  visualize = () => {
-    this.updateData(this.state.portfolio);
-  };
-
-  updateData = (portfolio) => {
+  const updateData = (portfolio) => {
     const strikes = [];
     let maxStrike = 0;
 
@@ -92,66 +103,38 @@ class App extends Component {
       },
     ];
 
-    this.setState({ data });
+    setData(data);
   };
 
-  changeData = () => {
-    this.setState({ data: data2 });
-  };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  componentDidMount() {
-    this.fetchData();
-  }
-
-  setPrice = (price) => {
-    this.setState({ currentPrice: price });
-  };
-
-  setVolatility = (volatility) => {
-    this.setState({ volatility });
-  };
-
-  setInterest = (interest) => {
-    this.setState({ interest });
-  };
-
-  setPortfolio = (portfolio) => {
-    this.setState({ portfolio });
-  };
-
-  setErrors = (message) => {
-    this.setState({
-      errors: (
-        <div class="alert alert-danger" role="alert">
-          {message}
-        </div>
-      ),
-    });
-  };
-
-  render() {
-    console.log(this.state.portfolio);
-    return (
-      <div className="container">
-        <StockData
-          data={this.state}
-          setPrice={this.setPrice}
-          setVolatility={this.setVolatility}
-          setInterest={this.setInterest}
-        />
-        <Panel
-          portfolio={this.state.portfolio}
-          setPortfolio={this.setPortfolio}
-          visualize={this.visualize}
-        />
-        {this.state.errors}
-        <Payoff data={this.state.data} changeData={this.changeData} />
-        <button onClick={() => this.setErrors("This is an Error!")}>
-          Set Error
-        </button>
+  const setErrs = (message) => {
+    setErrors(
+      <div class="alert alert-danger" role="alert">
+        {message}
       </div>
     );
-  }
-}
+  };
+
+  return (
+    <Provider store={store}>
+      <Navigation />
+      <div className="container">
+        <StockData />
+        <Panel
+          portfolio={portfolio}
+          setPortfolio={setPortfolio}
+          visualize={visualize}
+          currentPrice={100}
+        />
+        {errors}
+        <Payoff data={data} changeData={setData} />
+        <button onClick={() => setErrs("This is an Error!")}>Set Error</button>
+      </div>
+    </Provider>
+  );
+};
 
 export default App;

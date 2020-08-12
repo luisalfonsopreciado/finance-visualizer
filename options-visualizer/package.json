@@ -7,12 +7,16 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
+    "bootstrap": "^4.5.2",
     "d3": "^3.5.17",
     "env-cmd": "^10.1.0",
     "nvd3": "^1.8.6",
     "react": "^16.13.1",
+    "react-bootstrap": "^1.3.0",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.2"
+    "react-redux": "^7.2.1",
+    "react-scripts": "3.4.2",
+    "redux": "^4.0.5"
   },
   "scripts": {
     "start": "env-cmd -e env react-scripts start",
