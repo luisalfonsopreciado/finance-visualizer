@@ -62,12 +62,8 @@ const Payoff = (props) => {
   }
 
   useEffect(() => {
-    /* Done setting the chart up? Time to render it!*/
-    var myData = sinAndCos(); //You need data...
-
-    console.log(myData);
-    drawChart(myData);
-  }, []);
+    drawChart(props.data);
+  }, [props.data]);
 
   return (
     <div class="row">
@@ -81,6 +77,7 @@ const Payoff = (props) => {
           </div>
         </div>
       </div>
+      <button onClick={props.changeData}>Change Me</button>
     </div>
   );
 };
