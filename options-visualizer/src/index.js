@@ -1,17 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
+import { Provider } from "react-redux";
+import stockDataReducer from "./store/reducers/stockData";
+import { createStore, combineReducers } from "redux";
 import * as serviceWorker from "./serviceWorker";
-import moment from "moment";
 
-var a = moment([2007, 0, 29]);
-var b = moment([2008, 0, 28]);
-const diff = a.diff(b, "years", true);
-console.log(diff);
+const rootReducer = combineReducers({
+  stockData: stockDataReducer,
+});
+
+const store = createStore(rootReducer);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

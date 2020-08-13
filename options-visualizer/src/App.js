@@ -4,40 +4,15 @@ import "./App.css";
 import StockData from "./components/StockData";
 import Panel from "./components/Panel";
 import * as util from "./utility";
-import stockDataReducer from "./store/reducers/stockData";
-import { createStore, combineReducers } from "redux";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import Navigation from "./components/Navigation";
 import moment from "moment";
+import stockData from "./store/reducers/stockData";
 
 // const optionData = await axios.get(
 //   "https://finnhub.io/api/v1/stock/option-chain?symbol=AAPL&token=" +
 //     process.env.REACT_APP_API_KEY
 // );
-
-const data1 = [
-  {
-    values: [
-      { x: 0, y: 0.5 },
-      { x: 1, y: 0 },
-      { x: 2, y: 2 },
-    ],
-    key: "Sine Wave",
-    color: "#ff7f0e",
-  },
-];
-
-const data2 = [
-  {
-    values: [
-      { x: 0, y: 0.5 },
-      { x: 1, y: 3 },
-      { x: 2, y: 2 },
-    ],
-    key: "Changed!",
-    color: "#ff7f0e",
-  },
-];
 
 const initialPortfolio = {
   "2020-08-12T19:58:01.033Z": {
@@ -51,18 +26,12 @@ const initialPortfolio = {
   },
 };
 
-const rootReducer = combineReducers({
-  stockData: stockDataReducer,
-});
-
-const store = createStore(rootReducer);
-
 const App = () => {
   const [portfolio, setPortfolio] = useState(initialPortfolio);
-  const [data, setData] = useState(data1);
+  const [data, setData] = useState(null);
   const [errors, setErrors] = useState(null);
   const [tickers, setTickers] = useState([{ value: "Select a Ticker Symbol" }]);
-
+  const stockData = useSelector((state) => state.stockData);
   const fetchData = async () => {
     // const data = await util.getTickerSymbols();
     // data.shift({ value: "Select a Ticker Symbol" });
@@ -72,45 +41,71 @@ const App = () => {
     // setTickers(data);
   };
 
-  const visualize = () => {
-    updateData(portfolio);
-  };
+  const updateData = () => {
+    // Validate Stock Price
+    if (+stockData.currentPrice <= 0)
+      return setErrs("Please Enter a Valid Stock Price");
 
-  const updateData = (portfolio) => {
+    // Validate Interest
+    if (+stockData.interest <= 0)
+      return setErrs("Please Enter a Valid Interest Rate");
+
     const strikes = [];
     let maxStrike = 0;
+    let minStrike = Infinity;
 
     const values = [];
-
-    // x = 0 will always be on the graph
-    strikes.push(0);
 
     // Get the strikes to plot
     for (let id in portfolio) {
       const contract = portfolio[id];
       const strike = +contract.strike;
-      strikes.push(strike);
+      const date = contract.date;
+      const amount = contract.amount;
+
+      // Validate Strike prices
+      if (strike <= 0) return setErrs("Please Enter A Valid Strike Price");
+
+      // Validate Amount
+      if (amount <= 0) return setErrs("Please Enter a Valid Amount");
+
+      // Validate the Date (Check if it is defined and in the future)
+      if (!date || moment().diff(date) > 0)
+        return setErrs("Please Enter a Valid Date");
+
+      // Apply To Fixed
+      strikes.push(strike.toFixed(2));
+
+      // Update the maxStrike
       if (strike > maxStrike) maxStrike = strike;
+      if (strike < minStrike) minStrike = strike;
     }
 
-    // Add x = max strike * 1.2 to the plot
-    strikes.push(Math.min(maxStrike * 1.2));
+    // Add domain limits
+    strikes.push(Math.floor(maxStrike * 1.2));
+    strikes.push(Math.floor(minStrike * 0.8));
+
+    // Sort the strikes so the graph can be displayed properly
+    strikes.sort((a, b) => a - b);
 
     // For each strike, calculate the payoff and add it to values
     for (let strike of strikes) {
       let y = 0;
       for (let id in portfolio) {
         const contract = portfolio[id];
+        // Evaluate each contract in portfolio and add it to the y value
         y += util.evaluatePayoffFunc(contract, strike);
       }
+      // Add the point to the data
       values.push({ x: strike, y });
     }
 
+    // Define the data and pass the values
     const data = [
       {
         values,
-        key: "Test",
-        color: "blue",
+        key: "Strategy",
+        color: "green",
       },
     ];
 
@@ -118,7 +113,8 @@ const App = () => {
   };
 
   useEffect(() => {
-    visualize();
+    setErrors(null);
+    updateData();
   }, [portfolio]);
 
   useEffect(() => {
@@ -133,24 +129,25 @@ const App = () => {
     );
   };
 
-  console.log(portfolio);
+  // console.log(data);
+  // console.log(portfolio);
 
   return (
-    <Provider store={store}>
+    <>
       {/* <Navigation /> */}
       <div className="container">
         <StockData />
         <Panel
           portfolio={portfolio}
           setPortfolio={setPortfolio}
-          visualize={visualize}
+          visualize={updateData}
           currentPrice={100}
         />
         {errors}
-        <Payoff data={data} changeData={setData} />
+        <Payoff data={data} changeData={setData} errors={errors} />
         {/* <button onClick={() => setErrs("This is an Error!")}>Set Error</button> */}
       </div>
-    </Provider>
+    </>
   );
 };
 

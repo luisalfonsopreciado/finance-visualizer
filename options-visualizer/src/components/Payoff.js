@@ -20,7 +20,7 @@ const drawChart = (myData) => {
 
     chart.yAxis //Chart y-axis settings
       .axisLabel("Profit ($)")
-      .tickFormat(d3.format(".02f"));
+      .tickFormat(d3.format(",r"));
 
     d3.select("#chart svg") //Select the <svg> element you want to render the chart in.
       .datum(myData) //Populate the <svg> element with chart data...
@@ -30,33 +30,33 @@ const drawChart = (myData) => {
     nv.utils.windowResize(function () {
       chart.update();
     });
-
-    return chart;
   });
-  /**************************************
-   * Simple test data generator
-   */
 };
 
-const Payoff = ({ data }) => {
-  
+const Payoff = ({ data, errors }) => {
   useEffect(() => {
     drawChart(data);
   }, [data]);
 
   return (
-    <div className="row">
-      <div className="col-sm-12">
-        <div className="panel panel-primary">
-          <div className="panel-heading">Option Payoff</div>
-          <div className="panel-body">
-            <div id="chart">
-              <svg></svg>
+    <>
+      <div className="row">
+        <div className="col-sm-12">
+          <div className="panel panel-primary">
+            <div className="panel-heading">Option Payoff</div>
+            <div className="panel-body">
+              {!errors ? (
+                <div id="chart">
+                  <svg></svg>
+                </div>
+              ) : (
+                <h1>Enter Valid Data To View Chart</h1>
+              )}
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 export default Payoff;
