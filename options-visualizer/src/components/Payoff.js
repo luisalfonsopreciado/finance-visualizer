@@ -13,7 +13,7 @@ const Payoff = ({ data, errors }) => {
       const newChart = nv.models
         .lineChart()
         .margin({ left: 100 }) //Adjust chart margins to give the x-axis some breathing room.
-        .useInteractiveGuideline(true) //We want nice looking tooltips and a guideline!
+        .useInteractiveGuideline(false) //We want nice looking tooltips and a guideline!
         .duration(1500) //how fast do you want the lines to transition?
         .showLegend(true) //Show the legend, allowing users to turn on/off line series.
         .showYAxis(true) //Show the y-axis

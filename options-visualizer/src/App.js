@@ -32,6 +32,7 @@ const App = () => {
   const [errors, setErrors] = useState(null);
   const [tickers, setTickers] = useState([{ value: "Select a Ticker Symbol" }]);
   const stockData = useSelector((state) => state.stockData);
+
   const fetchData = async () => {
     // const data = await util.getTickerSymbols();
     // data.shift({ value: "Select a Ticker Symbol" });
@@ -42,6 +43,9 @@ const App = () => {
   };
 
   const updateData = () => {
+    if (Object.keys(portfolio).length === 0)
+      return setErrs("Add contracts to Visualize");
+
     // Validate Stock Price
     if (+stockData.currentPrice <= 0)
       return setErrs("Please Enter a Valid Stock Price");
@@ -88,26 +92,54 @@ const App = () => {
     // Sort the strikes so the graph can be displayed properly
     strikes.sort((a, b) => a - b);
 
+    const result = [];
+
+    for (let id in portfolio) {
+      const contract = portfolio[id];
+
+      result.push({
+        values: [],
+        key: contract.direction + " " + contract.type + " " + contract.strike,
+        color: "blue",
+      });
+    }
+    let i = 0;
     // For each strike, calculate the payoff and add it to values
     for (let strike of strikes) {
       let y = 0;
+      const contractValues = [];
+      let i = 0;
       for (let id in portfolio) {
         const contract = portfolio[id];
+
+        // Push the point at the specified strategy
+        result[i].values.push({
+          x: strike,
+          y: util.evaluatePayoffFunc(contract, strike),
+        });
+
         // Evaluate each contract in portfolio and add it to the y value
         y += util.evaluatePayoffFunc(contract, strike);
+        i++;
       }
+
+      i++;
       // Add the point to the data
       values.push({ x: strike, y });
     }
 
+    const strategyData = {
+      values,
+      key: "Strategy",
+      color: "green",
+    };
+
+    result.push(strategyData);
+
     // Define the data and pass the values
-    const data = [
-      {
-        values,
-        key: "Strategy",
-        color: "green",
-      },
-    ];
+    const data = result;
+
+    console.log(data);
 
     setData(data);
   };
