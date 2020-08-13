@@ -5,9 +5,9 @@ import {
 } from "../actions/stockData";
 
 const initialState = {
-  currentPrice: "",
-  volatility: "",
-  interest: "",
+  currentPrice: "1300",
+  volatility: "0.2",
+  interest: "0.05",
 };
 
 export default (state = initialState, action) => {

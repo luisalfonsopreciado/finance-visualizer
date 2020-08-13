@@ -38,32 +38,11 @@ const drawChart = (myData) => {
    */
 };
 
-const Payoff = (props) => {
-  function sinAndCos() {
-    var sin = [];
-
-    //Data is represented as an array of {x,y} pairs.
-    // for (var i = 0; i < 100; i++) {
-    //   sin.push({ x: i, y: Math.sin(i / 10) });
-    // }
-
-    sin.push({ x: 0, y: 0.5 });
-    sin.push({ x: 1, y: 0 });
-    sin.push({ x: 2, y: 20 });
-
-    //Line chart data should be sent as an array of series objects.
-    return [
-      {
-        values: sin, //values - represents the array of {x,y} data points
-        key: "Sine Wave", //key  - the name of the series.
-        color: "#ff7f0e", //color - optional: choose your own line color.
-      },
-    ];
-  }
-
+const Payoff = ({ data }) => {
+  
   useEffect(() => {
-    drawChart(props.data);
-  }, [props.data]);
+    drawChart(data);
+  }, [data]);
 
   return (
     <div className="row">
@@ -77,7 +56,6 @@ const Payoff = (props) => {
           </div>
         </div>
       </div>
-      <button onClick={props.changeData}>Change Me</button>
     </div>
   );
 };

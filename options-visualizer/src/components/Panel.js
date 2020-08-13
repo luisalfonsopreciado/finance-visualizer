@@ -1,11 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Option from "../utility/Option";
 import { BlackScholes } from "../utility";
 import { useSelector } from "react-redux";
+import moment from "moment";
 
 const Contract = (props) => {
   const { removeContract, data, updateContract, currentPrice } = props;
   const stockData = useSelector((state) => state.stockData);
+
+  const dateDiff = -moment().diff(data.date, "years", true);
+
+  // Calculate the price based on Black-Scholes model
+  const price = BlackScholes(
+    data.type,
+    +stockData.currentPrice,
+    +data.strike,
+    dateDiff,
+    +stockData.interest,
+    +stockData.volatility
+  ).toFixed(2);
+
+  // Update the price every time it changes
+  useEffect(() => {
+    updateContract(data.contractName, "price", price);
+  }, [price]);
 
   return (
     <tr>
@@ -68,16 +86,7 @@ const Contract = (props) => {
       </td>
       <td style={{ verticalAlign: "middle" }}>
         {console.log(data.type, +currentPrice, +data.strike)}
-        <b>
-          {BlackScholes(
-            data.type,
-            +stockData.currentPrice,
-            +data.strike,
-            1,
-            +stockData.interest,
-            +stockData.volatility
-          ).toFixed(2)}
-        </b>
+        <b>{price}</b>
       </td>
       <td style={{ verticalAlign: "middle" }}>
         <b>1.00</b>

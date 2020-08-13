@@ -8,6 +8,7 @@ import stockDataReducer from "./store/reducers/stockData";
 import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 import Navigation from "./components/Navigation";
+import moment from "moment";
 
 // const optionData = await axios.get(
 //   "https://finnhub.io/api/v1/stock/option-chain?symbol=AAPL&token=" +
@@ -38,6 +39,18 @@ const data2 = [
   },
 ];
 
+const initialPortfolio = {
+  "2020-08-12T19:58:01.033Z": {
+    amount: 1,
+    contractName: "2020-08-12T19:58:01.033Z",
+    date: "2020-08-12",
+    direction: "Buy",
+    price: "196.26",
+    strike: "1200",
+    type: "Call",
+  },
+};
+
 const rootReducer = combineReducers({
   stockData: stockDataReducer,
 });
@@ -45,7 +58,7 @@ const rootReducer = combineReducers({
 const store = createStore(rootReducer);
 
 const App = () => {
-  const [portfolio, setPortfolio] = useState({});
+  const [portfolio, setPortfolio] = useState(initialPortfolio);
   const [data, setData] = useState(data1);
   const [errors, setErrors] = useState(null);
   const [tickers, setTickers] = useState([{ value: "Select a Ticker Symbol" }]);
@@ -83,14 +96,12 @@ const App = () => {
     // Add x = max strike * 1.2 to the plot
     strikes.push(Math.min(maxStrike * 1.2));
 
-    console.log(strikes);
-
     // For each strike, calculate the payoff and add it to values
     for (let strike of strikes) {
       let y = 0;
       for (let id in portfolio) {
         const contract = portfolio[id];
-        y += util.evaluatePayoffFunc(contract, strike) - 5; // For now each contract costs 5 bucks
+        y += util.evaluatePayoffFunc(contract, strike);
       }
       values.push({ x: strike, y });
     }
@@ -107,6 +118,10 @@ const App = () => {
   };
 
   useEffect(() => {
+    visualize();
+  }, [portfolio]);
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -118,9 +133,11 @@ const App = () => {
     );
   };
 
+  console.log(portfolio);
+
   return (
     <Provider store={store}>
-      <Navigation />
+      {/* <Navigation /> */}
       <div className="container">
         <StockData />
         <Panel
@@ -131,7 +148,7 @@ const App = () => {
         />
         {errors}
         <Payoff data={data} changeData={setData} />
-        <button onClick={() => setErrs("This is an Error!")}>Set Error</button>
+        {/* <button onClick={() => setErrs("This is an Error!")}>Set Error</button> */}
       </div>
     </Provider>
   );

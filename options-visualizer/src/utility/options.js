@@ -17,20 +17,32 @@ export const getPayoffData = (options) => {
 };
 
 export const evaluatePayoffFunc = (option, price) => {
+  const cost = option.price * option.amount;
   if (option.type === cts.CALL) {
+    // A call Option
     if (option.direction === cts.BUY) {
-      return Math.max(price - parseInt(option.strike), 0) * option.amount;
+      // Long Call
+      return (
+        Math.max(price - parseInt(option.strike), 0) * option.amount - cost
+      );
     }
-    return Math.min(0, option.strike - price) * option.amount;
+    // Short Call
+    return Math.min(0, option.strike - price) * option.amount + cost;
   } else if (option.type === cts.PUT) {
+    // A Put Option
     if (option.direction === cts.BUY) {
-      return Math.max(parseInt(option.strike) - price, 0) * option.amount;
+      // Long Put
+      return Math.max(parseInt(option.strike) - price, 0) * option.amount - cost;
     }
-    return Math.min(0, price - option.strike) * option.amount;
+    // Short Put
+    return Math.min(0, price - option.strike) * option.amount + cost
   } else if (option.type === cts.CASH) {
+    // Stock 
     if (option.direction === cts.BUY) {
+      // Long Stock
       return (price - option.strike) * option.amount;
     }
+    // Short Stock
     return (option.strike - price) * option.amount;
   }
 };
@@ -80,7 +92,7 @@ const getTotalCost = (options) => {
 
  */
 
- /*
+/*
   S = Current Stock Price
   X = Exercise Price (Strike)
   r = Short-term risk free interest rate
