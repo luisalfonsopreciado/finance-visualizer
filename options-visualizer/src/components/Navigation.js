@@ -1,35 +1,40 @@
-import React from "react";
-import { Navbar, Nav } from "react-bootstrap";
+import React, { useContext } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormGroup from "@material-ui/core/FormGroup";
+import { liveDataContext } from "../context/liveData";
 
-// import "bootstrap/dist/css/bootstrap.min.css";
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+  },
+}));
 
-const Navigation = (props) => {
+export default function MenuAppBar() {
+  const classes = useStyles();
+  const { liveMode, setLiveMode } = useContext(liveDataContext);
+
   return (
-    <Navbar bg="dark" variant="dark">
-      <Navbar.Brand href="#home">
-        <img
-          alt=""
-          src="/logo.svg"
-          width="30"
-          height="30"
-          className="d-inline-block align-top"
-        />{" "}
-        Options Visualizer
-      </Navbar.Brand>
-      <Nav>
-        <div className="custom-control custom-switch">
-          <input
-            type="checkbox"
-            className="custom-control-input"
-            id="customSwitch1"
-          ></input>
-          <label className="custom-control-label" for="customSwitch1">
-            Live Data Mode
-          </label>
-        </div>
-      </Nav>
-    </Navbar>
+    <div className={classes.root}>
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={liveMode}
+              onChange={() => setLiveMode((prev) => !prev)}
+              aria-label="live mode switch"
+            />
+          }
+          label={"Live Data Mode"}
+        />
+      </FormGroup>
+    </div>
   );
-};
-
-export default Navigation;
+}

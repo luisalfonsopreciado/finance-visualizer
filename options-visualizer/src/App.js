@@ -4,44 +4,40 @@ import "./App.css";
 import StockData from "./components/StockData";
 import Panel from "./components/Panel";
 import * as util from "./utility";
-import { Provider, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Navigation from "./components/Navigation";
 import moment from "moment";
-import stockData from "./store/reducers/stockData";
+import { liveDataContext } from "./context/liveData";
+import Search from "./components/Search";
+import { useQuery } from "react-query";
+import axios from "axios";
 
 // const optionData = await axios.get(
 //   "https://finnhub.io/api/v1/stock/option-chain?symbol=AAPL&token=" +
 //     process.env.REACT_APP_API_KEY
 // );
 
-const initialPortfolio = {
-  "2020-08-12T19:58:01.033Z": {
-    amount: 1,
-    contractName: "2020-08-12T19:58:01.033Z",
-    date: "2020-08-12",
-    direction: "Buy",
-    price: "196.26",
-    strike: "1200",
-    type: "Call",
-  },
+const getTickerSymbols = async (key, q) => {
+  const { data } = await axios.get(`/api/search?q=${escape(q)}`);
+  return data.map((symbolObj) => ({
+    ...symbolObj,
+  }));
 };
 
 const App = () => {
-  const [portfolio, setPortfolio] = useState(initialPortfolio);
+  const [portfolio, setPortfolio] = useState(util.initialPortfolio);
   const [data, setData] = useState(null);
   const [errors, setErrors] = useState(null);
   const [tickers, setTickers] = useState([{ value: "Select a Ticker Symbol" }]);
   const stockData = useSelector((state) => state.stockData);
+  const [liveMode, setLiveMode] = useState(false);
+  const value = { liveMode, setLiveMode };
 
-  const fetchData = async () => {
-    // const data = await util.getTickerSymbols();
-    // data.shift({ value: "Select a Ticker Symbol" });
-    // const data2 = data.slice(data.length / 2);
-    // console.log(data2)
-    // console.log(data)
-    // setTickers(data);
-  };
+  // Ticker Symbol Search Query
+  const [query, setQuery] = useState("");
+  const { queryData } = useQuery(["q", query], getTickerSymbols);
 
+  // Update and Validate User Input Data
   const updateData = () => {
     if (Object.keys(portfolio).length === 0)
       return setErrs("Add contracts to Visualize");
@@ -160,15 +156,20 @@ const App = () => {
     setData({ data: result, Ydomain });
   };
 
+  // Reset Portfolio whenever liveMode is Toggled
+  useEffect(() => {
+    setErrors(null);
+    setPortfolio({});
+    setData(null);
+  }, [liveMode]);
+
+  // Update/Validate portfolio whenever changed
   useEffect(() => {
     setErrors(null);
     updateData();
   }, [portfolio]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
+  // Set Error Message as JSX
   const setErrs = (message) => {
     setErrors(
       <div class="alert alert-danger" role="alert">
@@ -177,13 +178,19 @@ const App = () => {
     );
   };
 
-  // console.log(data);
-  // console.log(portfolio);
-
   return (
-    <>
-      {/* <Navigation /> */}
+    <liveDataContext.Provider value={value}>
+      <Navigation />
       <div className="container">
+        {liveMode && (
+          <Search
+            placeholder="Search"
+            aria-label="Search"
+            className="mb-5 mt-3"
+            setQuery={() => {}}
+            query={queryData}
+          />
+        )}
         <StockData />
         <Panel
           portfolio={portfolio}
@@ -194,7 +201,7 @@ const App = () => {
         {errors}
         <Payoff data={data} changeData={setData} errors={errors} />
       </div>
-    </>
+    </liveDataContext.Provider>
   );
 };
 
