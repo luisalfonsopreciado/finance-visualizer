@@ -154,11 +154,24 @@ const App = () => {
     updateData();
   }, [portfolio]);
 
+  const removeErrs = () => {
+    setErrors(null);
+  };
+
   // Set Error Message as JSX
   const setErrs = (message) => {
     setErrors(
-      <div className="alert alert-danger" role="alert">
-        {message}
+      <div className="alert alert-danger " role="alert">
+        <strong>{message}</strong>
+        <button
+          type="button"
+          className="close"
+          data-dismiss="alert"
+          aria-label="Close"
+          onClick={removeErrs}
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
     );
   };
@@ -167,7 +180,12 @@ const App = () => {
     <liveDataContext.Provider value={value}>
       <Navigation />
       <div className="container">
-        {liveMode && <Search />}
+        {liveMode && (
+          <>
+            <Search />
+            <br />
+          </>
+        )}
         <StockData />
         <Panel
           portfolio={portfolio}
