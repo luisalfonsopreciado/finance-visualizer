@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Option from "../utility/Option";
 import { BlackScholes } from "../utility";
 import { useSelector } from "react-redux";
@@ -7,6 +7,17 @@ import moment from "moment";
 const Contract = (props) => {
   const { removeContract, data, optionData } = props;
   const { currentPrice, updateContract } = props;
+
+  /*
+   If optionData is defined then the strike prices must adjust to the
+   Expiration date
+   */
+  const [expirationDates, setExpirationDates] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const [strikePrices, setStrikePrices] = useState([
+    "Please Select Expiration Date",
+  ]);
 
   // Stock data from redux
   const stockData = useSelector((state) => state.stockData);
@@ -28,6 +39,49 @@ const Contract = (props) => {
   useEffect(() => {
     updateContract(data.contractName, "price", price);
   }, [price]);
+
+  // Set expiration Dates when component mounts
+  useEffect(() => {
+    if (optionData) {
+      const expirationDates = optionData.data.map(
+        (item) => item.expirationDate
+      );
+      setExpirationDates(expirationDates);
+      // If optionData is present, calculate the available strikes prices given expDate
+
+      // const options = optionData.filter(
+      //   (item) => item.expirationDate === expirationDate
+      // );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (optionData) {
+      // Find the element
+      const apiContract = optionData.data.find(
+        (item) => item.expirationDate === selectedDate
+      );
+
+      // If none found return
+      if(!apiContract) return;
+
+      console.log(apiContract)
+
+      // Find the type of option this is
+      const type = data.type.toUpperCase();
+
+      // Extract the contracts given the date
+      const contractsAtDate = apiContract.options[type]
+      
+      // Make an array of strikes at the current date
+      const strikesAtDate = contractsAtDate.map(item => item.strike);
+
+      // Update strikeprices
+      setStrikePrices(strikesAtDate)
+    }
+  }, [selectedDate]);
+
+  console.log(data)
 
   return (
     <tr>
@@ -90,17 +144,30 @@ const Contract = (props) => {
           />
         ) : (
           <div class="form-group">
-            <select class="form-control" id="exampleFormControlSelect1">
-              {optionData.data.map((contract) => (
-                <option>{contract.expirationDate}</option>
+            <select
+              class="form-control"
+              id="exampleFormControlSelect1"
+              onChange={(e) => setSelectedDate(e.target.value)}
+            >
+              {expirationDates.map((date) => (
+                <option>{date}</option>
               ))}
             </select>
           </div>
         )}
       </td>
       <td style={{ verticalAlign: "middle" }}>
-        {console.log(data.type, +currentPrice, +data.strike)}
-        <b>{price}</b>
+        {optionData ? (
+          <div class="form-group">
+            <select class="form-control" id="exampleFormControlSelect1">
+              {strikePrices.map((price) => (
+                <option>{price}</option>
+              ))}
+            </select>
+          </div>
+        ) : (
+          <b>{price}</b>
+        )}
       </td>
       <td style={{ verticalAlign: "middle" }}>
         <button
@@ -120,7 +187,7 @@ const Panel = (props) => {
   const { portfolio, setPortfolio, visualize } = props;
   const { optionData, currentPrice } = props;
 
-  const addOption = () => {
+  const addContract = () => {
     const newPortfolio = { ...portfolio };
     const id = new Date().toISOString();
     newPortfolio[id] = new Option(id);
@@ -156,13 +223,6 @@ const Panel = (props) => {
     setPortfolio(newPortfolio);
   };
 
-  const getOptionExpiry = () => {
-    if (!optionData) return [];
-    console.log(optionData);
-  };
-
-  console.log(optionData);
-
   return (
     <div className="panel panel-primary">
       <div className="panel-heading">Option Portfolio</div>
@@ -180,7 +240,7 @@ const Panel = (props) => {
                 <button
                   type="submit"
                   className="btn btn-success btn-s"
-                  onClick={addOption}
+                  onClick={addContract}
                 >
                   Add Leg
                 </button>

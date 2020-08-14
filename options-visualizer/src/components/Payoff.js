@@ -39,7 +39,7 @@ const Payoff = ({ data, errors }) => {
       return newChart;
     });
   };
-  console.log(data)
+
   useEffect(() => {
     data && drawChart(data);
   }, [data]);

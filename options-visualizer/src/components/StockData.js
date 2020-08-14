@@ -6,8 +6,6 @@ const StockData = (props) => {
   const stockData = useSelector((state) => state.stockData);
   const dispatch = useDispatch();
 
-  console.log(stockData);
-
   return (
     <div className="panel panel-primary">
       <div className="panel-heading">Underlying stock</div>
