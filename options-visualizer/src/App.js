@@ -94,54 +94,70 @@ const App = () => {
 
     const result = [];
 
+    // We want our plot to have N lines (N is the number of contracts in portfolio)
     for (let id in portfolio) {
       const contract = portfolio[id];
-
+      const key =
+        contract.direction + " " + contract.type + " " + contract.strike;
       result.push({
         values: [],
-        key: contract.direction + " " + contract.type + " " + contract.strike,
+        key,
         color: "blue",
       });
     }
-    let i = 0;
+
+    // Keey track of min/max for Ydomain
+    let minProfit = Infinity;
+    let maxProfit = -Infinity;
+
     // For each strike, calculate the payoff and add it to values
     for (let strike of strikes) {
-      let y = 0;
-      const contractValues = [];
+      let profitSum = 0;
+      // Keep track of the index we are at
       let i = 0;
       for (let id in portfolio) {
         const contract = portfolio[id];
 
+        // Calculate profit at given Strike
+        const profitAtStrike = +util
+          .evaluatePayoffFunc(contract, strike)
+          .toFixed(2);
+
+        // Update min and max Profits
+        if (profitAtStrike > maxProfit) maxProfit = profitAtStrike;
+
+        if (profitAtStrike < minProfit) minProfit = profitAtStrike;
+
         // Push the point at the specified strategy
         result[i].values.push({
           x: strike,
-          y: util.evaluatePayoffFunc(contract, strike),
+          y: profitAtStrike,
         });
 
         // Evaluate each contract in portfolio and add it to the y value
-        y += util.evaluatePayoffFunc(contract, strike);
+        profitSum += profitAtStrike;
         i++;
       }
 
-      i++;
       // Add the point to the data
-      values.push({ x: strike, y });
+      values.push({ x: strike, y: profitSum });
     }
 
+    const Ydomain = [Math.floor(minProfit * 1.2), Math.floor(maxProfit * 1.2)];
+
+    // The overall strategy plot data
     const strategyData = {
       values,
       key: "Strategy",
       color: "green",
     };
 
-    result.push(strategyData);
+    // Add the overall strategy data to the end if there are two or more contracts
+    if (result.length >= 2) {
+      result.push(strategyData);
+    }
 
-    // Define the data and pass the values
-    const data = result;
-
-    console.log(data);
-
-    setData(data);
+    setData({ data: result, Ydomain });
   };
 
   useEffect(() => {
@@ -177,7 +193,6 @@ const App = () => {
         />
         {errors}
         <Payoff data={data} changeData={setData} errors={errors} />
-        {/* <button onClick={() => setErrs("This is an Error!")}>Set Error</button> */}
       </div>
     </>
   );

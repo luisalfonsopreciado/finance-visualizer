@@ -7,7 +7,7 @@ const Payoff = ({ data, errors }) => {
   // Clear the Charts
   d3.selectAll("svg > *").remove();
 
-  const drawChart = (myData) => {
+  const drawChart = ({ data: myData, Ydomain }) => {
     /*These lines are all chart setup.  Pick and choose which chart features you want to utilize. */
     nv.addGraph(() => {
       const newChart = nv.models
@@ -21,11 +21,13 @@ const Payoff = ({ data, errors }) => {
 
       newChart.xAxis //Chart x-axis settings
         .axisLabel("Price ($)")
-        .tickFormat(d3.format(",r"));
+        .tickFormat((d) => d);
 
       newChart.yAxis //Chart y-axis settings
         .axisLabel("Profit ($)")
-        .tickFormat(d3.format(",r"));
+        .tickFormat((d) => d);
+
+      newChart.forceY(Ydomain);
 
       d3.select("#chart svg") //Select the <svg> element you want to render the chart in.
         .datum(myData) //Populate the <svg> element with chart data...
@@ -37,9 +39,9 @@ const Payoff = ({ data, errors }) => {
       return newChart;
     });
   };
-
+  console.log(data)
   useEffect(() => {
-    drawChart(data);
+    data && drawChart(data);
   }, [data]);
 
   return (
