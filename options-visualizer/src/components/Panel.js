@@ -105,8 +105,6 @@ const Contract = (props) => {
   );
 };
 
-const DUMMY_DATA = [1, 2, 3, 4];
-
 const Panel = (props) => {
   const { portfolio, setPortfolio, visualize, currentPrice } = props;
 

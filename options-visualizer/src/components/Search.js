@@ -1,15 +1,21 @@
 import React from "react";
-import { FormControl } from "react-bootstrap";
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import symbols from "../symbols.json";
 
 const Search = (props) => {
-  const { query, setQuery } = props;
-
   return (
-    <FormControl
-      {...props}
-      value={query}
-      onChange={(evt) => setQuery(evt.target.value)}
-    />
+    <>
+      <Autocomplete
+        id="combo-box-demo"
+        options={symbols}
+        getOptionLabel={(option) => option.displaySymbol}
+        style={{ width: 300 }}
+        renderInput={(params) => (
+          <TextField {...params} label="Combo box" variant="outlined" />
+        )}
+      />
+    </>
   );
 };
 

@@ -18,8 +18,8 @@ export default (state = initialState, action) => {
       return { ...state, volatility: action.volatility };
     case UPDATE_INTEREST:
       return { ...state, interest: action.interest };
+    default:
+      // Will be run initially
+      return state;
   }
-
-  // Will be run initially
-  return state;
 };

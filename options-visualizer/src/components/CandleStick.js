@@ -137,7 +137,7 @@ const CandleStick = (props) => {
   return (
     <>
       <h1>CandleStick Chart</h1>
-      <div class="candlestick"></div>
+      <div className="candlestick"></div>
     </>
   );
 };
