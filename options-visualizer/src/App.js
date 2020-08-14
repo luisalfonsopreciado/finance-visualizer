@@ -8,11 +8,7 @@ import Navigation from "./components/Navigation";
 import moment from "moment";
 import { liveDataContext } from "./context/liveData";
 import Search from "./components/Search";
-
-// const optionData = await axios.get(
-//   "https://finnhub.io/api/v1/stock/option-chain?symbol=AAPL&token=" +
-//     process.env.REACT_APP_API_KEY
-// );
+import axios from "axios";
 
 const App = () => {
   const [portfolio, setPortfolio] = useState(util.initialPortfolio);
@@ -20,6 +16,7 @@ const App = () => {
   const [errors, setErrors] = useState(null);
   const stockData = useSelector((state) => state.stockData);
   const [liveMode, setLiveMode] = useState(false);
+  const [optionData, setOptionData] = useState();
   const value = { liveMode, setLiveMode };
 
   // Update and Validate User Input Data
@@ -146,6 +143,7 @@ const App = () => {
     setErrors(null);
     setPortfolio({});
     setData(null);
+    setOptionData(null);
   }, [liveMode]);
 
   // Update/Validate portfolio whenever changed
@@ -154,6 +152,7 @@ const App = () => {
     updateData();
   }, [portfolio]);
 
+  // Remove Errors
   const removeErrs = () => {
     setErrors(null);
   };
@@ -176,18 +175,28 @@ const App = () => {
     );
   };
 
+  // Fetch the option Data when Search is Clicked
+  const searchFunc = async (ticker) => {
+    const { data } = await axios.get(
+      `https://finnhub.io/api/v1/stock/option-chain?symbol=${ticker}&token=` +
+        process.env.REACT_APP_API_KEY
+    );
+    setOptionData(data);
+  };
+
   return (
     <liveDataContext.Provider value={value}>
       <Navigation />
       <div className="container">
         {liveMode && (
           <>
-            <Search />
+            <Search searchFunc={searchFunc} />
             <br />
           </>
         )}
         <StockData />
         <Panel
+          optionData={optionData}
           portfolio={portfolio}
           setPortfolio={setPortfolio}
           visualize={updateData}

@@ -5,9 +5,13 @@ import { useSelector } from "react-redux";
 import moment from "moment";
 
 const Contract = (props) => {
-  const { removeContract, data, updateContract, currentPrice } = props;
+  const { removeContract, data, optionData } = props;
+  const { currentPrice, updateContract } = props;
+
+  // Stock data from redux
   const stockData = useSelector((state) => state.stockData);
 
+  // Calculate dateDifference in years, used in theoretical black scholes
   const dateDiff = -moment().diff(data.date, "years", true);
 
   // Calculate the price based on Black-Scholes model
@@ -74,22 +78,29 @@ const Contract = (props) => {
         />
       </td>
       <td>
-        <input
-          type="date"
-          placeholder="Expiry"
-          className="form-control form-control-inline"
-          onChange={(e) =>
-            updateContract(data.contractName, "date", e.target.value)
-          }
-          value={data.date}
-        />
+        {!optionData ? (
+          <input
+            type="date"
+            placeholder="Expiry"
+            className="form-control form-control-inline"
+            onChange={(e) =>
+              updateContract(data.contractName, "date", e.target.value)
+            }
+            value={data.date}
+          />
+        ) : (
+          <div class="form-group">
+            <select class="form-control" id="exampleFormControlSelect1">
+              {optionData.data.map((contract) => (
+                <option>{contract.expirationDate}</option>
+              ))}
+            </select>
+          </div>
+        )}
       </td>
       <td style={{ verticalAlign: "middle" }}>
         {console.log(data.type, +currentPrice, +data.strike)}
         <b>{price}</b>
-      </td>
-      <td style={{ verticalAlign: "middle" }}>
-        <b>1.00</b>
       </td>
       <td style={{ verticalAlign: "middle" }}>
         <button
@@ -106,7 +117,8 @@ const Contract = (props) => {
 };
 
 const Panel = (props) => {
-  const { portfolio, setPortfolio, visualize, currentPrice } = props;
+  const { portfolio, setPortfolio, visualize } = props;
+  const { optionData, currentPrice } = props;
 
   const addOption = () => {
     const newPortfolio = { ...portfolio };
@@ -120,6 +132,7 @@ const Panel = (props) => {
     for (let id in portfolio) {
       result.push(
         <Contract
+          optionData={optionData}
           removeContract={removeContract}
           updateContract={updateContract}
           currentPrice={currentPrice}
@@ -143,9 +156,16 @@ const Panel = (props) => {
     setPortfolio(newPortfolio);
   };
 
+  const getOptionExpiry = () => {
+    if (!optionData) return [];
+    console.log(optionData);
+  };
+
+  console.log(optionData);
+
   return (
     <div className="panel panel-primary">
-      <div className="panel-heading">Panel</div>
+      <div className="panel-heading">Option Portfolio</div>
       <div className="panel-body">
         <table className="table table-condensed">
           <thead>
@@ -159,7 +179,7 @@ const Panel = (props) => {
               <th>
                 <button
                   type="submit"
-                  className="btn btn-success btn-xs"
+                  className="btn btn-success btn-s"
                   onClick={addOption}
                 >
                   Add Leg
@@ -172,7 +192,7 @@ const Panel = (props) => {
         <div className="pull-right">
           <button
             type="submit"
-            className="btn btn-success btn-xs"
+            className="btn btn-success btn-s"
             onClick={visualize}
           >
             Generate Payoff

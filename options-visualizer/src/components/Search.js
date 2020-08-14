@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import symbols from "../symbols.json";
+import { Button } from "@material-ui/core";
 
-const Search = (props) => {
+const Search = ({ searchFunc }) => {
   const [inputValue, setInputValue] = useState("");
 
   const filterOptions = (options, state) => {
@@ -21,18 +22,27 @@ const Search = (props) => {
   return (
     <>
       {/* A Warning message is outputed in console: Fix later */}
-      <Autocomplete
-        id="combo-box-demo"
-        options={symbols}
-        getOptionLabel={(option) => option.displaySymbol}
-        filterOptions={(options, state) => filterOptions(options, state)}
-        renderInput={(params) => (
-          <TextField {...params} label="Combo box" variant="outlined" />
-        )}
-        noOptionsText={
-          inputValue.length <= 1 ? "Type a Ticker Symbol" : "No Symbols Found"
-        }
-      />
+      <span>
+        <Autocomplete
+          id="combo-box-demo"
+          options={symbols}
+          getOptionLabel={(option) => option.displaySymbol}
+          filterOptions={(options, state) => filterOptions(options, state)}
+          renderInput={(params) => (
+            <TextField {...params} label="Search Ticker" variant="outlined" />
+          )}
+          noOptionsText={
+            inputValue.length <= 1 ? "Type a Ticker Symbol" : "No Symbols Found"
+          }
+        />
+        <Button
+          color="primary"
+          variant="outlined"
+          onClick={() => searchFunc(inputValue)}
+        >
+          Search
+        </Button>
+      </span>
     </>
   );
 };
