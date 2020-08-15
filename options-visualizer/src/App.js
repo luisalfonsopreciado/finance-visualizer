@@ -11,6 +11,7 @@ import Search from "./components/Search";
 import axios from "axios";
 import ColorPicker from "./utility/DS/ColorPicker";
 import * as actions from "./store/actions/stockData";
+import { Row, Col, Container } from "react-bootstrap";
 
 const App = () => {
   const [portfolio, setPortfolio] = useState(util.initialPortfolio);
@@ -201,24 +202,31 @@ const App = () => {
   return (
     <liveDataContext.Provider value={value}>
       <Navigation />
-      <div className="container">
-        {liveMode && (
-          <>
-            <Search searchFunc={searchFunc} />
-            <br />
-          </>
-        )}
-        <StockData liveMode={liveMode} />
-        <Panel
-          optionData={optionData}
-          portfolio={portfolio}
-          setPortfolio={setPortfolio}
-          visualize={updateData}
-          currentPrice={100}
-        />
-        {errors}
-        <Payoff data={data} changeData={setData} errors={errors} />
-      </div>
+      <Container>
+        <Row>
+          <Col md={12}>{liveMode && <Search searchFunc={searchFunc} />}</Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <Panel
+              optionData={optionData}
+              portfolio={portfolio}
+              setPortfolio={setPortfolio}
+              visualize={updateData}
+              currentPrice={100}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col md={3}>
+            <StockData liveMode={liveMode} />
+          </Col>
+          <Col md={9}>
+            {errors ? errors : null}
+            <Payoff data={data} changeData={setData} errors={errors} />
+          </Col>
+        </Row>
+      </Container>
     </liveDataContext.Provider>
   );
 };
