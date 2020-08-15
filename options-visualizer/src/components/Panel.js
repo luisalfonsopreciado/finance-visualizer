@@ -6,7 +6,7 @@ import moment from "moment";
 
 const Contract = (props) => {
   const { removeContract, data, optionData } = props;
-  const { currentPrice, updateContract } = props;
+  const { updateContract } = props;
 
   /*
    If optionData is defined then the strike prices must adjust to the
@@ -18,6 +18,7 @@ const Contract = (props) => {
   const [strikePrices, setStrikePrices] = useState([
     "Please Select Expiration Date",
   ]);
+  const [selectedStrike, setSelectedStrike] = useState();
 
   // Stock data from redux
   const stockData = useSelector((state) => state.stockData);
@@ -26,17 +27,31 @@ const Contract = (props) => {
   const dateDiff = -moment().diff(data.date, "years", true);
 
   // Calculate the price based on Black-Scholes model
-  const price = BlackScholes(
-    data.type,
-    +stockData.currentPrice,
-    +data.strike,
-    dateDiff,
-    +stockData.interest,
-    +stockData.volatility
-  ).toFixed(2);
+
+  const [price, setPrice] = useState();
+
+  console.log(price);
+
+  // Update the current price every time something changes
+  useEffect(() => {
+    if (optionData) {
+    } else {
+      setPrice(
+        BlackScholes(
+          data.type,
+          +stockData.currentPrice,
+          +data.strike,
+          dateDiff,
+          +stockData.interest,
+          +stockData.volatility
+        ).toFixed(2)
+      );
+    }
+  });
 
   // Update the price every time it changes
   useEffect(() => {
+    console.log("executed");
     updateContract(data.contractName, "price", price);
   }, [price]);
 
@@ -47,44 +62,69 @@ const Contract = (props) => {
         (item) => item.expirationDate
       );
       setExpirationDates(expirationDates);
-      // If optionData is present, calculate the available strikes prices given expDate
-
-      // const options = optionData.filter(
-      //   (item) => item.expirationDate === expirationDate
-      // );
     }
   }, []);
 
   useEffect(() => {
     if (optionData) {
-      // Find the element
+      // Find the element with same date
       const apiContract = optionData.data.find(
         (item) => item.expirationDate === selectedDate
       );
 
-      // If none found return
-      if(!apiContract) return;
-
-      console.log(apiContract)
+      if (!apiContract) return;
 
       // Find the type of option this is
       const type = data.type.toUpperCase();
 
       // Extract the contracts given the date
-      const contractsAtDate = apiContract.options[type]
-      
+      const contractsAtDate = apiContract.options[type];
+
+      console.log(contractsAtDate);
+
+      // Find the contract with the selected Strike
+      const contract = contractsAtDate.find(
+        (item) => item.strike == selectedStrike
+      );
+
+      // Set the price depending if we are short or long
+      if (data.direction === "Buy") {
+        setPrice(contract.ask);
+      } else {
+        setPrice(contract.bid);
+      }
+    }
+  }, [selectedStrike, setPrice]);
+
+  useEffect(() => {
+    if (optionData) {
+      // Find the element with same date
+      const apiContract = optionData.data.find(
+        (item) => item.expirationDate === selectedDate
+      );
+
+      // If none found return
+      if (!apiContract) return;
+
+      // Find the type of option this is
+      const type = data.type.toUpperCase();
+
+      // Extract the contracts given the date
+      const contractsAtDate = apiContract.options[type];
+
       // Make an array of strikes at the current date
-      const strikesAtDate = contractsAtDate.map(item => item.strike);
+      const strikesAtDate = contractsAtDate.map((item) => item.strike);
 
       // Update strikeprices
-      setStrikePrices(strikesAtDate)
+      setStrikePrices(strikesAtDate);
     }
   }, [selectedDate]);
 
-  console.log(data)
+  console.log(data);
 
   return (
     <tr>
+      {/* Direction */}
       <td>
         <select
           id="direction"
@@ -97,6 +137,7 @@ const Contract = (props) => {
           <option>Sell</option>
         </select>
       </td>
+      {/* Amount */}
       <td>
         <input
           type="number"
@@ -108,6 +149,7 @@ const Contract = (props) => {
           value={data.amount}
         />
       </td>
+      {/* Kind */}
       <td>
         <select
           className="form-control"
@@ -120,17 +162,33 @@ const Contract = (props) => {
           <option>Cash</option>
         </select>
       </td>
+      {/* Strike Price */}
       <td>
-        <input
-          type="number"
-          placeholder="Strike"
-          className="form-control form-control-inline"
-          onChange={(e) =>
-            updateContract(data.contractName, "strike", e.target.value)
-          }
-          value={data.strike}
-        />
+        {optionData ? (
+          <div class="form-group">
+            <select
+              class="form-control"
+              id="exampleFormControlSelect1"
+              onChange={(e) => setSelectedStrike(e.target.value)}
+            >
+              {strikePrices.map((price) => (
+                <option>{price}</option>
+              ))}
+            </select>
+          </div>
+        ) : (
+          <input
+            type="number"
+            placeholder="Strike"
+            className="form-control form-control-inline"
+            onChange={(e) =>
+              updateContract(data.contractName, "strike", e.target.value)
+            }
+            value={data.strike}
+          />
+        )}
       </td>
+      {/* Expiry Date */}
       <td>
         {!optionData ? (
           <input
@@ -156,19 +214,11 @@ const Contract = (props) => {
           </div>
         )}
       </td>
+      {/* Contract Price */}
       <td style={{ verticalAlign: "middle" }}>
-        {optionData ? (
-          <div class="form-group">
-            <select class="form-control" id="exampleFormControlSelect1">
-              {strikePrices.map((price) => (
-                <option>{price}</option>
-              ))}
-            </select>
-          </div>
-        ) : (
-          <b>{price}</b>
-        )}
+        <b>{price}</b>
       </td>
+      {/* Remove Button */}
       <td style={{ verticalAlign: "middle" }}>
         <button
           type="button"
@@ -202,7 +252,6 @@ const Panel = (props) => {
           optionData={optionData}
           removeContract={removeContract}
           updateContract={updateContract}
-          currentPrice={currentPrice}
           data={portfolio[id]}
           key={id}
         />

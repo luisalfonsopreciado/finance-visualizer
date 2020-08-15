@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as stockActions from "../store/actions/stockData";
 
-const StockData = (props) => {
+const StockData = ({ liveMode }) => {
   const stockData = useSelector((state) => state.stockData);
   const dispatch = useDispatch();
 
@@ -26,6 +26,7 @@ const StockData = (props) => {
                 placeholder="CurrentPrice"
                 className="form-control"
                 value={stockData.currentPrice}
+                disabled={liveMode}
                 onChange={(e) =>
                   dispatch(stockActions.updatePrice(e.target.value))
                 }

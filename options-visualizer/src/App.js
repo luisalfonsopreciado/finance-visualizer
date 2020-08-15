@@ -3,13 +3,14 @@ import Payoff from "./components/Payoff";
 import StockData from "./components/StockData";
 import Panel from "./components/Panel";
 import * as util from "./utility";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Navigation from "./components/Navigation";
 import moment from "moment";
 import { liveDataContext } from "./context/liveData";
 import Search from "./components/Search";
 import axios from "axios";
 import ColorPicker from "./utility/DS/ColorPicker";
+import * as actions from "./store/actions/stockData";
 
 const App = () => {
   const [portfolio, setPortfolio] = useState(util.initialPortfolio);
@@ -19,9 +20,11 @@ const App = () => {
   const [liveMode, setLiveMode] = useState(false);
   const [optionData, setOptionData] = useState();
   const value = { liveMode, setLiveMode };
+  const dispatch = useDispatch();
 
   // Update and Validate User Input Data
   const updateData = () => {
+    console.log(portfolio)
     // Validate Empty Portfolio
     if (Object.keys(portfolio).length === 0)
       return setErrs("Add contracts to Visualize");
@@ -140,6 +143,8 @@ const App = () => {
       result.push(strategyData);
     }
 
+    console.log(result);
+
     setData({ data: result, Ydomain });
   };
 
@@ -150,6 +155,11 @@ const App = () => {
     setData(null);
     setOptionData(null);
   }, [liveMode]);
+
+  // Reset Porfolio whenever we change live stock
+  useEffect(() => {
+    setPortfolio({});
+  }, [optionData]);
 
   // Update/Validate portfolio whenever changed
   useEffect(() => {
@@ -187,6 +197,8 @@ const App = () => {
         process.env.REACT_APP_API_KEY
     );
     setOptionData(data);
+    dispatch(actions.updatePrice(data.lastTradePrice));
+    console.log(data);
   };
 
   return (
@@ -199,7 +211,7 @@ const App = () => {
             <br />
           </>
         )}
-        <StockData />
+        <StockData liveMode={liveMode} />
         <Panel
           optionData={optionData}
           portfolio={portfolio}
