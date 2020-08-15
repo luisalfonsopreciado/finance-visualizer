@@ -1,5 +1,6 @@
+// Color Picker Structure to help select color on graph
 export default class ColorPicker {
-    // Available colors more can be added
+    // Available colors, more can be added
     colors = [
         "blue",
         "red",
@@ -13,6 +14,7 @@ export default class ColorPicker {
         this.index = 0;
     }
 
+    // Get the Next Color
     getColor(){
         const result =  this.colors[this.index];
         // Adjust the index;

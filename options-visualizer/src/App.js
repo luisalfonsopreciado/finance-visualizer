@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Payoff from "./components/Payoff";
 import StockData from "./components/StockData";
 import Panel from "./components/Panel";
@@ -22,9 +22,26 @@ const App = () => {
   const value = { liveMode, setLiveMode };
   const dispatch = useDispatch();
 
+  // Set Error Message as JSX
+  const setErrs = useCallback((message) => {
+    setErrors(
+      <div className="alert alert-danger " role="alert">
+        <strong>{message}</strong>
+        <button
+          type="button"
+          className="close"
+          data-dismiss="alert"
+          aria-label="Close"
+          onClick={removeErrs}
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    );
+  }, []);
+
   // Update and Validate User Input Data
-  const updateData = () => {
-    console.log(portfolio)
+  const updateData = useCallback(() => {
     // Validate Empty Portfolio
     if (Object.keys(portfolio).length === 0)
       return setErrs("Add contracts to Visualize");
@@ -51,7 +68,8 @@ const App = () => {
       const amount = contract.amount;
 
       // Validate Strike prices
-      if (strike <= 0) return setErrs("Please Enter A Valid Strike Price");
+      if (strike <= 0 || isNaN(strike))
+        return setErrs("Please Enter A Valid Strike Price");
 
       // Validate Amount
       if (amount <= 0) return setErrs("Please Enter a Valid Amount");
@@ -143,10 +161,8 @@ const App = () => {
       result.push(strategyData);
     }
 
-    console.log(result);
-
     setData({ data: result, Ydomain });
-  };
+  }, [portfolio, stockData, setErrs]);
 
   // Reset Portfolio whenever liveMode is Toggled
   useEffect(() => {
@@ -165,29 +181,11 @@ const App = () => {
   useEffect(() => {
     setErrors(null);
     updateData();
-  }, [portfolio]);
+  }, [portfolio, updateData]);
 
   // Remove Errors
   const removeErrs = () => {
     setErrors(null);
-  };
-
-  // Set Error Message as JSX
-  const setErrs = (message) => {
-    setErrors(
-      <div className="alert alert-danger " role="alert">
-        <strong>{message}</strong>
-        <button
-          type="button"
-          className="close"
-          data-dismiss="alert"
-          aria-label="Close"
-          onClick={removeErrs}
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    );
   };
 
   // Fetch the option Data when Search is Clicked
@@ -198,7 +196,6 @@ const App = () => {
     );
     setOptionData(data);
     dispatch(actions.updatePrice(data.lastTradePrice));
-    console.log(data);
   };
 
   return (

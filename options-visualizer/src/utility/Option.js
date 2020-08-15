@@ -1,5 +1,6 @@
 import * as cts from "./constants";
 
+// Option definition class
 export default class Option {
   constructor(contractName) {
     this.contractName = contractName;

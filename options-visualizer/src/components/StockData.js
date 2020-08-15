@@ -9,13 +9,6 @@ const StockData = ({ liveMode }) => {
   return (
     <div className="panel panel-primary">
       <div className="panel-heading">Underlying stock</div>
-
-      {/* <select id="direction" className="form-control">
-        {data.tickers.map((ticker) => (
-          <option key={ticker.value}>{ticker.value}</option>
-        ))}
-      </select> */}
-
       <div className="panel-body">
         <form className="form-horizontal">
           <div className="form-group">

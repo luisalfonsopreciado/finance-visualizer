@@ -1,5 +1,6 @@
 import * as cts from "./constants";
 
+// Takes in option object and evaluates the payoff given the input price
 export const evaluatePayoffFunc = (option, price) => {
   const cost = option.price * option.amount;
   if (option.type === cts.CALL) {
@@ -30,21 +31,6 @@ export const evaluatePayoffFunc = (option, price) => {
     return (option.strike - price) * option.amount;
   }
 };
-
-/* Idea behind displaying the graph
-
- 1. Get the Critical X values in the graph
- 2. Evaluate the critical X values and add them to the proper format
- 3. Update the state and render the result
-
- 1. How to find critical x values
-  - x = 0 will always be a critical value
-  - x = strike prices will always be c.v
-  - x = maxStrike * 1.2 will always be critical value
-
-2. We have defined a evaluatePayoffFunc above and use it in all critical points
-
- */
 
 /*
   S = Current Stock Price

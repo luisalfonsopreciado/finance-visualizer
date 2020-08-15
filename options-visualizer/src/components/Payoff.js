@@ -56,7 +56,7 @@ const Payoff = ({ data, errors }) => {
                   <svg></svg>
                 </div>
               ) : (
-                <h1>Enter Valid Data To View Chart</h1>
+                <h3>Enter Valid Data To View Chart</h3>
               )}
             </div>
           </div>

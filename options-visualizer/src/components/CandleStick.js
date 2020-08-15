@@ -39,8 +39,6 @@ const drawCandleStick = async () => {
     };
   });
 
-  console.log(data);
-
   const x = d3
     .scaleBand()
     .domain(

@@ -80,7 +80,7 @@ const Contract = (props) => {
 
       // Find the contract with the selected Strike
       const contract = contractsAtDate.find(
-        (item) => item.strike == selectedStrike
+        (item) => +item.strike === +selectedStrike
       );
 
       // Set the price depending if we are short or long
@@ -196,7 +196,7 @@ const Contract = (props) => {
             onChange={(e) =>
               updateContract(data.contractName, "date", e.target.value)
             }
-            value={data.date}
+            value={data.date ? data.date : ""}
           />
         ) : (
           <div class="form-group">
@@ -232,8 +232,7 @@ const Contract = (props) => {
 };
 
 const Panel = (props) => {
-  const { portfolio, setPortfolio, visualize } = props;
-  const { optionData, currentPrice } = props;
+  const { portfolio, setPortfolio, visualize, optionData } = props;
 
   const addContract = () => {
     const newPortfolio = { ...portfolio };
@@ -269,6 +268,8 @@ const Panel = (props) => {
     delete newPortfolio[id];
     setPortfolio(newPortfolio);
   };
+
+  console.log("Panel Rendered")
 
   return (
     <div className="panel panel-primary">
