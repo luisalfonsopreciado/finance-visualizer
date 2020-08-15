@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.js": "/finance-visualizer/static/js/main.50c4b049.chunk.js",
-    "main.js.map": "/finance-visualizer/static/js/main.50c4b049.chunk.js.map",
+    "main.js": "/finance-visualizer/static/js/main.862b167f.chunk.js",
+    "main.js.map": "/finance-visualizer/static/js/main.862b167f.chunk.js.map",
     "runtime-main.js": "/finance-visualizer/static/js/runtime-main.56664fc0.js",
     "runtime-main.js.map": "/finance-visualizer/static/js/runtime-main.56664fc0.js.map",
-    "static/js/2.e422f9b1.chunk.js": "/finance-visualizer/static/js/2.e422f9b1.chunk.js",
-    "static/js/2.e422f9b1.chunk.js.map": "/finance-visualizer/static/js/2.e422f9b1.chunk.js.map",
+    "static/js/2.9f4f33f6.chunk.js": "/finance-visualizer/static/js/2.9f4f33f6.chunk.js",
+    "static/js/2.9f4f33f6.chunk.js.map": "/finance-visualizer/static/js/2.9f4f33f6.chunk.js.map",
     "index.html": "/finance-visualizer/index.html",
-    "precache-manifest.8df2a9640ceec213f7ec36559b22bb5d.js": "/finance-visualizer/precache-manifest.8df2a9640ceec213f7ec36559b22bb5d.js",
+    "precache-manifest.12cd18b5ec7afab175173d43b4eb1f1c.js": "/finance-visualizer/precache-manifest.12cd18b5ec7afab175173d43b4eb1f1c.js",
     "service-worker.js": "/finance-visualizer/service-worker.js",
-    "static/js/2.e422f9b1.chunk.js.LICENSE.txt": "/finance-visualizer/static/js/2.e422f9b1.chunk.js.LICENSE.txt"
+    "static/js/2.9f4f33f6.chunk.js.LICENSE.txt": "/finance-visualizer/static/js/2.9f4f33f6.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.56664fc0.js",
-    "static/js/2.e422f9b1.chunk.js",
-    "static/js/main.50c4b049.chunk.js"
+    "static/js/2.9f4f33f6.chunk.js",
+    "static/js/main.862b167f.chunk.js"
   ]
 }
