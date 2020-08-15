@@ -9,6 +9,7 @@ import moment from "moment";
 import { liveDataContext } from "./context/liveData";
 import Search from "./components/Search";
 import axios from "axios";
+import ColorPicker from "./utility/DS/ColorPicker";
 
 const App = () => {
   const [portfolio, setPortfolio] = useState(util.initialPortfolio);
@@ -21,6 +22,7 @@ const App = () => {
 
   // Update and Validate User Input Data
   const updateData = () => {
+    // Validate Empty Portfolio
     if (Object.keys(portfolio).length === 0)
       return setErrs("Add contracts to Visualize");
 
@@ -72,6 +74,9 @@ const App = () => {
 
     const result = [];
 
+    // Helper DS to fetch colors
+    const colors = new ColorPicker();
+
     // We want our plot to have N lines (N is the number of contracts in portfolio)
     for (let id in portfolio) {
       const contract = portfolio[id];
@@ -80,7 +85,7 @@ const App = () => {
       result.push({
         values: [],
         key,
-        color: "blue",
+        color: colors.getColor(),
       });
     }
 

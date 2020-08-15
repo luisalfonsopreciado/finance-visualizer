@@ -1,21 +1,5 @@
 import * as cts from "./constants";
 
-export const getPayoffData = (options) => {
-  const maxStrike = getMaxStrike(options);
-  const length = Math.floor(maxStrike * 1.25);
-  const keys = Object.keys(options);
-  const data = new Array(length).fill(0);
-  const labels = [];
-  const cost = getTotalCost(options);
-
-  for (let i = 0; i < data.length; i++) {
-    labels.push(i);
-    fillPayoffArray(data, i, options, keys, cost);
-  }
-
-  return { data, labels };
-};
-
 export const evaluatePayoffFunc = (option, price) => {
   const cost = option.price * option.amount;
   if (option.type === cts.CALL) {
@@ -45,36 +29,6 @@ export const evaluatePayoffFunc = (option, price) => {
     // Short Stock
     return (option.strike - price) * option.amount;
   }
-};
-
-export const getMaxStrike = (options) => {
-  const keys = Object.keys(options);
-  let max = 0;
-  keys.forEach((key) => {
-    if (options[key].strike > max) {
-      max = options[key].strike;
-    }
-  });
-  return max;
-};
-
-const fillPayoffArray = (matrix, index, options, keys, cost) => {
-  for (let i = 0; i < keys.length; i++) {
-    matrix[index] += evaluatePayoffFunc(options[keys[i]], index) - cost;
-  }
-};
-
-const getTotalCost = (options) => {
-  const keys = Object.keys(options);
-  let cost = 0;
-  keys.forEach((key) => {
-    if (options[key].contractName.includes("SHORT")) {
-      cost -= options[key].bid * options[key].amount;
-    } else {
-      cost += options[key].ask * options[key].amount;
-    }
-  });
-  return cost;
 };
 
 /* Idea behind displaying the graph
