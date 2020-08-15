@@ -30,8 +30,6 @@ const Contract = (props) => {
 
   const [price, setPrice] = useState();
 
-  console.log(price);
-
   // Update the current price every time something changes
   useEffect(() => {
     if (optionData) {
@@ -51,7 +49,6 @@ const Contract = (props) => {
 
   // Update the price every time it changes
   useEffect(() => {
-    console.log("executed");
     updateContract(data.contractName, "price", price);
   }, [price]);
 
@@ -65,6 +62,7 @@ const Contract = (props) => {
     }
   }, []);
 
+  // Update strike and price at change
   useEffect(() => {
     if (optionData) {
       // Find the element with same date
@@ -80,8 +78,6 @@ const Contract = (props) => {
       // Extract the contracts given the date
       const contractsAtDate = apiContract.options[type];
 
-      console.log(contractsAtDate);
-
       // Find the contract with the selected Strike
       const contract = contractsAtDate.find(
         (item) => item.strike == selectedStrike
@@ -94,6 +90,8 @@ const Contract = (props) => {
         setPrice(contract.bid);
       }
     }
+
+    updateContract(data.contractName, "strike", selectedStrike);
   }, [selectedStrike, setPrice]);
 
   useEffect(() => {
@@ -118,9 +116,9 @@ const Contract = (props) => {
       // Update strikeprices
       setStrikePrices(strikesAtDate);
     }
-  }, [selectedDate]);
 
-  console.log(data);
+    updateContract(data.contractName, "date", selectedDate);
+  }, [selectedDate]);
 
   return (
     <tr>
