@@ -60,6 +60,7 @@ const App = () => {
     let minStrike = Infinity;
 
     const values = [];
+    const theoretical = [];
 
     // Get the strikes to plot
     for (let id in portfolio) {
@@ -118,15 +119,31 @@ const App = () => {
     // For each strike, calculate the payoff and add it to values
     for (let strike of strikes) {
       let profitSum = 0;
+      let theoreticalPL = 0;
       // Keep track of the index we are at
       let i = 0;
       for (let id in portfolio) {
         const contract = portfolio[id];
 
-        // Calculate profit at given Strike
+        // Calculate profit at given Strike (at Expiration)
         const profitAtStrike = +util
           .evaluatePayoffFunc(contract, strike)
           .toFixed(2);
+
+        // Calculate dateDifference in years, used in theoretical black scholes
+        const dateDiff = -moment().diff(contract.date, "years", true);
+
+        const blackScholesValue = util.BlackScholes(
+          contract.type,
+          +strike,
+          +stockData.currentPrice,
+          +dateDiff,
+          +stockData.interest,
+          +stockData.volatility
+        );
+
+        // Calculate Theoretical P/L
+        theoreticalPL += blackScholesValue - contract.price;
 
         // Update min and max Profits
         if (profitAtStrike > maxProfit) maxProfit = profitAtStrike;
@@ -146,6 +163,7 @@ const App = () => {
 
       // Add the point to the data
       values.push({ x: strike, y: profitSum });
+      theoretical.push({ x: strike, y: theoreticalPL.toFixed(2) });
     }
 
     const Ydomain = [Math.floor(minProfit * 1.2), Math.floor(maxProfit * 1.2)];
@@ -156,6 +174,15 @@ const App = () => {
       key: "Strategy",
       color: "green",
     };
+
+    // The Theoretical strategy plot data
+    const strategyTheoretical = {
+      values: theoretical,
+      key: "Today",
+      color: "pink",
+    };
+
+    result.push(strategyTheoretical);
 
     // Add the overall strategy data to the end if there are two or more contracts
     if (result.length >= 2) {

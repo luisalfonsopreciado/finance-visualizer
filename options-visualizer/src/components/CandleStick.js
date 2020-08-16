@@ -25,8 +25,6 @@ const drawCandleStick = async () => {
 
   const csv = await d3.csv("aapl-2.csv");
 
-  console.log(csv[0].Date);
-
   const data = csv.map((d, i) => {
     const date = parseDate(d["Date"]);
 

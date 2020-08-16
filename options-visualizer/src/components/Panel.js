@@ -170,7 +170,7 @@ const Contract = (props) => {
               onChange={(e) => setSelectedStrike(e.target.value)}
             >
               {strikePrices.map((price) => (
-                <option>{price}</option>
+                <option>{isNaN(price) ? null : price}</option>
               ))}
             </select>
           </div>
@@ -269,7 +269,7 @@ const Panel = (props) => {
     setPortfolio(newPortfolio);
   };
 
-  console.log("Panel Rendered")
+  console.log("Panel Rendered");
 
   return (
     <div className="panel panel-primary">
@@ -283,7 +283,7 @@ const Panel = (props) => {
               <th>Kind</th>
               <th>Strike</th>
               <th>Expiry</th>
-              <th>Price</th>
+              <th>Debit/Credit</th>
               <th>
                 <button
                   type="submit"
