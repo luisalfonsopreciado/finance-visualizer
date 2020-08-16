@@ -3,6 +3,7 @@ import Option from "../utility/Option";
 import { BlackScholes } from "../utility";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import * as util from "../utility";
 
 const Contract = (props) => {
   const { removeContract, data, optionData } = props;
@@ -19,6 +20,8 @@ const Contract = (props) => {
     "Please Select Expiration Date",
   ]);
   const [selectedStrike, setSelectedStrike] = useState();
+  const [selectedDirection, setSelectedDirection] = useState("Buy");
+  const [selectedType, setSelectedType] = useState("Call");
 
   // Stock data from redux
   const stockData = useSelector((state) => state.stockData);
@@ -120,6 +123,18 @@ const Contract = (props) => {
     updateContract(data.contractName, "date", selectedDate);
   }, [selectedDate]);
 
+  // Update Direction
+  useEffect(() => {
+    updateContract(data.contractName, "direction", selectedDirection);
+  }, [selectedDirection]);
+
+  // Update type
+  useEffect(() => {
+    updateContract(data.contractName, "type", selectedType);
+  }, [selectedType]);
+
+  const cashContract = selectedType === util.CASH;
+
   return (
     <tr>
       {/* Direction */}
@@ -127,9 +142,8 @@ const Contract = (props) => {
         <select
           id="direction"
           className="form-control"
-          onChange={(e) =>
-            updateContract(data.contractName, "direction", e.target.value)
-          }
+          value={selectedDirection}
+          onChange={(e) => setSelectedDirection(e.target.value)}
         >
           <option>Buy</option>
           <option>Sell</option>
@@ -151,9 +165,8 @@ const Contract = (props) => {
       <td>
         <select
           className="form-control"
-          onChange={(e) =>
-            updateContract(data.contractName, "type", e.target.value)
-          }
+          onChange={(e) => setSelectedType(e.target.value)}
+          value={selectedType}
         >
           <option>Call</option>
           <option>Put</option>
@@ -162,55 +175,57 @@ const Contract = (props) => {
       </td>
       {/* Strike Price */}
       <td>
-        {optionData ? (
-          <div class="form-group">
-            <select
-              class="form-control"
-              id="exampleFormControlSelect1"
-              onChange={(e) => setSelectedStrike(e.target.value)}
-            >
-              {strikePrices.map((price) => (
-                <option>{isNaN(price) ? null : price}</option>
-              ))}
-            </select>
-          </div>
-        ) : (
-          <input
-            type="number"
-            placeholder="Strike"
-            className="form-control form-control-inline"
-            onChange={(e) =>
-              updateContract(data.contractName, "strike", e.target.value)
-            }
-            value={data.strike}
-          />
-        )}
+        {!cashContract &&
+          (optionData ? (
+            <div class="form-group">
+              <select
+                class="form-control"
+                id="exampleFormControlSelect1"
+                onChange={(e) => setSelectedStrike(e.target.value)}
+              >
+                {strikePrices.map((price) => (
+                  <option>{isNaN(price) ? null : price}</option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <input
+              type="number"
+              placeholder="Strike"
+              className="form-control form-control-inline"
+              onChange={(e) =>
+                updateContract(data.contractName, "strike", e.target.value)
+              }
+              value={data.strike}
+            />
+          ))}
       </td>
       {/* Expiry Date */}
       <td>
-        {!optionData ? (
-          <input
-            type="date"
-            placeholder="Expiry"
-            className="form-control form-control-inline"
-            onChange={(e) =>
-              updateContract(data.contractName, "date", e.target.value)
-            }
-            value={data.date ? data.date : ""}
-          />
-        ) : (
-          <div class="form-group">
-            <select
-              class="form-control"
-              id="exampleFormControlSelect1"
-              onChange={(e) => setSelectedDate(e.target.value)}
-            >
-              {expirationDates.map((date) => (
-                <option>{date}</option>
-              ))}
-            </select>
-          </div>
-        )}
+        {!cashContract &&
+          (!optionData ? (
+            <input
+              type="date"
+              placeholder="Expiry"
+              className="form-control form-control-inline"
+              onChange={(e) =>
+                updateContract(data.contractName, "date", e.target.value)
+              }
+              value={data.date ? data.date : ""}
+            />
+          ) : (
+            <div class="form-group">
+              <select
+                class="form-control"
+                id="exampleFormControlSelect1"
+                onChange={(e) => setSelectedDate(e.target.value)}
+              >
+                {expirationDates.map((date) => (
+                  <option>{date}</option>
+                ))}
+              </select>
+            </div>
+          ))}
       </td>
       {/* Contract Price */}
       <td style={{ verticalAlign: "middle" }}>

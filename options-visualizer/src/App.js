@@ -142,8 +142,17 @@ const App = () => {
           +stockData.volatility
         );
 
-        // Calculate Theoretical P/L
-        theoreticalPL += (blackScholesValue - contract.price) * contract.amount;
+        // Calculate depending on Buy/Sell
+
+        console.log(blackScholesValue);
+
+        if (contract.direction === util.BUY) {
+          // Calculate Theoretical P/L
+          theoreticalPL +=
+            (blackScholesValue - contract.price) * contract.amount;
+        } else {
+          theoreticalPL += (contract.price - blackScholesValue) * contract.amount
+        }
 
         // Update min and max Profits
         if (profitAtStrike > maxProfit) maxProfit = profitAtStrike;
@@ -225,6 +234,8 @@ const App = () => {
     setOptionData(data);
     dispatch(actions.updatePrice(data.lastTradePrice));
   };
+
+  console.log(portfolio)
 
   return (
     <liveDataContext.Provider value={value}>
