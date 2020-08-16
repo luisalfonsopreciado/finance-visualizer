@@ -136,14 +136,14 @@ const App = () => {
         const blackScholesValue = util.BlackScholes(
           contract.type,
           +strike,
-          +stockData.currentPrice,
+          +contract.strike,
           +dateDiff,
           +stockData.interest,
           +stockData.volatility
         );
 
         // Calculate Theoretical P/L
-        theoreticalPL += blackScholesValue - contract.price;
+        theoreticalPL += (blackScholesValue - contract.price) * contract.amount;
 
         // Update min and max Profits
         if (profitAtStrike > maxProfit) maxProfit = profitAtStrike;
@@ -185,7 +185,7 @@ const App = () => {
     result.push(strategyTheoretical);
 
     // Add the overall strategy data to the end if there are two or more contracts
-    if (result.length >= 2) {
+    if (result.length > 2) {
       result.push(strategyData);
     }
 
