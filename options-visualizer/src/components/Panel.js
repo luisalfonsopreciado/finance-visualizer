@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Option from "../utility/Option";
-import { BlackScholes } from "../utility";
+import { BlackScholes, CASH } from "../utility";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import * as util from "../utility";
@@ -30,13 +30,12 @@ const Contract = (props) => {
   const dateDiff = -moment().diff(data.date, "years", true);
 
   // Calculate the price based on Black-Scholes model
-
   const [price, setPrice] = useState();
 
   // Update the current price every time something changes
   useEffect(() => {
     if (optionData) {
-    } else {
+    } else if (!optionData && selectedType !== CASH) {
       setPrice(
         BlackScholes(
           data.type,
@@ -131,6 +130,12 @@ const Contract = (props) => {
   // Update type
   useEffect(() => {
     updateContract(data.contractName, "type", selectedType);
+
+    // If we just changed to cash
+    if (selectedType === util.CASH) {
+      // Set Debit/Credit equal to the stock price
+      setPrice(stockData.currentPrice);
+    }
   }, [selectedType]);
 
   const cashContract = selectedType === util.CASH;

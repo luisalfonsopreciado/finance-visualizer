@@ -65,20 +65,24 @@ const App = () => {
     // Get the strikes to plot
     for (let id in portfolio) {
       const contract = portfolio[id];
-      const strike = +contract.strike;
+      const cashContract = contract.type === util.CASH;
+      const strike = cashContract ? +stockData.currentPrice : +contract.strike;
       const date = contract.date;
       const amount = contract.amount;
 
-      // Validate Strike prices
-      if (strike <= 0 || isNaN(strike))
-        return setErrs("Please Enter A Valid Strike Price");
-
-      // Validate Amount
+      // Always Validate Amount
       if (amount <= 0) return setErrs("Please Enter a Valid Amount");
 
-      // Validate the Date (Check if it is defined and in the future)
-      if (!date || moment().diff(date) > 0)
-        return setErrs("Please Enter a Valid Date");
+      // If not a Cash Contract the validate the following fields
+      if (!cashContract) {
+        // Validate Strike prices
+        if (strike <= 0 || isNaN(strike))
+          return setErrs("Please Enter A Valid Strike Price");
+
+        // Validate the Date (Check if it is defined and in the future)
+        if (!date || moment().diff(date) > 0)
+          return setErrs("Please Enter a Valid Date");
+      }
 
       // Apply To Fixed
       strikes.push(strike.toFixed(2));
@@ -127,7 +131,7 @@ const App = () => {
 
         // Calculate profit at given Strike (at Expiration)
         const profitAtStrike = +util
-          .evaluatePayoffFunc(contract, strike)
+          .evaluatePayoffFunc(contract, strike, stockData)
           .toFixed(2);
 
         // Calculate dateDifference in years, used in theoretical black scholes
@@ -143,15 +147,13 @@ const App = () => {
         );
 
         // Calculate depending on Buy/Sell
-
-        console.log(blackScholesValue);
-
         if (contract.direction === util.BUY) {
           // Calculate Theoretical P/L
           theoreticalPL +=
             (blackScholesValue - contract.price) * contract.amount;
         } else {
-          theoreticalPL += (contract.price - blackScholesValue) * contract.amount
+          theoreticalPL +=
+            (contract.price - blackScholesValue) * contract.amount;
         }
 
         // Update min and max Profits
@@ -198,6 +200,8 @@ const App = () => {
       result.push(strategyData);
     }
 
+    console.log(result, Ydomain);
+
     setData({ data: result, Ydomain });
   }, [portfolio, stockData, setErrs]);
 
@@ -235,7 +239,7 @@ const App = () => {
     dispatch(actions.updatePrice(data.lastTradePrice));
   };
 
-  console.log(portfolio)
+  console.log(portfolio);
 
   return (
     <liveDataContext.Provider value={value}>

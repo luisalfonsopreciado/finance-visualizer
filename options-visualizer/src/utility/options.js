@@ -1,7 +1,7 @@
 import * as cts from "./constants";
 
 // Takes in option object and evaluates the payoff given the input price
-export const evaluatePayoffFunc = (option, price) => {
+export const evaluatePayoffFunc = (option, price, stockData) => {
   const cost = option.price * option.amount;
   if (option.type === cts.CALL) {
     // A call Option
@@ -17,18 +17,20 @@ export const evaluatePayoffFunc = (option, price) => {
     // A Put Option
     if (option.direction === cts.BUY) {
       // Long Put
-      return Math.max(parseInt(option.strike) - price, 0) * option.amount - cost;
+      return (
+        Math.max(parseInt(option.strike) - price, 0) * option.amount - cost
+      );
     }
     // Short Put
-    return Math.min(0, price - option.strike) * option.amount + cost
+    return Math.min(0, price - option.strike) * option.amount + cost;
   } else if (option.type === cts.CASH) {
-    // Stock 
+    // Stock
     if (option.direction === cts.BUY) {
       // Long Stock
-      return (price - option.strike) * option.amount;
+      return (price - stockData.currentPrice) * option.amount;
     }
     // Short Stock
-    return (option.strike - price) * option.amount;
+    return (stockData.currentPrice - price) * option.amount;
   }
 };
 
