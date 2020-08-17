@@ -123,6 +123,7 @@ const App = () => {
         values: [],
         key,
         color: colors.getColor(),
+        disabled: true
       });
     }
 
@@ -200,6 +201,7 @@ const App = () => {
       values,
       key: "Strategy",
       color: "green",
+      disabled: false,
     };
 
     // The Theoretical strategy plot data
@@ -207,6 +209,7 @@ const App = () => {
       values: theoretical,
       key: "Today",
       color: "pink",
+      disabled: false
     };
 
     result.push(strategyTheoretical);
@@ -257,7 +260,7 @@ const App = () => {
   };
 
   console.log("App Rendered");
-  console.log(data)
+  console.log(data);
 
   return (
     <liveDataContext.Provider value={value}>
