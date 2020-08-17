@@ -43,6 +43,9 @@ export const evaluatePayoffFunc = (option, price, stockData) => {
  */
 
 export function BlackScholes(optionType, S, X, T, r, v) {
+  // Unit adjustment
+  v = v / 100;
+  r = r / 100;
   var d1 = (Math.log(S / X) + (r + (v * v) / 2) * T) / (v * Math.sqrt(T));
   var d2 = d1 - v * Math.sqrt(T);
   if (optionType === cts.CALL) {
