@@ -235,7 +235,7 @@ const App = () => {
     setPortfolio({});
   }, [optionData]);
 
-  // Update/Validate portfolio whenever changed
+  // Custom hook used to Update/Validate portfolio whenever changed
   useUpdateEffect(() => {
     setErrors(null);
     updateData();
@@ -256,7 +256,8 @@ const App = () => {
     dispatch(actions.updatePrice(data.lastTradePrice));
   };
 
-  console.log(portfolio);
+  console.log("App Rendered");
+  console.log(data)
 
   return (
     <liveDataContext.Provider value={value}>
@@ -282,7 +283,7 @@ const App = () => {
           </Col>
           <Col md={9}>
             {errors ? errors : null}
-            <Payoff data={data} changeData={setData} errors={errors} />
+            <Payoff data={data} />
           </Col>
         </Row>
       </Container>

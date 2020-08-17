@@ -47,8 +47,6 @@ const Contract = (props) => {
           +stockData.volatility
         ).toFixed(2)
       );
-
-      console.log(price);
     }
   });
 

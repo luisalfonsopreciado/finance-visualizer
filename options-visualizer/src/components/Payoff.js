@@ -1,9 +1,8 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import * as d3 from "d3";
 import * as nv from "nvd3";
 
-const Payoff = ({ data, errors }) => {
+const Payoff = ({ data }) => {
   // Clear the Charts
   d3.selectAll("svg > *").remove();
 
@@ -40,9 +39,12 @@ const Payoff = ({ data, errors }) => {
     });
   };
 
+  // UseEffect with no deps so that a chart is always rendered
   useEffect(() => {
     data && drawChart(data);
-  }, [data]);
+  })
+
+  console.log("Payoff Rendered")
 
   return (
     <>
@@ -51,13 +53,9 @@ const Payoff = ({ data, errors }) => {
           <div className="panel panel-primary">
             <div className="panel-heading">Option Payoff</div>
             <div className="panel-body">
-              {!errors ? (
-                <div id="chart">
-                  <svg></svg>
-                </div>
-              ) : (
-                <h3>Enter Valid Data To View Chart</h3>
-              )}
+              <div id="chart">
+                <svg></svg>
+              </div>
             </div>
           </div>
         </div>
