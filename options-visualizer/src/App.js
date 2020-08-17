@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import Payoff from "./components/Payoff";
 import StockData from "./components/StockData";
 import Panel from "./components/Panel";
@@ -12,6 +12,7 @@ import axios from "axios";
 import ColorPicker from "./utility/DS/ColorPicker";
 import * as actions from "./store/actions/stockData";
 import { Row, Col, Container } from "react-bootstrap";
+import useUpdateEffect from "./hooks/useUpdateEffect";
 
 const App = () => {
   const [portfolio, setPortfolio] = useState(util.initialPortfolio);
@@ -22,6 +23,8 @@ const App = () => {
   const [optionData, setOptionData] = useState();
   const value = { liveMode, setLiveMode };
   const dispatch = useDispatch();
+
+  console.log(util.initialPortfolio);
 
   // Set Error Message as JSX
   const setErrs = useCallback((message) => {
@@ -76,8 +79,7 @@ const App = () => {
       // If not a Cash Contract the validate the following fields
       if (!cashContract) {
         // Validate Strike prices
-        if (strike <= 0 || isNaN(strike))
-          return setErrs("Please Enter A Valid Strike Price");
+        if (strike <= 0) return setErrs("Please Enter A Valid Strike Price");
 
         // Validate the Date (Check if it is defined and in the future)
         if (!date || moment().diff(date) > 0)
@@ -221,26 +223,27 @@ const App = () => {
     setData({ data: result, Ydomain });
   }, [portfolio, stockData, setErrs]);
 
-  // Reset Portfolio whenever liveMode is Toggled
-  useEffect(() => {
+  // Custom hook used to Reset Portfolio only when liveMode is Toggled
+  useUpdateEffect(() => {
+    // To be run on update
     setErrors(null);
     setPortfolio({});
     setData(null);
     setOptionData(null);
   }, [liveMode]);
 
-  // Reset Porfolio whenever we change live stock
-  useEffect(() => {
+  // Custom hook used to Reset Porfolio only when optionData changes
+  useUpdateEffect(() => {
     setPortfolio({});
   }, [optionData]);
 
   // Update/Validate portfolio whenever changed
-  useEffect(() => {
+  useUpdateEffect(() => {
     setErrors(null);
     updateData();
   }, [portfolio, updateData]);
 
-  // Remove Errors
+  // Remove Errors Helper Function
   const removeErrs = () => {
     setErrors(null);
   };

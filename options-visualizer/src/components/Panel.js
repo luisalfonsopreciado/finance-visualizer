@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Option from "../utility/Option";
-import { BlackScholes, CASH } from "../utility";
+import { BlackScholes } from "../utility";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import * as util from "../utility";
+import useUpdateEffect from "../hooks/useUpdateEffect";
 
 const Contract = (props) => {
   const { removeContract, data, optionData } = props;
@@ -35,22 +36,24 @@ const Contract = (props) => {
   // Update the current price every time something changes
   useEffect(() => {
     if (optionData) {
-    } else if (!optionData && selectedType !== CASH) {
+    } else if (!optionData && selectedType !== util.CASH) {
       setPrice(
         BlackScholes(
           data.type,
           +stockData.currentPrice,
           +data.strike,
-          dateDiff,
+          +dateDiff,
           +stockData.interest,
           +stockData.volatility
         ).toFixed(2)
       );
+
+      console.log(price);
     }
   });
 
   // Update the price every time it changes
-  useEffect(() => {
+  useUpdateEffect(() => {
     updateContract(data.contractName, "price", price);
   }, [price]);
 
@@ -65,7 +68,7 @@ const Contract = (props) => {
   }, []);
 
   // Update strike and price at change
-  useEffect(() => {
+  useUpdateEffect(() => {
     if (optionData) {
       // Find the element with same date
       const apiContract = optionData.data.find(
@@ -96,7 +99,7 @@ const Contract = (props) => {
     updateContract(data.contractName, "strike", selectedStrike);
   }, [selectedStrike, setPrice]);
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     if (optionData) {
       // Find the element with same date
       const apiContract = optionData.data.find(
@@ -123,12 +126,12 @@ const Contract = (props) => {
   }, [selectedDate]);
 
   // Update Direction
-  useEffect(() => {
+  useUpdateEffect(() => {
     updateContract(data.contractName, "direction", selectedDirection);
   }, [selectedDirection]);
 
   // Update type
-  useEffect(() => {
+  useUpdateEffect(() => {
     updateContract(data.contractName, "type", selectedType);
 
     // If we just changed to cash
@@ -216,7 +219,7 @@ const Contract = (props) => {
               onChange={(e) =>
                 updateContract(data.contractName, "date", e.target.value)
               }
-              value={data.date ? data.date : ""}
+              value={data.date}
             />
           ) : (
             <div class="form-group">
