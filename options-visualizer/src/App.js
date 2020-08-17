@@ -107,8 +107,18 @@ const App = () => {
     // We want our plot to have N lines (N is the number of contracts in portfolio)
     for (let id in portfolio) {
       const contract = portfolio[id];
-      const key =
+      let key =
         contract.direction + " " + contract.type + " " + contract.strike;
+      // Adjust title if cash contract
+      if (contract.type === util.CASH) {
+        key =
+          contract.direction +
+          " " +
+          contract.type +
+          "  " +
+          stockData.currentPrice;
+      }
+
       result.push({
         values: [],
         key,
@@ -146,14 +156,20 @@ const App = () => {
           +stockData.volatility
         );
 
-        // Calculate depending on Buy/Sell
-        if (contract.direction === util.BUY) {
-          // Calculate Theoretical P/L
-          theoreticalPL +=
-            (blackScholesValue - contract.price) * contract.amount;
+        // If the contract is Cash
+        if (contract.type === util.CASH) {
+          // Just add the profit at Strike
+          theoreticalPL += profitAtStrike;
         } else {
-          theoreticalPL +=
-            (contract.price - blackScholesValue) * contract.amount;
+          // Calculate depending on Buy/Sell
+          if (contract.direction === util.BUY) {
+            // Calculate Theoretical P/L
+            theoreticalPL +=
+              (blackScholesValue - contract.price) * contract.amount;
+          } else {
+            theoreticalPL +=
+              (contract.price - blackScholesValue) * contract.amount;
+          }
         }
 
         // Update min and max Profits
