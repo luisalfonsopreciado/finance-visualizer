@@ -4,7 +4,7 @@ import StockData from "./components/StockData";
 import Panel from "./components/Panel";
 import * as util from "./utility";
 import { useSelector, useDispatch } from "react-redux";
-import Navigation from "./components/Navigation";
+import Navigation from "./components/Navigation/Navigation";
 import moment from "moment";
 import { liveDataContext } from "./context/liveData";
 import Search from "./components/Search";
@@ -23,8 +23,6 @@ const App = () => {
   const [optionData, setOptionData] = useState();
   const value = { liveMode, setLiveMode };
   const dispatch = useDispatch();
-
-  console.log(util.initialPortfolio);
 
   // Set Error Message as JSX
   const setErrs = useCallback((message) => {
@@ -262,7 +260,7 @@ const App = () => {
 
   return (
     <liveDataContext.Provider value={value}>
-      <Navigation />
+      <Navigation setPortfolio={setPortfolio} />
       <Container>
         <Row>
           <Col md={12}>{liveMode && <Search searchFunc={searchFunc} />}</Col>

@@ -5,10 +5,11 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import { liveDataContext } from "../context/liveData";
+import { liveDataContext } from "../../context/liveData";
 import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
+import DropDownBtn from "./DropDownBtn";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,10 +23,12 @@ const useStyles = makeStyles((theme) => ({
   },
   navbar: {
     marginBottom: "40px",
+    position: "relative",
+    zIndex: "10",
   },
 }));
 
-export default function MenuAppBar() {
+export default function MenuAppBar({ setPortfolio }) {
   const classes = useStyles();
   const { liveMode, setLiveMode } = useContext(liveDataContext);
 
@@ -43,6 +46,7 @@ export default function MenuAppBar() {
         <Typography variant="h3" className={classes.title}>
           Option Strategy Builder
         </Typography>
+        <DropDownBtn setPortfolio={setPortfolio} />
         <FormGroup>
           <FormControlLabel
             control={

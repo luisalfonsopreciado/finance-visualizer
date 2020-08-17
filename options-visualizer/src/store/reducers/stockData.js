@@ -3,12 +3,9 @@ import {
   UPDATE_INTEREST,
   UPDATE_VOLATILITY,
 } from "../actions/stockData";
+import { stockDataInitialState } from "../../utility/constants";
 
-const initialState = {
-  currentPrice: "100",
-  volatility: "30",
-  interest: "2",
-};
+export const initialState = { ...stockDataInitialState };
 
 export default (state = initialState, action) => {
   switch (action.type) {
