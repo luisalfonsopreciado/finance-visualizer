@@ -5,13 +5,18 @@ export const CALL = "Call";
 export const PUT = "Put";
 export const CASH = "Cash";
 
+export const STOCK_NO_OPTIONS = "This Stock Has No Available Options";
+export const STOCK_ERR_FETCH = "Unable To Fetch Stock Data, Try again Later";
+
 export const stockDataInitialState = {
   currentPrice: "100",
   volatility: "30",
   interest: "2",
 };
 
-export const date = moment(new Date(Date.now() + 604800000)).format("YYYY-MM-DD");
+export const date = moment(new Date(Date.now() + 604800000)).format(
+  "YYYY-MM-DD"
+);
 
 export const initialPortfolio = {
   initialPortfolioId: {
@@ -100,8 +105,8 @@ export const shortCondor = {
     price: "",
     strike: 80,
     type: PUT,
-  }, 
-}
+  },
+};
 
 export const bullCallSpread = {
   firstId: {
@@ -294,6 +299,6 @@ export const shortButterfly = {
     direction: SELL,
     price: "",
     strike: 90,
-    type: PUT
-  }
+    type: PUT,
+  },
 };

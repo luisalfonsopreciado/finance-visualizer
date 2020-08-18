@@ -13,11 +13,13 @@ import ColorPicker from "./utility/DS/ColorPicker";
 import * as actions from "./store/actions/stockData";
 import { Row, Col, Container } from "react-bootstrap";
 import useUpdateEffect from "./hooks/useUpdateEffect";
+import Error from "./components/Error";
 
 const App = () => {
   const [portfolio, setPortfolio] = useState(util.initialPortfolio);
   const [data, setData] = useState(null);
   const [errors, setErrors] = useState(null);
+  const [stockErrors, setStockErrors] = useState(null);
   const stockData = useSelector((state) => state.stockData);
   const [liveMode, setLiveMode] = useState(false);
   const [optionData, setOptionData] = useState();
@@ -26,20 +28,12 @@ const App = () => {
 
   // Set Error Message as JSX
   const setErrs = useCallback((message) => {
-    setErrors(
-      <div className="alert alert-danger " role="alert">
-        <strong>{message}</strong>
-        <button
-          type="button"
-          className="close"
-          data-dismiss="alert"
-          aria-label="Close"
-          onClick={removeErrs}
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    );
+    setErrors(<Error removeFunc={() => setErrors(null)}>{message}</Error>);
+  }, []);
+
+  // Set Error Stock Message as JSX
+  const setStockErrs = useCallback((message) => {
+    setStockErrors(<Error removeFunc={() => setStockErrors(null)}>{message}</Error>);
   }, []);
 
   // Update and Validate User Input Data
@@ -77,7 +71,8 @@ const App = () => {
       // If not a Cash Contract the validate the following fields
       if (!cashContract) {
         // Validate Strike prices
-        if (strike <= 0) return setErrs("Please Enter A Valid Strike Price");
+        if (strike <= 0)
+          return setErrs("Please Enter A Valid Strike Price");
 
         // Validate the Date (Check if it is defined and in the future)
         if (!date || moment().diff(date) > 0)
@@ -227,6 +222,9 @@ const App = () => {
 
     result.push(strategyData);
 
+    // Clear the Errors
+    setErrors(null);
+
     setData({ data: result, Ydomain });
   }, [portfolio, stockData, setErrs]);
 
@@ -246,23 +244,26 @@ const App = () => {
 
   // Custom hook used to Update/Validate portfolio whenever changed
   useUpdateEffect(() => {
-    setErrors(null);
     updateData();
   }, [portfolio, updateData]);
 
-  // Remove Errors Helper Function
-  const removeErrs = () => {
-    setErrors(null);
-  };
-
   // Fetch the option Data when Search is Clicked
   const searchFunc = async (ticker) => {
-    const { data } = await axios.get(
-      `https://finnhub.io/api/v1/stock/option-chain?symbol=${ticker}&token=` +
-        process.env.REACT_APP_API_KEY
-    );
-    setOptionData(data);
-    dispatch(actions.updatePrice(data.lastTradePrice));
+    try {
+      const { data } = await axios.get(
+        `https://finnhub.io/api/v1/stock/option-chain?symbol=${ticker}&token=` +
+          process.env.REACT_APP_API_KEY
+      );
+      setOptionData(data);
+      dispatch(actions.updatePrice(data.lastTradePrice));
+      if (data.data.length === 0) {
+        setStockErrs(util.STOCK_NO_OPTIONS, setStockErrors);
+      }else{
+        setStockErrors(null)
+      }
+    } catch (err) {
+      setStockErrs(util.STOCK_ERR_FETCH, setStockErrors);
+    }
   };
 
   console.log("App Rendered");
@@ -273,7 +274,10 @@ const App = () => {
       <Navigation setPortfolio={setPortfolio} />
       <Container>
         <Row>
-          <Col md={12}>{liveMode && <Search searchFunc={searchFunc} />}</Col>
+          <Col md={12}>
+            {liveMode && <Search searchFunc={searchFunc} />}
+            {stockErrors}
+          </Col>
         </Row>
         <Row>
           <Col md={12}>

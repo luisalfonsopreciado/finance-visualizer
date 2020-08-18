@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Option from "../utility/Option";
-import { BlackScholes } from "../utility";
+import { BlackScholes, SELL } from "../utility";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import * as util from "../utility";
@@ -233,9 +233,13 @@ const Contract = (props) => {
             </div>
           ))}
       </td>
-      {/* Contract Price */}
+      {/* Premium/Price */}
       <td style={{ verticalAlign: "middle" }}>
         <b>{price}</b>
+      </td>
+      {/* Debit/Credit */}
+      <td style={{ verticalAlign: "middle" }}>
+        <b>{data.direction === SELL ? price : -price} </b>
       </td>
       {/* Remove Button */}
       <td style={{ verticalAlign: "middle" }}>
@@ -304,6 +308,7 @@ const Panel = (props) => {
               <th>Kind</th>
               <th>Strike</th>
               <th>Expiry</th>
+              <th>Premium</th>
               <th>Debit/Credit</th>
               <th>
                 <button
