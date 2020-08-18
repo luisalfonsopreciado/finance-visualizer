@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "059654613b56958989b7b5f1bad1bb51",
+    "revision": "db2a307ded15dffd8f08c79066561ead",
     "url": "/finance-visualizer/index.html"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/finance-visualizer/static/js/2.2fdea684.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "5c2c2b10824ef4ba9223",
-    "url": "/finance-visualizer/static/js/main.844c27a5.chunk.js"
+    "revision": "fe1f19c9e6ed4fecd469",
+    "url": "/finance-visualizer/static/js/main.30b2dbd9.chunk.js"
   },
   {
     "revision": "2a5b660ddd175b96a9c8",
