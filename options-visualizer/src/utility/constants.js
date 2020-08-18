@@ -11,7 +11,7 @@ export const stockDataInitialState = {
   interest: "2",
 };
 
-const date = moment(new Date(Date.now() + 604800000)).format("YYYY-MM-DD");
+export const date = moment(new Date(Date.now() + 604800000)).format("YYYY-MM-DD");
 
 export const initialPortfolio = {
   initialPortfolioId: {
