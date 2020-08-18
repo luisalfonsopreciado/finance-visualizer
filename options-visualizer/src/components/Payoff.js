@@ -3,6 +3,9 @@ import * as d3 from "d3";
 import * as nv from "nvd3";
 
 const Payoff = ({ data }) => {
+  // Clear the Charts
+  d3.selectAll("svg > *").remove();
+
   const drawChart = ({ data: myData, Ydomain }) => {
     /*These lines are all chart setup.  Pick and choose which chart features you want to utilize. */
     nv.addGraph(() => {
@@ -17,11 +20,11 @@ const Payoff = ({ data }) => {
 
       newChart.xAxis //Chart x-axis settings
         .axisLabel("Price ($)")
-        .tickFormat((d) => d);
+        .tickFormat(d3.format(",.2f"));
 
       newChart.yAxis //Chart y-axis settings
         .axisLabel("Profit ($)")
-        .tickFormat((d) => d);
+        .tickFormat(d3.format(",.2f"));
 
       newChart.forceY(Ydomain);
 
@@ -38,17 +41,8 @@ const Payoff = ({ data }) => {
 
   // UseEffect with no deps so that a chart is always rendered
   useEffect(() => {
-    // Clear the Charts
-    d3.selectAll("svg > *").remove();
     data && drawChart(data);
   });
-
-  // Might need to cleanup the nvd3 object
-  // useEffect(() => {
-  //   return () => {
-
-  //   };
-  // }, []);
 
   console.log("Payoff Rendered");
 
