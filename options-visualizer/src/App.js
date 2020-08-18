@@ -63,7 +63,7 @@ const App = () => {
     const values = [];
     const theoretical = [];
 
-    // Get the strikes to plot
+    // Get the Critical strikes to plot
     for (let id in portfolio) {
       const contract = portfolio[id];
       const cashContract = contract.type === util.CASH;
@@ -91,10 +91,21 @@ const App = () => {
       if (strike > maxStrike) maxStrike = strike;
       if (strike < minStrike) minStrike = strike;
     }
+    const average = (maxStrike + minStrike) / 2;
+    const max = Math.floor(average * 1.2);
+    const min = Math.floor(average * 0.8);
+    const change = (max - min) / 35;
 
     // Add domain limits
-    strikes.push(Math.floor(maxStrike * 1.2));
-    strikes.push(Math.floor(minStrike * 0.8));
+    strikes.push(min);
+    strikes.push(max);
+
+    let i = min;
+    // Add The rest of the strikes for continuous feel
+    while (i < max) {
+      strikes.push(i);
+      i += change;
+    }
 
     // Sort the strikes so the graph can be displayed properly
     strikes.sort((a, b) => a - b);
@@ -123,7 +134,7 @@ const App = () => {
         values: [],
         key,
         color: colors.getColor(),
-        disabled: true
+        disabled: true,
       });
     }
 
@@ -209,17 +220,12 @@ const App = () => {
       values: theoretical,
       key: "Today",
       color: "pink",
-      disabled: false
+      disabled: false,
     };
 
     result.push(strategyTheoretical);
 
-    // Add the overall strategy data to the end if there are two or more contracts
-    if (result.length > 2) {
-      result.push(strategyData);
-    }
-
-    console.log(result, Ydomain);
+    result.push(strategyData);
 
     setData({ data: result, Ydomain });
   }, [portfolio, stockData, setErrs]);
