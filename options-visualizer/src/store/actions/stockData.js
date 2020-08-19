@@ -2,6 +2,7 @@ export const UPDATE_PRICE = "UPDATE_PRICE";
 export const UPDATE_VOLATILITY = "UPDATE_VOLATILITY";
 export const UPDATE_INTEREST = "UPDATE_INTEREST";
 export const UPDATE_TICKER = "UPDATE_TICKER";
+export const RESET_DATA = "RESET_DATA"
 
 export const updatePrice = (price) => {
   return {
@@ -30,3 +31,9 @@ export const updateInterest = (interest) => {
     interest,
   };
 };
+
+export const resetData = () => {
+  return {
+    type: RESET_DATA
+  }
+}

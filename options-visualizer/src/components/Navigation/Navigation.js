@@ -10,6 +10,8 @@ import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import DropDownBtn from "./DropDownBtn";
+import { useDispatch } from "react-redux";
+import * as actions from "../../store/actions/stockData";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MenuAppBar({ setPortfolio }) {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const { liveMode, setLiveMode } = useContext(liveDataContext);
 
   return (
@@ -52,7 +55,12 @@ export default function MenuAppBar({ setPortfolio }) {
             control={
               <Switch
                 checked={liveMode}
-                onChange={() => setLiveMode((prev) => !prev)}
+                onChange={() =>
+                  setLiveMode((prev) => {
+                    if (prev === true) dispatch(actions.resetData());
+                    return !prev;
+                  })
+                }
                 aria-label="live mode switch"
               />
             }
