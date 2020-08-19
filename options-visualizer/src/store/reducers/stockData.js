@@ -2,6 +2,7 @@ import {
   UPDATE_PRICE,
   UPDATE_INTEREST,
   UPDATE_VOLATILITY,
+  UPDATE_TICKER,
 } from "../actions/stockData";
 import { stockDataInitialState } from "../../utility/constants";
 
@@ -15,6 +16,8 @@ export default (state = initialState, action) => {
       return { ...state, volatility: action.volatility };
     case UPDATE_INTEREST:
       return { ...state, interest: action.interest };
+    case UPDATE_TICKER: 
+      return {...state, ticker: action.ticker}
     default:
       // Will be run initially
       return state;

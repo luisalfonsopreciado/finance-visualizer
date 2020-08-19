@@ -14,6 +14,7 @@ import * as actions from "./store/actions/stockData";
 import { Row, Col, Container } from "react-bootstrap";
 import useUpdateEffect from "./hooks/useUpdateEffect";
 import Error from "./components/Error/Error";
+import SecurityInfo from "./components/SecurityInfo";
 
 const App = () => {
   const [portfolio, setPortfolio] = useState(util.initialPortfolio);
@@ -33,7 +34,9 @@ const App = () => {
 
   // Set Error Stock Message as JSX
   const setStockErrs = useCallback((message) => {
-    setStockErrors(<Error removeFunc={() => setStockErrors(null)}>{message}</Error>);
+    setStockErrors(
+      <Error removeFunc={() => setStockErrors(null)}>{message}</Error>
+    );
   }, []);
 
   // Update and Validate User Input Data
@@ -71,8 +74,7 @@ const App = () => {
       // If not a Cash Contract the validate the following fields
       if (!cashContract) {
         // Validate Strike prices
-        if (strike <= 0)
-          return setErrs("Please Enter A Valid Strike Price");
+        if (strike <= 0) return setErrs("Please Enter A Valid Strike Price");
 
         // Validate the Date (Check if it is defined and in the future)
         if (!date || moment().diff(date) > 0)
@@ -256,10 +258,11 @@ const App = () => {
       );
       setOptionData(data);
       dispatch(actions.updatePrice(data.lastTradePrice));
+      dispatch(actions.updateTicker(data.code));
       if (data.data.length === 0) {
         setStockErrs(util.STOCK_NO_OPTIONS, setStockErrors);
-      }else{
-        setStockErrors(null)
+      } else {
+        setStockErrors(null);
       }
     } catch (err) {
       setStockErrs(util.STOCK_ERR_FETCH, setStockErrors);
@@ -273,6 +276,11 @@ const App = () => {
     <liveDataContext.Provider value={value}>
       <Navigation setPortfolio={setPortfolio} />
       <Container>
+        <Row>
+          <Col md={12}>
+            {stockData.ticker !== "Theoretical" && <SecurityInfo />}
+          </Col>
+        </Row>
         <Row>
           <Col md={12}>
             {liveMode && <Search searchFunc={searchFunc} />}

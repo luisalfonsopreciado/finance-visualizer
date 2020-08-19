@@ -323,7 +323,7 @@ const Panel = (props) => {
           </thead>
           <tbody>{renderContracts()}</tbody>
         </table>
-        <div className="pull-right">
+        {/* <div className="pull-right">
           <button
             type="submit"
             className="btn btn-success btn-s"
@@ -331,7 +331,7 @@ const Panel = (props) => {
           >
             Generate Payoff
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

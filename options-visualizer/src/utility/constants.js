@@ -9,6 +9,7 @@ export const STOCK_NO_OPTIONS = "This Stock Has No Available Options";
 export const STOCK_ERR_FETCH = "Unable To Fetch Stock Data, Try again Later";
 
 export const stockDataInitialState = {
+  ticker: "Theoretical",
   currentPrice: "100",
   volatility: "30",
   interest: "2",
