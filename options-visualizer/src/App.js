@@ -13,7 +13,7 @@ import ColorPicker from "./utility/DS/ColorPicker";
 import * as actions from "./store/actions/stockData";
 import { Row, Col, Container } from "react-bootstrap";
 import useUpdateEffect from "./hooks/useUpdateEffect";
-import Error from "./components/Error";
+import Error from "./components/Error/Error";
 
 const App = () => {
   const [portfolio, setPortfolio] = useState(util.initialPortfolio);
