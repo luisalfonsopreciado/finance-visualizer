@@ -30,7 +30,7 @@ const Search = ({ searchFunc }) => {
     return options.filter((o) => o.displaySymbol.includes(query));
   };
 
-  console.log("Search Rendered")
+  // console.log("Search Rendered")
 
   return (
     <>

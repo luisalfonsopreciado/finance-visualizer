@@ -51,9 +51,9 @@ const drawBarChart = async () => {
           .attr("text-anchor", "start")
       );
 
-  console.log(data);
+  // console.log(data);
 
-  console.log(svg);
+  // console.log(svg);
 
   barChartSvg
     .append("g")

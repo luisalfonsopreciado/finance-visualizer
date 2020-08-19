@@ -24,6 +24,8 @@ const App = () => {
   const stockData = useSelector((state) => state.stockData);
   const [liveMode, setLiveMode] = useState(false);
   const [optionData, setOptionData] = useState();
+  const [minX, setMinX] = useState();
+  const [maxX, setMaxX] = useState();
   const value = { liveMode, setLiveMode };
   const dispatch = useDispatch();
 
@@ -60,6 +62,19 @@ const App = () => {
     const values = [];
     const theoretical = [];
 
+    // Add the min/max x values input by the user and update the max/minStrikes
+    if (maxX) {
+      if (+maxX > maxStrike) maxStrike = +maxX;
+      if (+maxX < minStrike) minStrike = +maxX;
+      strikes.push(+maxX);
+    }
+
+    if (minX) {
+      if (+minX > maxStrike) maxStrike = +minX;
+      if (+minX < minStrike) minStrike = +minX;
+      strikes.push(+minX);
+    }
+
     // Get the Critical strikes to plot
     for (let id in portfolio) {
       const contract = portfolio[id];
@@ -71,7 +86,7 @@ const App = () => {
       // Always Validate Amount
       if (amount <= 0) return setErrs("Please Enter a Valid Amount");
 
-      // If not a Cash Contract the validate the following fields
+      // If not a Cash Contract then validate the following fields
       if (!cashContract) {
         // Validate Strike prices
         if (strike <= 0) return setErrs("Please Enter A Valid Strike Price");
@@ -88,14 +103,36 @@ const App = () => {
       if (strike > maxStrike) maxStrike = strike;
       if (strike < minStrike) minStrike = strike;
     }
+
     const average = (maxStrike + minStrike) / 2;
-    const min = Math.floor(minStrike - average * 0.2);
-    const max = Math.floor(maxStrike + average * 0.2);
+    let max = 0;
+
+    // If maxX is set
+    if (!maxX) {
+      // Auto xMax margin
+      max = Math.floor(maxStrike + average * 0.2);
+    } else {
+      max = Math.max(+maxX, maxStrike);
+    }
+
+    let min = 0;
+
+    // If minX is set
+    if (!minX) {
+      // Auto xMin Margin
+      min = Math.floor(minStrike - average * 0.2);
+    } else {
+      min = Math.min(+minX, minStrike);
+    }
+
     const change = (max - min) / 35;
 
     // Add domain limits
     strikes.push(min);
     strikes.push(max);
+
+    setMaxX(max);
+    setMinX(min);
 
     let i = min;
     // Add The rest of the strikes for continuous feel
@@ -228,7 +265,7 @@ const App = () => {
     setErrors(null);
 
     setData({ data: result, Ydomain });
-  }, [portfolio, stockData, setErrs]);
+  }, [portfolio, stockData, setErrs, maxX, minX]);
 
   // Custom hook used to Reset Portfolio only when liveMode is Toggled
   useUpdateEffect(() => {
@@ -246,6 +283,7 @@ const App = () => {
 
   // Custom hook used to Update/Validate portfolio whenever changed
   useUpdateEffect(() => {
+    console.log("portfolio Effect");
     updateData();
   }, [portfolio, updateData]);
 
@@ -269,8 +307,9 @@ const App = () => {
     }
   };
 
-  console.log("App Rendered");
-  console.log(data);
+  // console.log("App Rendered");
+  // console.log(data);
+  // console.log(minX);
 
   return (
     <liveDataContext.Provider value={value}>
@@ -303,8 +342,32 @@ const App = () => {
             <StockData liveMode={liveMode} />
           </Col>
           <Col md={9}>
-            {errors ? errors : null}
-            <Payoff data={data} />
+            <Row>
+              <Col md={12}>
+                {errors ? errors : null}
+                <Payoff data={data} />
+              </Col>
+            </Row>
+            <Row>
+              <Col md={2}>
+                <input
+                  type="number"
+                  className="form-control form-control-inline"
+                  onChange={(e) => setMinX(e.target.value)}
+                  value={minX}
+                />
+              </Col>
+              <Col md={2}>
+                <input
+                  type="number"
+                  min="1"
+                  max="5000"
+                  className="form-control form-control-inline"
+                  onChange={(e) => setMaxX(e.target.value)}
+                  value={maxX}
+                />
+              </Col>
+            </Row>
           </Col>
         </Row>
       </Container>

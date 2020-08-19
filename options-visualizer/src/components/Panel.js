@@ -294,7 +294,7 @@ const Panel = (props) => {
     setPortfolio(newPortfolio);
   };
 
-  console.log("Panel Rendered");
+  // console.log("Panel Rendered");
 
   return (
     <div className="panel panel-primary">

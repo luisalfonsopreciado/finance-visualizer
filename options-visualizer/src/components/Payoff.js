@@ -44,7 +44,7 @@ const Payoff = ({ data }) => {
     data && drawChart(data);
   });
 
-  console.log("Payoff Rendered");
+  // console.log("Payoff Rendered");
 
   return (
     <>

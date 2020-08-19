@@ -6,7 +6,7 @@ const StockData = ({ liveMode }) => {
   const stockData = useSelector((state) => state.stockData);
   const dispatch = useDispatch();
 
-  console.log("Stock Data rendered")
+  // console.log("Stock Data rendered")
 
   return (
     <div className="panel panel-primary">
