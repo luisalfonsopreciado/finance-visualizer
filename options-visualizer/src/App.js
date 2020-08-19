@@ -15,6 +15,7 @@ import { Row, Col, Container } from "react-bootstrap";
 import useUpdateEffect from "./hooks/useUpdateEffect";
 import Error from "./components/Error/Error";
 import SecurityInfo from "./components/SecurityInfo";
+import Slider from "./components/Slider";
 
 const App = () => {
   const [portfolio, setPortfolio] = useState(util.initialPortfolio);
@@ -28,6 +29,7 @@ const App = () => {
   const [maxX, setMaxX] = useState();
   const value = { liveMode, setLiveMode };
   const dispatch = useDispatch();
+  const { volatility, interest } = useSelector((state) => state.stockData);
 
   // Set Error Message as JSX
   const setErrs = useCallback((message) => {
@@ -52,7 +54,7 @@ const App = () => {
       return setErrs("Please Enter a Valid Stock Price");
 
     // Validate Interest
-    if (+stockData.interest <= 0)
+    if (isNaN(+stockData.interest))
       return setErrs("Please Enter a Valid Interest Rate");
 
     const strikes = [];
@@ -340,6 +342,20 @@ const App = () => {
         <Row>
           <Col md={3}>
             <StockData liveMode={liveMode} />
+            <Slider
+              min={0}
+              max={150}
+              title={"Volatility"}
+              value={+volatility}
+              setValue={(val) => dispatch(actions.updateVolatility(val))}
+            />
+            <Slider
+              min={-20}
+              max={150}
+              title={"Interest"}
+              value={+interest}
+              setValue={(val) => dispatch(actions.updateInterest(val))}
+            />
           </Col>
           <Col md={9}>
             <Row>
