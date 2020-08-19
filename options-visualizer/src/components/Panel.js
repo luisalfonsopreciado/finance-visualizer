@@ -21,8 +21,8 @@ const Contract = (props) => {
     "Please Select Expiration Date",
   ]);
   const [selectedStrike, setSelectedStrike] = useState();
-  const [selectedDirection, setSelectedDirection] = useState("Buy");
-  const [selectedType, setSelectedType] = useState("Call");
+  const [selectedDirection, setSelectedDirection] = useState(data.direction);
+  const [selectedType, setSelectedType] = useState(data.type);
 
   // Stock data from redux
   const stockData = useSelector((state) => state.stockData);

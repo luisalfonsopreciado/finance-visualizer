@@ -8,6 +8,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
 import { makeStyles } from "@material-ui/core/styles";
 import * as util from "../../utility";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,6 +23,7 @@ const DropDownBtn = ({ setPortfolio }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
+  const { currentPrice, volatility } = useSelector((state) => state.stockData);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -31,7 +33,7 @@ const DropDownBtn = ({ setPortfolio }) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-    newPortfolio && setPortfolio(newPortfolio);
+    newPortfolio && setPortfolio(newPortfolio(currentPrice, volatility));
     setOpen(false);
   };
 
@@ -86,29 +88,31 @@ const DropDownBtn = ({ setPortfolio }) => {
                   onKeyDown={handleListKeyDown}
                 >
                   <MenuItem
-                    onClick={(e) => handleClose(e, util.bullCallSpread)}
+                    onClick={(e) => handleClose(e, util.getBullCallSpread)}
                   >
                     Bull Call Spread
                   </MenuItem>
-                  <MenuItem onClick={(e) => handleClose(e, util.bearPutSpread)}>
+                  <MenuItem onClick={(e) => handleClose(e, util.getBearPutSpread)}>
                     Bear Put Spread
                   </MenuItem>
-                  <MenuItem onClick={(e) => handleClose(e, util.longStraddle)}>
+                  <MenuItem onClick={(e) => handleClose(e, util.getLongStraddle)}>
                     Long Straddle
                   </MenuItem>
-                  <MenuItem onClick={(e) => handleClose(e, util.shortStraddle)}>
+                  <MenuItem onClick={(e) => handleClose(e, util.getShortStraddle)}>
                     Short Straddle
                   </MenuItem>
-                  <MenuItem onClick={(e) => handleClose(e, util.longButterfly)}>
+                  <MenuItem onClick={(e) => handleClose(e, util.getLongButterfly)}>
                     Long Butterfly
                   </MenuItem>
-                  <MenuItem onClick={(e) => handleClose(e, util.shortButterfly)}>
+                  <MenuItem
+                    onClick={(e) => handleClose(e, util.getShortButterfly)}
+                  >
                     Short Butterfly
                   </MenuItem>
-                  <MenuItem onClick={(e) => handleClose(e, util.longCondor)}>
+                  <MenuItem onClick={(e) => handleClose(e, util.getLongCondor)}>
                     Long Condor
                   </MenuItem>
-                  <MenuItem onClick={(e) => handleClose(e, util.shortCondor)}>
+                  <MenuItem onClick={(e) => handleClose(e, util.getShortCondor)}>
                     Short Condor
                   </MenuItem>
                 </MenuList>

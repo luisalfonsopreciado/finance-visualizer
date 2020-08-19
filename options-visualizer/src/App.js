@@ -89,8 +89,8 @@ const App = () => {
       if (strike < minStrike) minStrike = strike;
     }
     const average = (maxStrike + minStrike) / 2;
-    const max = Math.floor(average * 1.2);
-    const min = Math.floor(average * 0.8);
+    const min = Math.floor(minStrike - average * 0.2);
+    const max = Math.floor(maxStrike + average * 0.2);
     const change = (max - min) / 35;
 
     // Add domain limits
