@@ -13,6 +13,7 @@ const useStyles = makeStyles({
   input: {
     width: 42,
   },
+  slider: { width: "90%" },
 });
 
 export default function InputSlider({ value, setValue, title, min, max }) {
@@ -50,10 +51,11 @@ export default function InputSlider({ value, setValue, title, min, max }) {
             value={typeof value === "number" ? value : 0}
             onChange={handleSliderChange}
             aria-labelledby="input-slider"
+            className={classes.slider}
           />
         </Grid>
         <Grid item>
-          <Input
+          {/* <Input
             className={classes.input}
             value={value}
             margin="dense"
@@ -66,7 +68,7 @@ export default function InputSlider({ value, setValue, title, min, max }) {
               type: "number",
               "aria-labelledby": "input-slider",
             }}
-          />
+          /> */}
         </Grid>
       </Grid>
     </div>

@@ -343,20 +343,25 @@ const App = () => {
         <Row>
           <Col md={3}>
             <StockData liveMode={liveMode} />
-            <Slider
-              min={0}
-              max={150}
-              title={"Volatility"}
-              value={+volatility}
-              setValue={(val) => dispatch(actions.updateVolatility(val))}
-            />
-            <Slider
-              min={-20}
-              max={150}
-              title={"Interest"}
-              value={+interest}
-              setValue={(val) => dispatch(actions.updateInterest(val))}
-            />
+            <div className="panel panel-primary">
+              <div className="panel-heading">Toggle</div>
+              <div className="panel-body">
+                <Slider
+                  min={0}
+                  max={150}
+                  title={"Volatility"}
+                  value={+volatility}
+                  setValue={(val) => dispatch(actions.updateVolatility(val))}
+                />
+                <Slider
+                  min={-20}
+                  max={150}
+                  title={"Interest"}
+                  value={+interest}
+                  setValue={(val) => dispatch(actions.updateInterest(val))}
+                />
+              </div>
+            </div>
           </Col>
           <Col md={9}>
             <Row>
@@ -367,26 +372,31 @@ const App = () => {
               </Col>
             </Row>
             <Row>
-              <Col md={2}>
-                <input
-                  type="number"
-                  className="form-control form-control-inline"
-                  placeholder="Auto"
-                  onBlur={(e) => setMinX(e.target.value)}
-                  // value={minX}
-                />
-              </Col>
-              <Col md={2}>
-                <input
-                  type="number"
-                  min="1"
-                  max="5000"
-                  className="form-control form-control-inline"
-                  placeholder="Auto"
-                  // value={maxX}
-                  onBlur={(e) => setMaxX(e.target.value)}
-                />
-              </Col>
+              <div className="panel panel-primary">
+                <div className="panel-heading">Change Domain</div>
+                <div className="panel-body">
+                  <Col md={2}>
+                    <input
+                      type="number"
+                      className="form-control form-control-inline"
+                      placeholder="Auto"
+                      onBlur={(e) => setMinX(e.target.value)}
+                      // value={minX}
+                    />
+                  </Col>
+                  <Col md={2}>
+                    <input
+                      type="number"
+                      min="1"
+                      max="5000"
+                      className="form-control form-control-inline"
+                      placeholder="Auto"
+                      // value={maxX}
+                      onBlur={(e) => setMaxX(e.target.value)}
+                    />
+                  </Col>
+                </div>
+              </div>
             </Row>
           </Col>
         </Row>
