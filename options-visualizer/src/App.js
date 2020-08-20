@@ -369,8 +369,9 @@ const App = () => {
                 <input
                   type="number"
                   className="form-control form-control-inline"
-                  onChange={(e) => setMinX(e.target.value)}
-                  value={minX}
+                  placeholder="Auto"
+                  onBlur={(e) => setMinX(e.target.value)}
+                  // value={minX}
                 />
               </Col>
               <Col md={2}>
@@ -379,8 +380,9 @@ const App = () => {
                   min="1"
                   max="5000"
                   className="form-control form-control-inline"
-                  onChange={(e) => setMaxX(e.target.value)}
-                  value={maxX}
+                  placeholder="Auto"
+                  // value={maxX}
+                  onBlur={(e) => setMaxX(e.target.value)}
                 />
               </Col>
             </Row>
