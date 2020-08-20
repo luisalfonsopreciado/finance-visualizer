@@ -16,6 +16,7 @@ import useUpdateEffect from "./hooks/useUpdateEffect";
 import Error from "./components/Error/Error";
 import SecurityInfo from "./components/SecurityInfo";
 import Slider from "./components/Slider";
+import Demo from "./components/HighChartDemo";
 
 const App = () => {
   const [portfolio, setPortfolio] = useState(util.initialPortfolio);
@@ -362,6 +363,7 @@ const App = () => {
               <Col md={12}>
                 {errors ? errors : null}
                 <Payoff data={data} />
+                {/* <Demo /> */}
               </Col>
             </Row>
             <Row>

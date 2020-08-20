@@ -15,9 +15,17 @@ export const stockDataInitialState = {
   interest: 2,
 };
 
-export const date = moment(new Date(Date.now() + 604800000)).format(
-  "YYYY-MM-DD"
-);
+const createDate = () => {
+  var d = new Date();
+  var year = d.getFullYear();
+  var month = d.getMonth();
+  var day = d.getDate();
+  console.log(year)
+  var c = new Date(year + 1, month, day);
+  return moment(c).format("YYYY-MM-DD")
+};
+
+export const date = createDate()
 
 export const initialPortfolio = {
   initialPortfolioId: {
@@ -36,7 +44,7 @@ export const initialPortfolio = {
 export const getRelativeStrike = (currentPrice, impliedVol, N) => {
   impliedVol = impliedVol / 100;
   // Use the + operator to add integers
-  return +currentPrice + (+currentPrice) * (+impliedVol) * N;
+  return +currentPrice + +currentPrice * +impliedVol * N;
 };
 
 export const getLongCondor = (currentPrice, impliedVol) => {
