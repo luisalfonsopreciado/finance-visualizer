@@ -235,11 +235,11 @@ const Contract = (props) => {
       </td>
       {/* Premium/Price */}
       <td style={{ verticalAlign: "middle" }}>
-        <b>{price}</b>
+        <b>{price * data.amount}</b>
       </td>
       {/* Debit/Credit */}
       <td style={{ verticalAlign: "middle" }}>
-        <b>{data.direction === SELL ? price : -price} </b>
+        <b>{(data.direction === SELL ? price : -price) * data.amount} </b>
       </td>
       {/* Remove Button */}
       <td style={{ verticalAlign: "middle" }}>
@@ -294,6 +294,28 @@ const Panel = (props) => {
     setPortfolio(newPortfolio);
   };
 
+  const calculateTotal = () => {
+    let premium = 0;
+    let debitcredit = 0;
+    let amount = 0;
+
+    for (let key in portfolio) {
+      const contract = portfolio[key];
+      premium += +contract.price * +contract.amount;
+      const debitToAdd =
+        contract.direction === SELL ? +contract.price : -+contract.price;
+      debitcredit += debitToAdd * +contract.amount;
+      amount += +contract.amount;
+    }
+    return {
+      premium: premium.toFixed(2),
+      debitcredit: debitcredit.toFixed(2),
+      amount,
+    };
+  };
+
+  const { premium, debitcredit, amount } = calculateTotal();
+
   // console.log("Panel Rendered");
 
   return (
@@ -321,7 +343,29 @@ const Panel = (props) => {
               </th>
             </tr>
           </thead>
-          <tbody>{renderContracts()}</tbody>
+          <tbody>
+            {renderContracts()}
+            <hr></hr>
+            <tr>
+              <td><b>Total</b></td>
+              <td><b>{amount}</b></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td><b>{premium}</b></td>
+              <td><b>{debitcredit}</b></td>
+              <td>
+                <button
+                  type="button"
+                  aria-label="Left Align"
+                  className="btn btn-danger btn-s"
+                  onClick={() => setPortfolio({})}
+                >
+                  <span aria-hidden="true">Remove All</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
         </table>
         {/* <div className="pull-right">
           <button
