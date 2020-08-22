@@ -17,6 +17,8 @@ import Error from "./components/Error/Error";
 import SecurityInfo from "./components/SecurityInfo";
 import Slider from "./components/Slider";
 import Demo from "./components/HighChartDemo";
+import AnyChart from "./components/StockAnyChart";
+import AnyChart2 from "./components/StockAnyChart2";
 
 const App = () => {
   const [portfolio, setPortfolio] = useState(util.initialPortfolio);
@@ -315,93 +317,108 @@ const App = () => {
   // console.log(minX);
 
   return (
-    <liveDataContext.Provider value={value}>
-      <Navigation setPortfolio={setPortfolio} />
-      <Container>
-        <Row>
-          <Col md={12}>
-            {stockData.ticker !== "Theoretical" && <SecurityInfo />}
-          </Col>
-        </Row>
-        <Row>
-          <Col md={12}>
-            {liveMode && <Search searchFunc={searchFunc} />}
-            {stockErrors}
-          </Col>
-        </Row>
-        <Row>
-          <Col md={12}>
-            <Panel
-              optionData={optionData}
-              portfolio={portfolio}
-              setPortfolio={setPortfolio}
-              visualize={updateData}
-              currentPrice={100}
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col md={3}>
-            <StockData liveMode={liveMode} />
-            <div className="panel panel-primary">
-              <div className="panel-heading">Toggle</div>
-              <div className="panel-body">
-                <Slider
-                  min={0}
-                  max={150}
-                  title={"Volatility"}
-                  value={+volatility}
-                  setValue={(val) => dispatch(actions.updateVolatility(val))}
-                />
-                <Slider
-                  min={-20}
-                  max={150}
-                  title={"Interest"}
-                  value={+interest}
-                  setValue={(val) => dispatch(actions.updateInterest(val))}
-                />
-              </div>
-            </div>
-          </Col>
-          <Col md={9}>
-            <Row>
-              <Col md={12}>
-                {errors ? errors : null}
-                <Payoff data={data} />
-                {/* <Demo /> */}
-              </Col>
-            </Row>
-            <Row>
+    <>
+      <liveDataContext.Provider value={value}>
+        <Navigation setPortfolio={setPortfolio} />
+        <Container>
+          <Row>
+            <Col md={12}>
+              {stockData.ticker !== "Theoretical" && <SecurityInfo />}
+            </Col>
+          </Row>
+          <Row>
+            <Col md={12}>
+              {liveMode && <Search searchFunc={searchFunc} />}
+              {stockErrors}
+            </Col>
+          </Row>
+          <Row>
+            <Col md={12}>
+              <Panel
+                optionData={optionData}
+                portfolio={portfolio}
+                setPortfolio={setPortfolio}
+                visualize={updateData}
+                currentPrice={100}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col md={3}>
+              <StockData liveMode={liveMode} />
               <div className="panel panel-primary">
-                <div className="panel-heading">Change Domain</div>
+                <div className="panel-heading">Toggle</div>
                 <div className="panel-body">
-                  <Col md={2}>
-                    <input
-                      type="number"
-                      className="form-control form-control-inline"
-                      placeholder="Auto"
-                      onBlur={(e) => setMinX(e.target.value)}
-                      // value={minX}
-                    />
-                  </Col>
-                  <Col md={2}>
-                    <input
-                      type="number"
-                      min="1"
-                      max="5000"
-                      className="form-control form-control-inline"
-                      placeholder="Auto"
-                      // value={maxX}
-                      onBlur={(e) => setMaxX(e.target.value)}
-                    />
-                  </Col>
+                  <Slider
+                    min={0}
+                    max={150}
+                    title={"Volatility"}
+                    value={+volatility}
+                    setValue={(val) => dispatch(actions.updateVolatility(val))}
+                  />
+                  <Slider
+                    min={-20}
+                    max={150}
+                    title={"Interest"}
+                    value={+interest}
+                    setValue={(val) => dispatch(actions.updateInterest(val))}
+                  />
+                  <br/>
+                  <br/>
+                  <br/>
                 </div>
               </div>
-            </Row>
-          </Col>
-        </Row>
+            </Col>
+            <Col md={9}>
+              <Row>
+                <Col md={12}>
+                  {errors ? errors : null}
+                  <Payoff data={data} />
+                  {/* <Demo /> */}
+                </Col>
+              </Row>
+              <Row>
+                <Col md={12}>
+                  <div className="panel panel-primary">
+                    <div className="panel-heading">Change Domain</div>
+                    <div className="panel-body">
+                      <Col md={2}>
+                        <input
+                          type="number"
+                          className="form-control form-control-inline"
+                          placeholder="Auto"
+                          onBlur={(e) => setMinX(e.target.value)}
+                          // value={minX}
+                        />
+                      </Col>
+                      <Col md={2}>
+                        <input
+                          type="number"
+                          min="1"
+                          max="5000"
+                          className="form-control form-control-inline"
+                          placeholder="Auto"
+                          // value={maxX}
+                          onBlur={(e) => setMaxX(e.target.value)}
+                        />
+                      </Col>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </Container>
+      </liveDataContext.Provider>
+      <Container>
+        <div className="panel panel-primary">
+          <div className="panel-heading">Option Portfolio</div>
+          <div className="panel-body">
+            <AnyChart />
+          </div>
+        </div>
       </Container>
-    </liveDataContext.Provider>
+    </>
   );
 };
 

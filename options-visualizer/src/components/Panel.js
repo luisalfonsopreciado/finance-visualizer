@@ -345,7 +345,6 @@ const Panel = (props) => {
           </thead>
           <tbody>
             {renderContracts()}
-            <hr></hr>
             <tr>
               <td><b>Total</b></td>
               <td><b>{amount}</b></td>
