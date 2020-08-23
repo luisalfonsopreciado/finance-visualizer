@@ -15,6 +15,11 @@ export const stockDataInitialState = {
   interest: 2,
 };
 
+export const UNIXToDateString = (UNIX_timestamp) => {
+  const a = new Date(UNIX_timestamp * 1000);
+  return moment(a).format("YYYY-MM-DD");
+}
+
 const createDate = () => {
   var d = new Date();
   var year = d.getFullYear();

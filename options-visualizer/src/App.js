@@ -16,9 +16,9 @@ import useUpdateEffect from "./hooks/useUpdateEffect";
 import Error from "./components/Error/Error";
 import SecurityInfo from "./components/SecurityInfo";
 import Slider from "./components/Slider";
-import Demo from "./components/HighChartDemo";
 import AnyChart from "./components/StockAnyChart";
-import AnyChart2 from "./components/StockAnyChart2";
+import AnyChartDemo from "./components/AnyChartStockDemo";
+import { Button } from "@material-ui/core";
 
 const App = () => {
   const [portfolio, setPortfolio] = useState(util.initialPortfolio);
@@ -30,6 +30,7 @@ const App = () => {
   const [optionData, setOptionData] = useState();
   const [minX, setMinX] = useState();
   const [maxX, setMaxX] = useState();
+  const [stockChartData, setStockChartData] = useState();
   const value = { liveMode, setLiveMode };
   const dispatch = useDispatch();
   const { volatility, interest } = useSelector((state) => state.stockData);
@@ -284,11 +285,12 @@ const App = () => {
   // Custom hook used to Reset Porfolio only when optionData changes
   useUpdateEffect(() => {
     setPortfolio({});
+    setStockChartData(null); // Display Loading
+    fetchData();
   }, [optionData]);
 
   // Custom hook used to Update/Validate portfolio whenever changed
   useUpdateEffect(() => {
-    console.log("portfolio Effect");
     updateData();
   }, [portfolio, updateData]);
 
@@ -312,9 +314,27 @@ const App = () => {
     }
   };
 
-  // console.log("App Rendered");
-  // console.log(data);
-  // console.log(minX);
+  const fetchData = async (ticker) => {
+    const { data } = await axios.get(
+      "https://finnhub.io/api/v1/stock/candle?symbol=TSLA&resolution=D&from=1199145600&to=1572910590&token=" +
+        process.env.REACT_APP_API_KEY
+    );
+
+    const length = data.c.length;
+
+    const result = [];
+
+    for (let i = 0; i < length; i++) {
+      result.push([
+        util.UNIXToDateString(data.t[i]),
+        data.o[i],
+        data.h[i],
+        data.l[i],
+        data.c[i],
+      ]);
+    }
+    setStockChartData(result);
+  };
 
   return (
     <>
@@ -363,9 +383,9 @@ const App = () => {
                     value={+interest}
                     setValue={(val) => dispatch(actions.updateInterest(val))}
                   />
-                  <br/>
-                  <br/>
-                  <br/>
+                  <br />
+                  <br />
+                  <br />
                 </div>
               </div>
             </Col>
@@ -411,10 +431,15 @@ const App = () => {
         </Container>
       </liveDataContext.Provider>
       <Container>
+        <Button onClick={fetchData}>Get Data</Button>
         <div className="panel panel-primary">
           <div className="panel-heading">Option Portfolio</div>
           <div className="panel-body">
-            <AnyChart />
+            {stockChartData ? (
+              <AnyChart data={stockChartData} ticker={stockData.ticker}/>
+            ) : (
+              <h1>Loading...</h1>
+            )}
           </div>
         </div>
       </Container>
