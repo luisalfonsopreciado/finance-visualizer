@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import Payoff from "./components/Payoff";
 import StockData from "./components/StockData";
 import Panel from "./components/Panel";
@@ -315,8 +315,9 @@ const App = () => {
   };
 
   const fetchData = async (ticker) => {
+    var unix = Math.round(+new Date() / 1000);
     const { data } = await axios.get(
-      "https://finnhub.io/api/v1/stock/candle?symbol=TSLA&resolution=D&from=1199145600&to=1572910590&token=" +
+      `https://finnhub.io/api/v1/stock/candle?symbol=TSLA&resolution=D&from=1199145600&to=${unix}&token=` +
         process.env.REACT_APP_API_KEY
     );
 
@@ -436,9 +437,15 @@ const App = () => {
           <div className="panel-heading">Option Portfolio</div>
           <div className="panel-body">
             {stockChartData ? (
-              <AnyChart data={stockChartData} ticker={stockData.ticker}/>
+              <AnyChart data={stockChartData} ticker={stockData.ticker} />
             ) : (
-              <h1>Loading...</h1>
+              <>
+                {optionData ? (
+                  <h1>Loading...</h1>
+                ) : (
+                  <h1>Switch to live mode to view stock chart</h1>
+                )}
+              </>
             )}
           </div>
         </div>
