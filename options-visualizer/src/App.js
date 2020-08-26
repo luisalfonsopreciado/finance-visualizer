@@ -32,7 +32,7 @@ const App = () => {
   const [minX, setMinX] = useState();
   const [maxX, setMaxX] = useState();
   const [stockChartData, setStockChartData] = useState();
-  const [viewHighChart, setViewHighChart] = useState(false);
+  const [viewHighChart, setViewHighChart] = useState(true);
   const [hcData, setHcData] = useState(null);
   const value = { liveMode, setLiveMode };
   const dispatch = useDispatch();
@@ -106,7 +106,7 @@ const App = () => {
       }
 
       // Apply To Fixed
-      strikes.push(strike.toFixed(2));
+      strikes.push(util.round(strike));
 
       // Update the maxStrike
       if (strike > maxStrike) maxStrike = strike;
@@ -146,7 +146,8 @@ const App = () => {
     let i = min;
     // Add The rest of the strikes for continuous feel
     while (i < max) {
-      strikes.push(i);
+      // Round to 2 decimals and convert back to number
+      strikes.push(util.round(i));
       i += change;
     }
 
@@ -195,9 +196,9 @@ const App = () => {
         const contract = portfolio[id];
 
         // Calculate profit at given Strike (at Expiration)
-        const profitAtStrike = +util
-          .evaluatePayoffFunc(contract, strike, stockData)
-          .toFixed(2);
+        const profitAtStrike = util.round(
+          util.evaluatePayoffFunc(contract, strike, stockData)
+        );
 
         // Calculate dateDifference in years, used in theoretical black scholes
         const dateDiff = -moment().diff(contract.date, "years", true);
@@ -214,7 +215,7 @@ const App = () => {
         // If the contract is Cash
         if (contract.type === util.CASH) {
           // Just add the profit at Strike
-          theoreticalPL += profitAtStrike;
+          theoreticalPL += +profitAtStrike;
         } else {
           // Calculate depending on Buy/Sell
           if (contract.direction === util.BUY) {
@@ -234,18 +235,18 @@ const App = () => {
 
         // Push the point at the specified strategy
         result[i].values.push({
-          x: strike,
-          y: profitAtStrike,
+          x: util.round(strike),
+          y: util.round(profitAtStrike),
         });
 
         // Evaluate each contract in portfolio and add it to the y value
-        profitSum += profitAtStrike;
+        profitSum += util.round(profitAtStrike);
         i++;
       }
 
       // Add the point to the data
-      values.push({ x: strike, y: profitSum });
-      theoretical.push({ x: strike, y: theoreticalPL.toFixed(2) });
+      values.push({ x: util.round(strike), y: util.round(profitSum) });
+      theoretical.push({ x: util.round(strike), y: util.round(theoreticalPL) });
     }
 
     const Ydomain = [Math.floor(minProfit * 1.2), Math.floor(maxProfit * 1.2)];
@@ -272,12 +273,17 @@ const App = () => {
 
     // Clear the Errors
     setErrors(null);
-
+    console.log(result);
     if (viewHighChart) {
       const res = [];
       // Parse data into HighChart Format
       for (let series of result) {
-        const seriesInfo = { data: [] };
+        const seriesInfo = {
+          data: [],
+          visible: !series.disabled,
+          color: series.color,
+          name: series.key,
+        };
         res.push(seriesInfo);
         for (let point of series.values) {
           seriesInfo.data.push([+point.x, +point.y]);
@@ -286,6 +292,16 @@ const App = () => {
 
       return setHcData({
         series: res,
+        xAxis: {
+          title: {
+            text: "Profit ($)",
+          },
+        },
+        yAxis: {
+          title: {
+            text: "Stock Price ($)",
+          },
+        },
         chart: {
           type: "spline",
         },
@@ -428,7 +444,7 @@ const App = () => {
                             <FormControlLabel
                               control={
                                 <Switch
-                                  checked={viewHighChart}
+                                  checked={!viewHighChart}
                                   onChange={() =>
                                     setViewHighChart((prev) => !prev)
                                   }
@@ -486,7 +502,6 @@ const App = () => {
         </Container>
       </liveDataContext.Provider>
       <Container>
-        <Button onClick={fetchData}>Get Data</Button>
         <div className="panel panel-primary">
           <div className="panel-heading">{stockData.ticker}</div>
           <div className="panel-body">

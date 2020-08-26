@@ -15,6 +15,15 @@ export const stockDataInitialState = {
   interest: 2,
 };
 
+export const round = (num) => {
+  // If it is a string convert it to num
+  if(typeof num === 'string'){
+    num = +num;
+  }
+  let res = num.toFixed(2);
+  return +res;
+}
+
 export const UNIXToDateString = (UNIX_timestamp) => {
   const a = new Date(UNIX_timestamp * 1000);
   return moment(a).format("YYYY-MM-DD");
