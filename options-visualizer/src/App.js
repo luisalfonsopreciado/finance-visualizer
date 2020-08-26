@@ -17,8 +17,9 @@ import Error from "./components/Error/Error";
 import SecurityInfo from "./components/SecurityInfo";
 import Slider from "./components/Slider";
 import AnyChart from "./components/StockAnyChart";
-import AnyChartDemo from "./components/AnyChartStockDemo";
-import { Button } from "@material-ui/core";
+import { Switch } from "@material-ui/core";
+import { Button, FormGroup, FormControlLabel } from "@material-ui/core";
+import HighChart from "./components/PayoffHighChart";
 
 const App = () => {
   const [portfolio, setPortfolio] = useState(util.initialPortfolio);
@@ -31,6 +32,7 @@ const App = () => {
   const [minX, setMinX] = useState();
   const [maxX, setMaxX] = useState();
   const [stockChartData, setStockChartData] = useState();
+  const [viewHighChart, setViewHighChart] = useState(false);
   const value = { liveMode, setLiveMode };
   const dispatch = useDispatch();
   const { volatility, interest } = useSelector((state) => state.stockData);
@@ -394,7 +396,36 @@ const App = () => {
               <Row>
                 <Col md={12}>
                   {errors ? errors : null}
-                  <Payoff data={data} />
+                  <div className="row">
+                    <div className="col-sm-12">
+                      <div className="panel panel-primary">
+                        <div className="panel-heading">
+                          Option Payoff
+                            <FormGroup>
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    checked={viewHighChart}
+                                    onChange={() =>
+                                      setViewHighChart((prev) => !prev)
+                                    }
+                                    aria-label="live mode switch"
+                                  />
+                                }
+                                label={"Switch Graph Type"}
+                              />
+                            </FormGroup>
+                        </div>
+                        <div className="panel-body">
+                          {!viewHighChart ? (
+                            <Payoff data={data} />
+                          ) : (
+                            <HighChart />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   {/* <Demo /> */}
                 </Col>
               </Row>

@@ -48,16 +48,9 @@ const Payoff = ({ data }) => {
 
   return (
     <>
-      <div className="row">
-        <div className="col-sm-12">
-          <div className="panel panel-primary">
-            <div className="panel-heading">Option Payoff</div>
-            <div className="panel-body">
-              <div id="chart">
-                <svg></svg>
-              </div>
-            </div>
-          </div>
+      <div className="panel-body">
+        <div id="chart">
+          <svg></svg>
         </div>
       </div>
     </>
