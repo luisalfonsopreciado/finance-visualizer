@@ -272,6 +272,31 @@ const App = () => {
     // Clear the Errors
     setErrors(null);
 
+    console.log(result);
+
+    if (viewHighChart) {
+      const res = [];
+      // Parse data into HighChart Format
+      for (let series of result) {
+        const seriesInfo = { data: [] };
+        res.push(seriesInfo);
+        for (let point of series.values) {
+          seriesInfo.data.push([+point.x, +point.y]);
+        }
+      }
+      console.log(res);
+      setData({
+        series: res,
+        chart: {
+          type: "spline",
+        },
+        title: {
+          text: "Payoff",
+        },
+      });
+      return;
+    }
+
     setData({ data: result, Ydomain });
   }, [portfolio, stockData, setErrs, maxX, minX]);
 
@@ -401,26 +426,26 @@ const App = () => {
                       <div className="panel panel-primary">
                         <div className="panel-heading">
                           Option Payoff
-                            <FormGroup>
-                              <FormControlLabel
-                                control={
-                                  <Switch
-                                    checked={viewHighChart}
-                                    onChange={() =>
-                                      setViewHighChart((prev) => !prev)
-                                    }
-                                    aria-label="live mode switch"
-                                  />
-                                }
-                                label={"Switch Graph Type"}
-                              />
-                            </FormGroup>
+                          <FormGroup>
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={viewHighChart}
+                                  onChange={() =>
+                                    setViewHighChart((prev) => !prev)
+                                  }
+                                  aria-label="live mode switch"
+                                />
+                              }
+                              label={"Switch Graph Type"}
+                            />
+                          </FormGroup>
                         </div>
                         <div className="panel-body">
                           {!viewHighChart ? (
                             <Payoff data={data} />
                           ) : (
-                            <HighChart />
+                            <HighChart data={data} />
                           )}
                         </div>
                       </div>

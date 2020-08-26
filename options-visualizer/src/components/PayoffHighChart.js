@@ -9,15 +9,32 @@ const options = {
   title: {
     text: "My chart",
   },
+  plotOptions: {
+    series: {
+      allowPointSelect: false,
+    },
+  },
   series: [
     {
-      data: [1, 2, 1, 4, 3, 6],
+      name: "Name",
+      data: [
+        [5, 2],
+        [6, 3],
+        [8, 2],
+      ],
+    },
+    {
+      data: [
+        [5, 3],
+        [6, 4],
+        [8, 3],
+      ],
     },
   ],
 };
 
-const PayoffHighChart = (props) => {
-  return <HighchartsReact highcharts={Highcharts} options={options} />;
+const PayoffHighChart = ({ data }) => {
+  return <HighchartsReact highcharts={Highcharts} options={data} />;
 };
 
 export default PayoffHighChart;
