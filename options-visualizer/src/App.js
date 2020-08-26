@@ -284,7 +284,7 @@ const App = () => {
         }
       }
 
-      setHcData({
+      return setHcData({
         series: res,
         chart: {
           type: "spline",
@@ -488,16 +488,20 @@ const App = () => {
       <Container>
         <Button onClick={fetchData}>Get Data</Button>
         <div className="panel panel-primary">
-          <div className="panel-heading">Option Portfolio</div>
+          <div className="panel-heading">{stockData.ticker}</div>
           <div className="panel-body">
-            {stockChartData ? (
+            {stockChartData && optionData ? (
               <AnyChart data={stockChartData} ticker={stockData.ticker} />
             ) : (
               <>
-                {optionData ? (
+                {optionData && liveMode ? (
                   <h1>Loading...</h1>
                 ) : (
-                  <h1>Switch to live mode to view stock chart</h1>
+                  <>
+                    {!liveMode && (
+                      <h1>Switch to live mode to view stock chart</h1>
+                    )}
+                  </>
                 )}
               </>
             )}

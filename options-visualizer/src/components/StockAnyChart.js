@@ -15,8 +15,6 @@ const StockAnyChart = ({ data, ticker }) => {
   chart.scroller().area(stockDataTable.mapAs({ value: 4 }));
   chart.selectRange("2018-01-03", "2019-01-01");
 
-  console.log("Stock Any Chart Rendered");
-
   return (
     <>
       {!chart ? (
