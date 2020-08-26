@@ -3,8 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Slider from "@material-ui/core/Slider";
-import Input from "@material-ui/core/Input";
-import VolumeUp from "@material-ui/icons/VolumeUp";
+import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 
 const useStyles = makeStyles({
   root: {
@@ -42,7 +41,7 @@ export default function InputSlider({ value, setValue, title, min, max }) {
       </Typography>
       <Grid container spacing={2} alignItems="center">
         <Grid item>
-          <VolumeUp />
+          <TrendingUpIcon />
         </Grid>
         <Grid item xs>
           <Slider
@@ -54,22 +53,7 @@ export default function InputSlider({ value, setValue, title, min, max }) {
             className={classes.slider}
           />
         </Grid>
-        <Grid item>
-          {/* <Input
-            className={classes.input}
-            value={value}
-            margin="dense"
-            onChange={handleInputChange}
-            onBlur={handleBlur}
-            inputProps={{
-              step: 10,
-              min: 0,
-              max: 50,
-              type: "number",
-              "aria-labelledby": "input-slider",
-            }}
-          /> */}
-        </Grid>
+        <Grid item></Grid>
       </Grid>
     </div>
   );

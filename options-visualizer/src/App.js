@@ -294,12 +294,12 @@ const App = () => {
         series: res,
         xAxis: {
           title: {
-            text: "Profit ($)",
+            text: "Stock Price ($)",
           },
         },
         yAxis: {
           title: {
-            text: "Stock Price ($)",
+            text: "Profit ($)",
           },
         },
         chart: {
