@@ -33,6 +33,7 @@ const App = () => {
   const [maxX, setMaxX] = useState();
   const [stockChartData, setStockChartData] = useState();
   const [viewHighChart, setViewHighChart] = useState(false);
+  const [hcData, setHcData] = useState(null);
   const value = { liveMode, setLiveMode };
   const dispatch = useDispatch();
   const { volatility, interest } = useSelector((state) => state.stockData);
@@ -272,8 +273,6 @@ const App = () => {
     // Clear the Errors
     setErrors(null);
 
-    console.log(result);
-
     if (viewHighChart) {
       const res = [];
       // Parse data into HighChart Format
@@ -284,8 +283,8 @@ const App = () => {
           seriesInfo.data.push([+point.x, +point.y]);
         }
       }
-      console.log(res);
-      setData({
+
+      setHcData({
         series: res,
         chart: {
           type: "spline",
@@ -294,11 +293,10 @@ const App = () => {
           text: "Payoff",
         },
       });
-      return;
     }
 
     setData({ data: result, Ydomain });
-  }, [portfolio, stockData, setErrs, maxX, minX]);
+  }, [portfolio, stockData, setErrs, maxX, minX, viewHighChart]);
 
   // Custom hook used to Reset Portfolio only when liveMode is Toggled
   useUpdateEffect(() => {
@@ -319,7 +317,7 @@ const App = () => {
   // Custom hook used to Update/Validate portfolio whenever changed
   useUpdateEffect(() => {
     updateData();
-  }, [portfolio, updateData]);
+  }, [portfolio, updateData, viewHighChart]);
 
   // Fetch the option Data when Search is Clicked
   const searchFunc = async (ticker) => {
@@ -445,7 +443,7 @@ const App = () => {
                           {!viewHighChart ? (
                             <Payoff data={data} />
                           ) : (
-                            <HighChart data={data} />
+                            <HighChart data={hcData} />
                           )}
                         </div>
                       </div>
