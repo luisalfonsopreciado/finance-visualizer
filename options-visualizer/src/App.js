@@ -18,8 +18,10 @@ import SecurityInfo from "./components/SecurityInfo";
 import Slider from "./components/Slider";
 import AnyChart from "./components/StockAnyChart";
 import { Switch } from "@material-ui/core";
-import { Button, FormGroup, FormControlLabel } from "@material-ui/core";
+import { FormGroup, FormControlLabel } from "@material-ui/core";
 import HighChart from "./components/PayoffHighChart";
+import { RealTimeChart } from "./components/RealTimeChart";
+import HighStock from "./components/HighStock";
 
 const App = () => {
   const [portfolio, setPortfolio] = useState(util.initialPortfolio);
@@ -33,6 +35,7 @@ const App = () => {
   const [maxX, setMaxX] = useState();
   const [stockChartData, setStockChartData] = useState();
   const [viewHighChart, setViewHighChart] = useState(true);
+  const [viewHighStock, setViewHighStock] = useState(false);
   const [hcData, setHcData] = useState(null);
   const value = { liveMode, setLiveMode };
   const dispatch = useDispatch();
@@ -503,10 +506,30 @@ const App = () => {
       </liveDataContext.Provider>
       <Container>
         <div className="panel panel-primary">
-          <div className="panel-heading">{stockData.ticker}</div>
+          <div className="panel-heading">
+            {stockData.ticker}{" "}
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={!viewHighStock}
+                    onChange={() => setViewHighStock((prev) => !prev)}
+                    aria-label="live mode switch"
+                  />
+                }
+                label={"Switch Chart Type"}
+              />
+            </FormGroup>
+          </div>
           <div className="panel-body">
             {stockChartData && optionData ? (
-              <AnyChart data={stockChartData} ticker={stockData.ticker} />
+              <>
+                {viewHighStock ? (
+                  <HighStock />
+                ) : (
+                  <AnyChart data={stockChartData} ticker={stockData.ticker} />
+                )}
+              </>
             ) : (
               <>
                 {optionData && liveMode ? (
@@ -514,7 +537,9 @@ const App = () => {
                 ) : (
                   <>
                     {!liveMode && (
-                      <h1>Switch to live mode to view stock chart</h1>
+                      <>
+                        <h1>Switch to live mode to view stock chart</h1>
+                      </>
                     )}
                   </>
                 )}
@@ -522,6 +547,7 @@ const App = () => {
             )}
           </div>
         </div>
+        {/* <RealTimeChart /> */}
       </Container>
     </>
   );

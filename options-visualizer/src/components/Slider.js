@@ -22,18 +22,6 @@ export default function InputSlider({ value, setValue, title, min, max }) {
     setValue(newValue);
   };
 
-  const handleInputChange = (event) => {
-    setValue(event.target.value === "" ? "" : Number(event.target.value));
-  };
-
-  const handleBlur = () => {
-    if (value < 0) {
-      setValue(0);
-    } else if (value > 100) {
-      setValue(100);
-    }
-  };
-
   return (
     <div className={classes.root}>
       <Typography id="input-slider" gutterBottom>
