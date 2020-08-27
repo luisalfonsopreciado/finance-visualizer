@@ -38,7 +38,7 @@ const App = () => {
   const [hcData, setHcData] = useState(null);
   const value = { liveMode, setLiveMode };
   const dispatch = useDispatch();
-  const { volatility, interest } = useSelector((state) => state.stockData);
+  const { volatility, interest, currentPrice } = useSelector((state) => state.stockData);
   const [daysToExpiration, setDaysToExpiration] = useState(null);
 
   // Set Error Message as JSX
@@ -411,7 +411,7 @@ const App = () => {
                 portfolio={portfolio}
                 setPortfolio={setPortfolio}
                 visualize={updateData}
-                currentPrice={100}
+                // currentPrice={100}
               />
             </Col>
           </Row>
@@ -444,10 +444,15 @@ const App = () => {
                       setValue={(val) => updateDaysToExpiration(val)}
                     />
                   )}
-
-                  <br />
-                  <br />
-                  <br />
+                  {!liveMode && (
+                    <Slider
+                      min={0}
+                      max={2000}
+                      title={"StockPrice"}
+                      value={currentPrice}
+                      setValue={(val) => dispatch(actions.updatePrice(val))}
+                    />
+                  )}
                 </div>
               </div>
             </Col>
