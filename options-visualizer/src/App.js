@@ -20,7 +20,6 @@ import AnyChart from "./components/StockAnyChart";
 import { Switch } from "@material-ui/core";
 import { FormGroup, FormControlLabel } from "@material-ui/core";
 import HighChart from "./components/PayoffHighChart";
-import { RealTimeChart } from "./components/RealTimeChart";
 import HighStock from "./components/HighStock";
 
 const App = () => {
@@ -40,6 +39,7 @@ const App = () => {
   const value = { liveMode, setLiveMode };
   const dispatch = useDispatch();
   const { volatility, interest } = useSelector((state) => state.stockData);
+  const [daysToExpiration, setDaysToExpiration] = useState(null);
 
   // Set Error Message as JSX
   const setErrs = useCallback((message) => {
@@ -373,8 +373,19 @@ const App = () => {
       result.push([data.t[i], data.o[i], data.h[i], data.l[i], data.c[i]]);
     }
 
-    console.log(result);
     setStockChartData(result);
+  };
+
+  const updateDaysToExpiration = (days) => {
+    const newPortfolio = { ...portfolio };
+    for (let key in newPortfolio) {
+      const contract = newPortfolio[key];
+      const newDate = util.addDays(new Date(), days);
+      contract.date = moment(newDate).format("YYYY-MM-DD");
+      console.log(contract);
+    }
+    setPortfolio(newPortfolio);
+    setDaysToExpiration(days);
   };
 
   return (
@@ -424,6 +435,16 @@ const App = () => {
                     value={+interest}
                     setValue={(val) => dispatch(actions.updateInterest(val))}
                   />
+                  {!liveMode && (
+                    <Slider
+                      min={1}
+                      max={1000}
+                      title={"Time To Expiration"}
+                      value={daysToExpiration}
+                      setValue={(val) => updateDaysToExpiration(val)}
+                    />
+                  )}
+
                   <br />
                   <br />
                   <br />

@@ -29,6 +29,13 @@ export const UNIXToDateString = (UNIX_timestamp) => {
   return moment(a).format("YYYY-MM-DD");
 }
 
+// Function that adds num days to a date object
+export const addDays = (dayObject, days) => {
+  var date = new Date(dayObject.valueOf());
+  date.setDate(date.getDate() + days);
+  return date;
+}
+
 const createDate = () => {
   var d = new Date();
   var year = d.getFullYear();
