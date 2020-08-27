@@ -84,8 +84,15 @@ export const getRelativeStrike = (
   let strike =
     round(currentPrice) + round(currentPrice) * round(impliedVol / 100) * N;
 
-  if (!optionData) return strike;
+  if (!optionData) return { strike, date };
   // Adjust According to OptionData
+
+  /*
+    Steps:
+    1. Find Find a date that is the closest to one year from now given optionData
+    2. Given the date, find a strike that is closest to the relative strike that 
+    was calculated previously.
+  */
 
   // Find a date that is the closest to one year from now given optionData
   const targetDate = createDateNYearsFromNow(1);
@@ -94,7 +101,6 @@ export const getRelativeStrike = (
 
   for (let key in optionData.data) {
     const { expirationDate } = optionData.data[key];
-    console.log(expirationDate, targetDate);
     // Take Math abs so that we get a number in the future
     const dateDiff = Math.abs(dateDiffInYears(expirationDate, targetDate));
     if (dateDiff < min) {
@@ -104,12 +110,11 @@ export const getRelativeStrike = (
   }
 
   let finalStrike = strike;
-  // For each of the option contracts with the given exp Date find the one closest 
+  // For each of the option contracts with the given exp Date find the one closest
   // To the calculated strike price
   for (let key in optionData.data) {
     const { options, expirationDate } = optionData.data[key];
     if (expirationDate === actualDate) {
-      console.log(options[type.toUpperCase()])
       let minDiffStrike = Infinity;
       for (let option of options[type.toUpperCase()]) {
         if (Math.abs(option.strike - strike) < minDiffStrike) {
@@ -119,320 +124,515 @@ export const getRelativeStrike = (
       }
     }
   }
-  console.log(finalStrike, actualDate);
-  return strike;
-
-  /*
-    Steps:
-    1. Find Find a date that is the closest to one year from now given optionData
-    2. Given the date, find a strike that is closest to the relative strike that 
-    was calculated previously.
-  */
+  return { strike: finalStrike, date: actualDate };
 };
 
 // Return a long condor strategy option portfolio, given the currentprice, volatility
 // and live option data.
 export const getLongCondor = (currentPrice, impliedVol, optionData) => {
+  const { strike: firstStrike, date: firstDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    -1,
+    optionData,
+    CALL
+  );
+
+  const { strike: secondStrike, date: secondDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    -0.5,
+    optionData,
+    CALL
+  );
+
+  const { strike: thirdStrike, date: thirdDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0.5,
+    optionData,
+    CALL
+  );
+
+  const { strike: fourthStrike, date: fourthDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    1,
+    optionData,
+    CALL
+  );
+
   return {
     firstId: {
       amount: 1,
       contractName: "firstId",
-      date,
+      date: firstDate,
       direction: BUY,
       price: "", // To be calculated in the Contract Component
-      // Strike price calculated dynamically
-      strike: getRelativeStrike(currentPrice, impliedVol, -1, optionData, CALL),
+      strike: firstStrike,
       type: CALL,
     },
     secondId: {
       amount: 1,
       contractName: "secondId",
-      date,
+      date: secondDate,
       direction: SELL,
       price: "",
-      strike: getRelativeStrike(
-        currentPrice,
-        impliedVol,
-        -0.5,
-        optionData,
-        CALL
-      ),
+      strike: secondStrike,
       type: CALL,
     },
     thirdId: {
       amount: 1,
       contractName: "thirdId",
-      date,
+      date: thirdDate,
       direction: SELL,
       price: "",
-      strike: getRelativeStrike(
-        currentPrice,
-        impliedVol,
-        0.5,
-        optionData,
-        CALL
-      ),
+      strike: thirdStrike,
       type: CALL,
     },
     fourthId: {
       amount: 1,
       contractName: "fourthId",
-      date,
+      date: fourthDate,
       direction: BUY,
       price: "",
-      strike: getRelativeStrike(currentPrice, impliedVol, 1, optionData, CALL),
+      strike: fourthStrike,
       type: CALL,
     },
   };
 };
 
-export const getShortCondor = (currentPrice, impliedVol) => {
+export const getShortCondor = (currentPrice, impliedVol, optionData) => {
+  const { strike: firstStrike, date: firstDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0.5,
+    optionData,
+    CALL
+  );
+
+  const { strike: secondStrike, date: secondDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    1,
+    optionData,
+    CALL
+  );
+
+  const { strike: thirdStrike, date: thirdDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    -0.5,
+    optionData,
+    PUT
+  );
+
+  const { strike: fourthStrike, date: fourthDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    -1,
+    optionData,
+    PUT
+  );
+
   return {
     firstId: {
       amount: 1,
       contractName: "firstId",
-      date,
+      date: firstDate,
       direction: BUY,
-      price: "", // To be calculated in the Contract Component
-      strike: getRelativeStrike(currentPrice, impliedVol, 0.5),
+      price: "",
+      strike: firstStrike,
       type: CALL,
     },
     secondId: {
       amount: 1,
       contractName: "secondId",
-      date,
+      date: secondDate,
       direction: SELL,
       price: "",
-      strike: getRelativeStrike(currentPrice, impliedVol, 1),
+      strike: secondStrike,
       type: CALL,
     },
     thirdId: {
       amount: 1,
       contractName: "thirdId",
-      date,
+      date: thirdDate,
       direction: BUY,
       price: "",
-      strike: getRelativeStrike(currentPrice, impliedVol, -0.5),
+      strike: thirdStrike,
       type: PUT,
     },
     fourthId: {
       amount: 1,
       contractName: "fourthId",
-      date,
+      date: fourthDate,
       direction: SELL,
       price: "",
-      strike: getRelativeStrike(currentPrice, impliedVol, -1),
+      strike: fourthStrike,
       type: PUT,
     },
   };
 };
 
-export const getBullCallSpread = (currentPrice, impliedVol) => {
+export const getBullCallSpread = (currentPrice, impliedVol, optionData) => {
+  const { strike: firstStrike, date: firstDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0,
+    optionData,
+    CALL
+  );
+
+  const { strike: secondStrike, date: secondDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0.5,
+    optionData,
+    CALL
+  );
+
   return {
     firstId: {
       amount: 1,
       contractName: "firstId",
-      date,
+      date: firstDate,
       direction: BUY,
       price: "",
-      strike: currentPrice,
+      strike: firstStrike,
       type: CALL,
     },
     secondId: {
       amount: 1,
       contractName: "secondId",
-      date,
+      date: secondDate,
       direction: SELL,
       price: "",
-      strike: getRelativeStrike(currentPrice, impliedVol, 0.5),
+      strike: secondStrike,
       type: CALL,
     },
   };
 };
 
-export const getBearPutSpread = (currentPrice, impliedVol) => {
+export const getBearPutSpread = (currentPrice, impliedVol, optionData) => {
+  const { strike: firstStrike, date: firstDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0,
+    optionData,
+    PUT
+  );
+
+  const { strike: secondStrike, date: secondDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    -0.5,
+    optionData,
+    PUT
+  );
+
   return {
     firstId: {
       amount: 1,
       contractName: "firstId",
-      date,
+      date: firstDate,
       direction: BUY,
       price: "",
-      strike: currentPrice,
+      strike: firstStrike,
       type: PUT,
     },
     secondId: {
       amount: 1,
       contractName: "secondId",
-      date,
+      date: secondDate,
       direction: SELL,
       price: "",
-      strike: getRelativeStrike(currentPrice, impliedVol, -0.5),
+      strike: secondStrike,
       type: PUT,
     },
   };
 };
 
-export const getLongStraddle = (currentPrice, impliedVol) => {
+export const getLongStraddle = (currentPrice, impliedVol, optionData) => {
+  const { strike: firstStrike, date: firstDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0,
+    optionData,
+    CALL
+  );
+
+  const { strike: secondStrike, date: secondDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0,
+    optionData,
+    PUT
+  );
+
   return {
     firstId: {
       amount: 1,
       contractName: "firstId",
-      date,
+      date: firstDate,
       direction: BUY,
       price: "",
-      strike: currentPrice,
+      strike: firstStrike,
       type: CALL,
     },
     secondId: {
       amount: 1,
       contractName: "secondId",
-      date,
+      date: secondDate,
       direction: BUY,
       price: "",
-      strike: currentPrice,
+      strike: secondStrike,
       type: PUT,
     },
   };
 };
 
-export const getShortStraddle = (currentPrice, impliedVol) => {
+export const getShortStraddle = (currentPrice, impliedVol, optionData) => {
+  const { strike: firstStrike, date: firstDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0,
+    optionData,
+    CALL
+  );
+
+  const { strike: secondStrike, date: secondDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0,
+    optionData,
+    PUT
+  );
+
   return {
     firstId: {
       amount: 1,
       contractName: "firstId",
-      date,
+      date: firstDate,
       direction: SELL,
       price: "",
-      strike: currentPrice,
+      strike: firstStrike,
       type: CALL,
     },
     secondId: {
       amount: 1,
       contractName: "secondId",
-      date,
+      date: secondDate,
       direction: SELL,
       price: "",
-      strike: currentPrice,
+      strike: secondStrike,
       type: PUT,
     },
   };
 };
 
-export const getLongStradde = (currentPrice, impliedVol) => {
+export const getLongStradde = (currentPrice, impliedVol, optionData) => {
+  const { strike: firstStrike, date: firstDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0.5,
+    optionData,
+    CALL
+  );
+
+  const { strike: secondStrike, date: secondDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    -0.5,
+    optionData,
+    PUT
+  );
+
   return {
     firstId: {
       amount: 1,
       contractName: "firstId",
-      date,
+      date: firstDate,
       direction: BUY,
       price: "",
-      strike: getRelativeStrike(currentPrice, impliedVol, 0.5),
+      strike: firstStrike,
       type: CALL,
     },
     secondId: {
       amount: 1,
       contractName: "secondId",
-      date,
+      date: secondDate,
       direction: BUY,
       price: "",
-      strike: getRelativeStrike(currentPrice, impliedVol, -0.5),
+      strike: secondStrike,
       type: PUT,
     },
   };
 };
 
-export const getShortStrangle = (currentPrice, impliedVol) => {
+export const getShortStrangle = (currentPrice, impliedVol, optionData) => {
+  const { strike: firstStrike, date: firstDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0.5,
+    optionData,
+    CALL
+  );
+
+  const { strike: secondStrike, date: secondDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    -0.5,
+    optionData,
+    PUT
+  );
+
   return {
     firstId: {
       amount: 1,
       contractName: "firstId",
-      date,
+      date: firstDate,
       direction: SELL,
       price: "",
-      strike: getRelativeStrike(currentPrice, impliedVol, 0.5),
+      strike: firstStrike,
       type: CALL,
     },
     secondId: {
       amount: 1,
       contractName: "secondId",
-      date,
+      date: secondDate,
       direction: SELL,
       price: "",
-      strike: getRelativeStrike(currentPrice, impliedVol, -0.5),
+      strike: secondStrike,
       type: PUT,
     },
   };
 };
 
-export const getLongButterfly = (currentPrice, impliedVol) => {
+export const getLongButterfly = (currentPrice, impliedVol, optionData) => {
+  const { strike: firstStrike, date: firstDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    -0.5,
+    optionData,
+    CALL
+  );
+
+  const { strike: secondStrike, date: secondDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0.0,
+    optionData,
+    CALL
+  );
+
+  const { strike: thirdStrike, date: thirdDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0.5,
+    optionData,
+    CALL
+  );
+
   return {
     firstId: {
       amount: 1,
       contractName: "firstId",
-      date,
+      date: firstDate,
       direction: BUY,
       price: "",
-      strike: getRelativeStrike(currentPrice, impliedVol, -0.5),
+      strike: firstStrike,
       type: CALL,
     },
     secondId: {
       amount: 2,
       contractName: "secondId",
-      date,
+      date: secondDate,
       direction: SELL,
       price: "",
-      strike: currentPrice,
+      strike: secondStrike,
       type: CALL,
     },
     thirdId: {
       amount: 1,
       contractName: "thirdId",
-      date,
+      date: thirdDate,
       direction: BUY,
       price: "",
-      strike: getRelativeStrike(currentPrice, impliedVol, 0.5),
+      strike: thirdStrike,
       type: CALL,
     },
   };
 };
 
-export const getShortButterfly = (currentPrice, impliedVol) => {
+export const getShortButterfly = (currentPrice, impliedVol, optionData) => {
+  const { strike: firstStrike, date: firstDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0.0,
+    optionData,
+    CALL
+  );
+
+  const { strike: secondStrike, date: secondDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0.5,
+    optionData,
+    CALL
+  );
+
+  const { strike: thirdStrike, date: thirdDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    0.0,
+    optionData,
+    PUT
+  );
+
+  const { strike: fourthStrike, date: fourthDate } = getRelativeStrike(
+    currentPrice,
+    impliedVol,
+    -0.5,
+    optionData,
+    PUT
+  );
+
   return {
     firstId: {
       amount: 1,
       contractName: "firstId",
-      date,
+      date: firstDate,
       direction: BUY,
       price: "",
-      strike: currentPrice,
+      strike: firstStrike,
       type: CALL,
     },
     secondId: {
       amount: 1,
       contractName: "secondId",
-      date,
+      date: secondDate,
       direction: SELL,
       price: "",
-      strike: getRelativeStrike(currentPrice, impliedVol, 0.5),
+      strike: secondStrike,
       type: CALL,
     },
     thirdId: {
       amount: 1,
       contractName: "thirdId",
-      date,
+      date: thirdDate,
       direction: BUY,
       price: "",
-      strike: currentPrice,
+      strike: thirdStrike,
       type: PUT,
     },
     fourthId: {
       amount: 1,
       contractName: "fourthId",
-      date,
+      date: fourthDate,
       direction: SELL,
       price: "",
-      strike: getRelativeStrike(currentPrice, impliedVol, -0.5),
+      strike: fourthStrike,
       type: PUT,
     },
   };

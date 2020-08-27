@@ -13,13 +13,12 @@ const Contract = (props) => {
    If optionData is defined then the strike prices must adjust to the
    Expiration date
    */
+  
+  // Default state values are when a strategy is selected in live mode
   const [expirationDates, setExpirationDates] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
-
-  const [strikePrices, setStrikePrices] = useState([
-    "Please Select Expiration Date",
-  ]);
-  const [selectedStrike, setSelectedStrike] = useState();
+  const [selectedDate, setSelectedDate] = useState(data.date);
+  const [strikePrices, setStrikePrices] = useState([data.strike]);
+  const [selectedStrike, setSelectedStrike] = useState(data.strike);
   const [selectedDirection, setSelectedDirection] = useState(data.direction);
   const [selectedType, setSelectedType] = useState(data.type);
 
@@ -117,9 +116,9 @@ const Contract = (props) => {
 
       // Update strikeprices
       setStrikePrices(strikesAtDate);
-    }
 
-    updateContract(data.contractName, "date", selectedDate);
+      updateContract(data.contractName, "date", selectedDate);
+    }
   }, [selectedDate]);
 
   // Update Direction
@@ -187,6 +186,7 @@ const Contract = (props) => {
                 class="form-control"
                 id="exampleFormControlSelect1"
                 onChange={(e) => setSelectedStrike(e.target.value)}
+                value={selectedStrike}
               >
                 {strikePrices.map((price) => (
                   <option>{isNaN(price) ? null : price}</option>
@@ -224,6 +224,7 @@ const Contract = (props) => {
                 class="form-control"
                 id="exampleFormControlSelect1"
                 onChange={(e) => setSelectedDate(e.target.value)}
+                value={selectedDate}
               >
                 {expirationDates.map((date) => (
                   <option>{date}</option>
