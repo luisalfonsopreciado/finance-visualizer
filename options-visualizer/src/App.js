@@ -35,7 +35,7 @@ const App = () => {
   const [maxX, setMaxX] = useState();
   const [stockChartData, setStockChartData] = useState();
   const [viewHighChart, setViewHighChart] = useState(true);
-  const [viewHighStock, setViewHighStock] = useState(false);
+  const [viewHighStock, setViewHighStock] = useState(true);
   const [hcData, setHcData] = useState(null);
   const value = { liveMode, setLiveMode };
   const dispatch = useDispatch();
@@ -370,14 +370,10 @@ const App = () => {
     const result = [];
 
     for (let i = 0; i < length; i++) {
-      result.push([
-        util.UNIXToDateString(data.t[i]),
-        data.o[i],
-        data.h[i],
-        data.l[i],
-        data.c[i],
-      ]);
+      result.push([data.t[i], data.o[i], data.h[i], data.l[i], data.c[i]]);
     }
+
+    console.log(result);
     setStockChartData(result);
   };
 
@@ -525,7 +521,7 @@ const App = () => {
             {stockChartData && optionData ? (
               <>
                 {viewHighStock ? (
-                  <HighStock />
+                  <HighStock mockData={stockChartData} />
                 ) : (
                   <AnyChart data={stockChartData} ticker={stockData.ticker} />
                 )}
@@ -547,7 +543,7 @@ const App = () => {
             )}
           </div>
         </div>
-        {/* <RealTimeChart /> */}
+        {/* <HighStock /> */}
       </Container>
     </>
   );

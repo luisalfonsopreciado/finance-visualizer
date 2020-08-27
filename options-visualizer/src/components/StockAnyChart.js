@@ -1,12 +1,23 @@
 import React from "react";
 import AnyChart from "anychart-react";
 import * as anychart from "anychart";
+import * as util from "../utility";
 
 const StockAnyChart = ({ data, ticker }) => {
+  const newData = [];
+  data.forEach((pnt) => {
+    newData.push([
+      util.UNIXToDateString(pnt[0]),
+      pnt[1],
+      pnt[2],
+      pnt[3],
+      pnt[4],
+    ]);
+  });
   // Create the chart
   var stockDataTable = anychart.data.table();
   // Add The data
-  stockDataTable.addData(data);
+  stockDataTable.addData(newData);
   // Declare stock Chart
   var chart = anychart.stock();
   // Create plot
