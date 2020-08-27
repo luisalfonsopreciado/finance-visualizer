@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Option from "../utility/Option";
 import { BlackScholes, SELL } from "../utility";
 import { useSelector } from "react-redux";
-import moment from "moment";
 import * as util from "../utility";
 import useUpdateEffect from "../hooks/useUpdateEffect";
 
@@ -28,7 +27,7 @@ const Contract = (props) => {
   const stockData = useSelector((state) => state.stockData);
 
   // Calculate dateDifference in years, used in theoretical black scholes
-  const dateDiff = -moment().diff(data.date, "years", true);
+  const dateDiff = util.dateDiffInYears(data.date);
 
   // Calculate the price based on Black-Scholes model
   const [price, setPrice] = useState();
@@ -346,13 +345,21 @@ const Panel = (props) => {
           <tbody>
             {renderContracts()}
             <tr>
-              <td><b>Total</b></td>
-              <td><b>{amount}</b></td>
+              <td>
+                <b>Total</b>
+              </td>
+              <td>
+                <b>{amount}</b>
+              </td>
               <td></td>
               <td></td>
               <td></td>
-              <td><b>{premium}</b></td>
-              <td><b>{debitcredit}</b></td>
+              <td>
+                <b>{premium}</b>
+              </td>
+              <td>
+                <b>{debitcredit}</b>
+              </td>
               <td>
                 <button
                   type="button"

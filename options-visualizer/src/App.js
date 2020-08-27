@@ -330,7 +330,7 @@ const App = () => {
   useUpdateEffect(() => {
     setPortfolio({});
     setStockChartData(null); // Display Loading
-    fetchData();
+    fetchStockData();
   }, [optionData]);
 
   // Custom hook used to Update/Validate portfolio whenever changed
@@ -339,7 +339,7 @@ const App = () => {
   }, [portfolio, updateData, viewHighChart]);
 
   // Fetch the option Data when Search is Clicked
-  const searchFunc = async (ticker) => {
+  const fetchOptionData = async (ticker) => {
     try {
       const { data } = await axios.get(
         `https://finnhub.io/api/v1/stock/option-chain?symbol=${ticker}&token=` +
@@ -358,7 +358,7 @@ const App = () => {
     }
   };
 
-  const fetchData = async (ticker) => {
+  const fetchStockData = async (ticker) => {
     var unix = Math.round(+new Date() / 1000);
     const { data } = await axios.get(
       `https://finnhub.io/api/v1/stock/candle?symbol=TSLA&resolution=D&from=1199145600&to=${unix}&token=` +
@@ -382,7 +382,6 @@ const App = () => {
       const contract = newPortfolio[key];
       const newDate = util.addDays(new Date(), days);
       contract.date = moment(newDate).format("YYYY-MM-DD");
-      console.log(contract);
     }
     setPortfolio(newPortfolio);
     setDaysToExpiration(days);
@@ -391,7 +390,7 @@ const App = () => {
   return (
     <>
       <liveDataContext.Provider value={value}>
-        <Navigation setPortfolio={setPortfolio} />
+        <Navigation setPortfolio={setPortfolio} optionData={optionData} />
         <Container>
           <Row>
             <Col md={12}>
@@ -400,7 +399,7 @@ const App = () => {
           </Row>
           <Row>
             <Col md={12}>
-              {liveMode && <Search searchFunc={searchFunc} />}
+              {liveMode && <Search searchFunc={fetchOptionData} />}
               {stockErrors}
             </Col>
           </Row>
@@ -569,7 +568,6 @@ const App = () => {
             )}
           </div>
         </div>
-        {/* <HighStock /> */}
       </Container>
     </>
   );

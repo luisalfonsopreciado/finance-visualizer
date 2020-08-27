@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DropDownBtn = ({ setPortfolio }) => {
+const DropDownBtn = ({ setPortfolio, optionData }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
@@ -33,7 +33,7 @@ const DropDownBtn = ({ setPortfolio }) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-    newPortfolio && setPortfolio(newPortfolio(currentPrice, volatility));
+    newPortfolio && setPortfolio(newPortfolio(currentPrice, volatility, optionData));
     setOpen(false);
   };
 

@@ -4,7 +4,6 @@ import App from "./App";
 import { Provider } from "react-redux";
 import stockDataReducer from "./store/reducers/stockData";
 import { createStore, combineReducers } from "redux";
-import AnyChart from "anychart-react";
 
 const rootReducer = combineReducers({
   stockData: stockDataReducer,

@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MenuAppBar({ setPortfolio }) {
+export default function MenuAppBar({ setPortfolio, optionData }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { liveMode, setLiveMode } = useContext(liveDataContext);
@@ -39,7 +39,7 @@ export default function MenuAppBar({ setPortfolio }) {
         <Typography variant="h3" className={classes.title}>
           Option Strategy Builder
         </Typography>
-        <DropDownBtn setPortfolio={setPortfolio} />
+        <DropDownBtn setPortfolio={setPortfolio} optionData={optionData}/>
         <FormGroup>
           <FormControlLabel
             control={
