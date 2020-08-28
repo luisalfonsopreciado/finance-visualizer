@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import * as util from "../utility";
 import useUpdateEffect from "../hooks/useUpdateEffect";
 
+// TODO: make contract component lean by outsorcing logic to redux
 const Contract = (props) => {
   const { removeContract, data, optionData } = props;
   const { updateContract } = props;
@@ -18,9 +19,9 @@ const Contract = (props) => {
   const [expirationDates, setExpirationDates] = useState([]);
   const [selectedDate, setSelectedDate] = useState(data.date);
   const [strikePrices, setStrikePrices] = useState([[data.strike]]);
-  const [selectedStrike, setSelectedStrike] = useState(data.strike);
-  const [selectedDirection, setSelectedDirection] = useState(data.direction);
-  const [selectedType, setSelectedType] = useState(data.type);
+  // const [selectedStrike, setSelectedStrike] = useState(data.strike);
+  // const [selectedDirection, setSelectedDirection] = useState(data.direction);
+  // const [selectedType, setSelectedType] = useState(data.type);
 
   // Stock data from redux
   const stockData = useSelector((state) => state.stockData);
@@ -34,7 +35,8 @@ const Contract = (props) => {
   // Update the current price every time something changes
   useEffect(() => {
     if (optionData) {
-    } else if (!optionData && selectedType !== util.CASH) {
+    } else if (!optionData && data.type !== util.CASH) {
+      // TODO, calculate this in redux store
       setPrice(
         BlackScholes(
           data.type,
@@ -81,7 +83,7 @@ const Contract = (props) => {
 
       // Find the contract with the selected Strike
       const contract = contractsAtDate.find(
-        (item) => +item.strike === +selectedStrike
+        (item) => +item.strike === +data.strike
       );
 
       // Set the price depending if we are short or long
@@ -92,8 +94,8 @@ const Contract = (props) => {
       }
     }
 
-    updateContract(data.contractName, "strike", selectedStrike);
-  }, [selectedStrike, setPrice]);
+    updateContract(data.contractName, "strike", data.strike);
+  }, [data.strike, setPrice]);
 
   useUpdateEffect(() => {
     if (optionData) {
@@ -122,26 +124,26 @@ const Contract = (props) => {
   }, [selectedDate]);
 
   // Update Direction
-  useUpdateEffect(() => {
-    updateContract(data.contractName, "direction", selectedDirection);
-  }, [selectedDirection]);
+  // useUpdateEffect(() => {
+  //   updateContract(data.contractName, "direction", selectedDirection);
+  // }, [selectedDirection]);
 
   // Update type
   useUpdateEffect(() => {
-    updateContract(data.contractName, "type", selectedType);
+    // updateContract(data.contractName, "type", data.type);
 
     // If we just changed to cash
-    if (selectedType === util.CASH) {
+    if (data.type === util.CASH) {
       // Set Debit/Credit equal to the stock price
       setPrice(stockData.currentPrice);
     }
-  }, [selectedType]);
+  }, [data.type]);
 
-  const cashContract = selectedType === util.CASH;
+  const cashContract = data.type === util.CASH;
 
   return (
     <tr>
-      {/* Direction */}
+      {/* Direction: Fully Using Redux */}
       <td>
         <select
           id="direction"
@@ -155,7 +157,7 @@ const Contract = (props) => {
           <option>Sell</option>
         </select>
       </td>
-      {/* Amount */}
+      {/* Amount: Fully Using Redux */}
       <td>
         <input
           type="number"
@@ -167,7 +169,7 @@ const Contract = (props) => {
           value={data.amount}
         />
       </td>
-      {/* Kind */}
+      {/* Kind: Fully Using Redux*/}
       <td>
         <select
           className="form-control"
@@ -181,16 +183,18 @@ const Contract = (props) => {
           <option>Cash</option>
         </select>
       </td>
-      {/* Strike Price */}
+      {/* Strike Price: TODO UPDATE REDUX */}
       <td>
-        {!cashContract &&
-          (optionData ? (
+        {!cashContract ? (
+          optionData ? (
             <div class="form-group">
               <select
                 class="form-control"
                 id="exampleFormControlSelect1"
-                onChange={(e) => setSelectedStrike(e.target.value)}
-                value={selectedStrike}
+                onChange={(e) =>
+                  updateContract(data.contractName, "strike", e.target.value)
+                }
+                value={data.strike}
               >
                 {strikePrices.map((price) => (
                   <option>{isNaN(price) ? null : price}</option>
@@ -207,7 +211,8 @@ const Contract = (props) => {
               }
               value={data.strike}
             />
-          ))}
+          )
+        ) : null}
       </td>
       {/* Expiry Date */}
       <td>
