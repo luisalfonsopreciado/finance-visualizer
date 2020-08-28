@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Option from "../utility/Option";
 import { BlackScholes, SELL } from "../utility";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import * as util from "../utility";
 import useUpdateEffect from "../hooks/useUpdateEffect";
+import * as portfolioActions from "../store/actions/portfolio";
 
 // TODO: make contract component lean by outsorcing logic to redux
 const Contract = (props) => {
-  const { removeContract, data, optionData } = props;
+  const { data, optionData } = props;
   const { updateContract } = props;
 
   /*
@@ -19,9 +20,8 @@ const Contract = (props) => {
   const [expirationDates, setExpirationDates] = useState([]);
   const [selectedDate, setSelectedDate] = useState(data.date);
   const [strikePrices, setStrikePrices] = useState([[data.strike]]);
-  // const [selectedStrike, setSelectedStrike] = useState(data.strike);
-  // const [selectedDirection, setSelectedDirection] = useState(data.direction);
-  // const [selectedType, setSelectedType] = useState(data.type);
+
+  const dispatch = useDispatch();
 
   // Stock data from redux
   const stockData = useSelector((state) => state.stockData);
@@ -32,23 +32,23 @@ const Contract = (props) => {
   // Calculate the price based on Black-Scholes model
   const [price, setPrice] = useState(data.price);
 
-  // Update the current price every time something changes
-  useEffect(() => {
-    if (optionData) {
-    } else if (!optionData && data.type !== util.CASH) {
-      // TODO, calculate this in redux store
-      setPrice(
-        BlackScholes(
-          data.type,
-          +stockData.currentPrice,
-          +data.strike,
-          +dateDiff,
-          +stockData.interest,
-          +stockData.volatility
-        ).toFixed(2)
-      );
-    }
-  });
+  // // Update the current price every time something changes
+  // useEffect(() => {
+  //   if (optionData) {
+  //   } else if (!optionData && data.type !== util.CASH) {
+  //     // TODO, calculate this in redux store
+  //     setPrice(
+  //       BlackScholes(
+  //         data.type,
+  //         +stockData.currentPrice,
+  //         +data.strike,
+  //         +dateDiff,
+  //         +stockData.interest,
+  //         +stockData.volatility
+  //       ).toFixed(2)
+  //     );
+  //   }
+  // });
 
   // Update the price every time it changes
   useUpdateEffect(() => {
@@ -123,11 +123,6 @@ const Contract = (props) => {
     }
   }, [selectedDate]);
 
-  // Update Direction
-  // useUpdateEffect(() => {
-  //   updateContract(data.contractName, "direction", selectedDirection);
-  // }, [selectedDirection]);
-
   // Update type
   useUpdateEffect(() => {
     // updateContract(data.contractName, "type", data.type);
@@ -150,7 +145,13 @@ const Contract = (props) => {
           className="form-control"
           value={data.direction}
           onChange={(e) =>
-            updateContract(data.contractName, "direction", e.target.value)
+            dispatch(
+              portfolioActions.updateDirection(
+                data.contractName,
+                e.target.value,
+                stockData
+              )
+            )
           }
         >
           <option>Buy</option>
@@ -164,7 +165,13 @@ const Contract = (props) => {
           placeholder="Amount"
           className="form-control form-control-inline"
           onChange={(e) =>
-            updateContract(data.contractName, "amount", e.target.value)
+            dispatch(
+              portfolioActions.updateAmount(
+                data.contractName,
+                e.target.value,
+                stockData
+              )
+            )
           }
           value={data.amount}
         />
@@ -174,7 +181,13 @@ const Contract = (props) => {
         <select
           className="form-control"
           onChange={(e) =>
-            updateContract(data.contractName, "type", e.target.value)
+            dispatch(
+              portfolioActions.updateKind(
+                data.contractName,
+                e.target.value,
+                stockData
+              )
+            )
           }
           value={data.type}
         >
@@ -192,7 +205,13 @@ const Contract = (props) => {
                 class="form-control"
                 id="exampleFormControlSelect1"
                 onChange={(e) =>
-                  updateContract(data.contractName, "strike", e.target.value)
+                  dispatch(
+                    portfolioActions.updateStrike(
+                      data.contractName,
+                      e.target.value,
+                      stockData
+                    )
+                  )
                 }
                 value={data.strike}
               >
@@ -207,7 +226,13 @@ const Contract = (props) => {
               placeholder="Strike"
               className="form-control form-control-inline"
               onChange={(e) =>
-                updateContract(data.contractName, "strike", e.target.value)
+                dispatch(
+                  portfolioActions.updateStrike(
+                    data.contractName,
+                    e.target.value,
+                    stockData
+                  )
+                )
               }
               value={data.strike}
             />
@@ -223,7 +248,13 @@ const Contract = (props) => {
               placeholder="Expiry"
               className="form-control form-control-inline"
               onChange={(e) =>
-                updateContract(data.contractName, "date", e.target.value)
+                dispatch(
+                  portfolioActions.updateExpiry(
+                    data.contractName,
+                    e.target.value,
+                    stockData
+                  )
+                )
               }
               value={data.date}
             />
@@ -244,9 +275,9 @@ const Contract = (props) => {
       </td>
       {/* Premium/Price */}
       <td style={{ verticalAlign: "middle" }}>
-        <b>{price * data.amount}</b>
+        <b>{data.price * data.amount}</b>
       </td>
-      {/* Debit/Credit */}
+      {/* Debit/Credit: TODO add as property in Option Obj, updated in */}
       <td style={{ verticalAlign: "middle" }}>
         <b>{(data.direction === SELL ? price : -price) * data.amount} </b>
       </td>
@@ -256,7 +287,9 @@ const Contract = (props) => {
           type="button"
           aria-label="Left Align"
           className="btn btn-danger btn-s"
-          onClick={() => removeContract(data.contractName)}
+          onClick={() =>
+            dispatch(portfolioActions.removeContract(data.contractName))
+          }
         >
           <span aria-hidden="true">Remove</span>
         </button>
@@ -266,14 +299,10 @@ const Contract = (props) => {
 };
 
 const Panel = (props) => {
-  const { portfolio, setPortfolio, visualize, optionData } = props;
-
-  const addContract = () => {
-    const newPortfolio = { ...portfolio };
-    const id = new Date().toISOString();
-    newPortfolio[id] = new Option(id);
-    setPortfolio(newPortfolio);
-  };
+  const { setPortfolio, optionData } = props; // removed portfolio
+  const portfolio = useSelector((state) => state.portfolio);
+  const stockData = useSelector((state) => state.stockData);
+  const dispatch = useDispatch();
 
   const renderContracts = () => {
     const result = [];
@@ -343,7 +372,11 @@ const Panel = (props) => {
                 <button
                   type="submit"
                   className="btn btn-success btn-s"
-                  onClick={addContract}
+                  onClick={() =>
+                    dispatch(
+                      portfolioActions.addContract(new Option(), stockData)
+                    )
+                  }
                 >
                   Add Leg
                 </button>
@@ -373,7 +406,7 @@ const Panel = (props) => {
                   type="button"
                   aria-label="Left Align"
                   className="btn btn-danger btn-s"
-                  onClick={() => setPortfolio({})}
+                  onClick={() => dispatch(portfolioActions.resetPortfolio())}
                 >
                   <span aria-hidden="true">Remove All</span>
                 </button>

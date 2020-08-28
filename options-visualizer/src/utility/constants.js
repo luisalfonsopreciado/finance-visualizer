@@ -1,5 +1,6 @@
 import moment from "moment";
 import { BlackScholes } from "./options";
+
 export const BUY = "Buy";
 export const SELL = "Sell";
 export const CALL = "Call";
@@ -16,6 +17,18 @@ export const stockDataInitialState = {
   currentPrice: 100,
   volatility: 30,
   interest: 2,
+};
+
+export const getPrice = (contract, stockData) => {
+  const timeDiff = dateDiffInYears(contract.date);
+  return BlackScholes(
+    contract.type,
+    stockData.currentPrice,
+    contract.strike,
+    timeDiff,
+    stockData.interest,
+    stockData.volatility
+  );
 };
 
 /**
@@ -93,20 +106,27 @@ export const dateDiffInYears = (futureDate, currentDate = new Date()) => {
   return -moment(currentDate).diff(futureDate, "years", true);
 };
 
+// Create the initialPortfolio
+
 // Date used in initial portfolio
 export const date = createDateNYearsFromNow(1);
 
+const initialPortfolioId = {
+  amount: 1,
+  contractName: "initialPortfolioId",
+  date,
+  direction: BUY,
+  strike: 100,
+  type: CALL,
+};
+
+const price = getPrice(initialPortfolioId, stockDataInitialState);
+
+initialPortfolioId.price = price;
+
 // The initial Theoretical Option Portfolio
 export const initialPortfolio = {
-  initialPortfolioId: {
-    amount: 1,
-    contractName: "initialPortfolioId",
-    date,
-    direction: BUY,
-    price: "", // To be calculated in the Contract Component
-    strike: 100,
-    type: CALL,
-  },
+  initialPortfolioId,
 };
 
 /* Function that takes in currentPrice, impliedVolatility and a number representing

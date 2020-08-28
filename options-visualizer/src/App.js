@@ -11,6 +11,7 @@ import Search from "./components/Search";
 import axios from "axios";
 import ColorPicker from "./utility/DS/ColorPicker";
 import * as actions from "./store/actions/stockData";
+import * as portfolioActions from "./store/actions/portfolio";
 import { Row, Col, Container } from "react-bootstrap";
 import useUpdateEffect from "./hooks/useUpdateEffect";
 import Error from "./components/Error/Error";
@@ -23,7 +24,8 @@ import HighChart from "./components/PayoffHighChart";
 import HighStock from "./components/HighStock";
 
 const App = () => {
-  const [portfolio, setPortfolio] = useState(util.initialPortfolio);
+  const portfolio = useSelector((state) => state.portfolio);
+  const dispatch = useDispatch();
   const [data, setData] = useState(null);
   const [errors, setErrors] = useState(null);
   const [stockErrors, setStockErrors] = useState(null);
@@ -37,8 +39,9 @@ const App = () => {
   const [viewHighStock, setViewHighStock] = useState(true);
   const [hcData, setHcData] = useState(null);
   const value = { liveMode, setLiveMode };
-  const dispatch = useDispatch();
-  const { volatility, interest, currentPrice } = useSelector((state) => state.stockData);
+  const { volatility, interest, currentPrice } = useSelector(
+    (state) => state.stockData
+  );
   const [daysToExpiration, setDaysToExpiration] = useState(null);
 
   // Set Error Message as JSX
@@ -321,14 +324,15 @@ const App = () => {
   useUpdateEffect(() => {
     // To be run on update
     setErrors(null);
-    setPortfolio({});
+    dispatch();
+    dispatch(portfolioActions.resetPortfolio());
     setData(null);
     setOptionData(null);
   }, [liveMode]);
 
   // Custom hook used to Reset Porfolio only when optionData changes
   useUpdateEffect(() => {
-    setPortfolio({});
+    dispatch(portfolioActions.resetPortfolio());
     setStockChartData(null); // Display Loading
     fetchStockData();
   }, [optionData]);
@@ -383,14 +387,14 @@ const App = () => {
       const newDate = util.addDays(new Date(), days);
       contract.date = moment(newDate).format("YYYY-MM-DD");
     }
-    setPortfolio(newPortfolio);
+    dispatch(portfolioActions.setPortfolio(newPortfolio, stockData))
     setDaysToExpiration(days);
   };
 
   return (
     <>
       <liveDataContext.Provider value={value}>
-        <Navigation setPortfolio={setPortfolio} optionData={optionData} />
+        <Navigation optionData={optionData} />
         <Container>
           <Row>
             <Col md={12}>
@@ -408,9 +412,7 @@ const App = () => {
               <Panel
                 optionData={optionData}
                 portfolio={portfolio}
-                setPortfolio={setPortfolio}
                 visualize={updateData}
-                // currentPrice={100}
               />
             </Col>
           </Row>
