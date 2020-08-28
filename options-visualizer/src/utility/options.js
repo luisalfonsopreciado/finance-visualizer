@@ -1,4 +1,15 @@
 import * as cts from "./constants";
+import Option from "./Option";
+
+
+/**
+ * Evaluates a Payoff Function
+ *
+ * @param {Option} option An option Object
+ * @param {Number} price A given stock price
+ * @param {Object} stockData StockData object containing the stock currentPrice
+ * @returns {Number} The value of the option/stock
+ */
 
 // Takes in option object and evaluates the payoff given the input price
 export const evaluatePayoffFunc = (option, price, stockData) => {
@@ -34,16 +45,20 @@ export const evaluatePayoffFunc = (option, price, stockData) => {
   }
 };
 
-/*
-  S = Current Stock Price
-  X = Exercise Price (Strike)
-  r = Short-term risk free interest rate
-  T = Time remaining to the expiration Date (in years)
-  v = Standard deviation of stock price (implied volatility)
+/**
+ * Calculates Stock Price Based On BS model
+ *
+ * @param {Number} S Current Stock price
+ * @param {Number} X Exercise Price
+ * @param {Number} r Short-term risk free interest rate
+ * @param {Number} T Time remaining to the expiration Date (in years)
+ * @param {Number} v Standard deviation of stock price (implied volatility)
+ * @param {String} optionType The type of option - cts.CALL or cts.PUT
+ * @returns {Number} The Price of the option
  */
 
 export function BlackScholes(optionType, S, X, T, r, v) {
-  // Unit adjustment
+  // Unit adjustments
   v = v / 100;
   r = r / 100;
   var d1 = (Math.log(S / X) + (r + (v * v) / 2) * T) / (v * Math.sqrt(T));
@@ -55,7 +70,7 @@ export function BlackScholes(optionType, S, X, T, r, v) {
   }
 }
 
-/* The cummulative Normal distribution function: */
+/* The cumulative Normal distribution function: */
 function CND(x) {
   if (x < 0) {
     return 1 - CND(-x);

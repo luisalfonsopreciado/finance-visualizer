@@ -17,21 +17,43 @@ export const stockDataInitialState = {
   interest: 2,
 };
 
+/**
+ * Round a number to a given number of digits
+ *
+ * @param {Number | String} num The number to round
+ * @param {Number | null} n The number of significant digits, defaults to 2
+ * @returns {Number} The rounded number
+ */
+
 // Round a Number
-export const round = (num) => {
+export const round = (num, n = 2) => {
   // If it is a string convert it to num
   if (typeof num === "string") {
     num = +num;
   }
-  let res = num.toFixed(2);
+  let res = num.toFixed(n);
   return +res;
 };
 
-// Convert UNIX Timestamp to Date String: YYYY-MM-DD
+/**
+ * Converts a UNIX Timestamp to Date String in the format: YYYY-MM-DD
+ *
+ * @param {Number} UNIX_timestamp A unix timestamp
+ * @returns {String} Date String in the format: YYYY-MM-DD
+ */
+
 export const UNIXToDateString = (UNIX_timestamp) => {
   const a = new Date(UNIX_timestamp * 1000);
   return moment(a).format("YYYY-MM-DD");
 };
+
+/**
+ * Adds a number of days to a given date object
+ *
+ * @param {Date} dayObject A Date Object
+ * @param {Number} days The number of days to be added
+ * @returns {Date} Date Object after adding the days
+ */
 
 // Function that adds num days to a date object
 export const addDays = (dayObject, days) => {
@@ -39,6 +61,13 @@ export const addDays = (dayObject, days) => {
   date.setDate(date.getDate() + days);
   return date;
 };
+
+/**
+ * Creates a Date String of Format YYYY-MM-DD after N years from the present
+ *
+ * @param {Number} n The number of years to be added
+ * @returns {Date} Date Object after adding the years
+ */
 
 // Create a Date 1 year from now, used as default date on contract
 const createDateNYearsFromNow = (n) => {
@@ -50,6 +79,14 @@ const createDateNYearsFromNow = (n) => {
   var c = new Date(year + n, month, day);
   return moment(c).format("YYYY-MM-DD");
 };
+
+/**
+ * Gets the difference between two dates in years
+ *
+ * @param {Date} futureDate The Future Date
+ * @param {Date} currentDate The Past Date, defaults to the present Date
+ * @returns {Number} Date Object after adding the years
+ */
 
 export const dateDiffInYears = (futureDate, currentDate = new Date()) => {
   return -moment(currentDate).diff(futureDate, "years", true);
@@ -130,13 +167,11 @@ export const getRelativeStrike = (
 // Return a long condor strategy option portfolio, given the currentprice, volatility
 // and live option data.
 export const getLongCondor = (currentPrice, impliedVol, optionData) => {
-  const { strike: firstStrike, date: firstDate } = getRelativeStrike(
-    currentPrice,
-    impliedVol,
-    -1,
-    optionData,
-    CALL
-  );
+  const {
+    strike: firstStrike,
+    date: firstDate,
+    price: firstPrice,
+  } = getRelativeStrike(currentPrice, impliedVol, -1, optionData, CALL);
 
   const { strike: secondStrike, date: secondDate } = getRelativeStrike(
     currentPrice,

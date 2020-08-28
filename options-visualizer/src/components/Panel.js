@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Option from "../utility/Option";
 import { BlackScholes, SELL } from "../utility";
 import { useSelector } from "react-redux";
@@ -13,11 +13,11 @@ const Contract = (props) => {
    If optionData is defined then the strike prices must adjust to the
    Expiration date
    */
-  
+
   // Default state values are when a strategy is selected in live mode
   const [expirationDates, setExpirationDates] = useState([]);
   const [selectedDate, setSelectedDate] = useState(data.date);
-  const [strikePrices, setStrikePrices] = useState([data.strike]);
+  const [strikePrices, setStrikePrices] = useState([[data.strike]]);
   const [selectedStrike, setSelectedStrike] = useState(data.strike);
   const [selectedDirection, setSelectedDirection] = useState(data.direction);
   const [selectedType, setSelectedType] = useState(data.type);
@@ -316,8 +316,6 @@ const Panel = (props) => {
 
   const { premium, debitcredit, amount } = calculateTotal();
 
-  // console.log("Panel Rendered");
-
   return (
     <div className="panel panel-primary">
       <div className="panel-heading">Option Portfolio</div>
@@ -374,15 +372,6 @@ const Panel = (props) => {
             </tr>
           </tbody>
         </table>
-        {/* <div className="pull-right">
-          <button
-            type="submit"
-            className="btn btn-success btn-s"
-            onClick={visualize}
-          >
-            Generate Payoff
-          </button>
-        </div> */}
       </div>
     </div>
   );
