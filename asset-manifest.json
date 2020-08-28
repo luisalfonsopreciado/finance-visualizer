@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.js": "/finance-visualizer/static/js/main.c082e100.chunk.js",
-    "main.js.map": "/finance-visualizer/static/js/main.c082e100.chunk.js.map",
+    "main.js": "/finance-visualizer/static/js/main.5cc3ef58.chunk.js",
+    "main.js.map": "/finance-visualizer/static/js/main.5cc3ef58.chunk.js.map",
     "runtime-main.js": "/finance-visualizer/static/js/runtime-main.56664fc0.js",
     "runtime-main.js.map": "/finance-visualizer/static/js/runtime-main.56664fc0.js.map",
     "static/js/2.30a48cad.chunk.js": "/finance-visualizer/static/js/2.30a48cad.chunk.js",
     "static/js/2.30a48cad.chunk.js.map": "/finance-visualizer/static/js/2.30a48cad.chunk.js.map",
     "index.html": "/finance-visualizer/index.html",
-    "precache-manifest.41a5075b75674934ea00887ae1afdf14.js": "/finance-visualizer/precache-manifest.41a5075b75674934ea00887ae1afdf14.js",
+    "precache-manifest.6034ae988c7444d5f8f867462ea13619.js": "/finance-visualizer/precache-manifest.6034ae988c7444d5f8f867462ea13619.js",
     "service-worker.js": "/finance-visualizer/service-worker.js",
     "static/js/2.30a48cad.chunk.js.LICENSE.txt": "/finance-visualizer/static/js/2.30a48cad.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.56664fc0.js",
     "static/js/2.30a48cad.chunk.js",
-    "static/js/main.c082e100.chunk.js"
+    "static/js/main.5cc3ef58.chunk.js"
   ]
 }

@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/finance-visualizer/precache-manifest.41a5075b75674934ea00887ae1afdf14.js"
+  "/finance-visualizer/precache-manifest.6034ae988c7444d5f8f867462ea13619.js"
 );
 
 self.addEventListener('message', (event) => {
