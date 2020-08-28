@@ -48,12 +48,12 @@ export const evaluatePayoffFunc = (option, price, stockData) => {
 /**
  * Calculates Stock Price Based On BS model
  *
+ * @param {String} optionType The type of option - cts.CALL or cts.PUT
  * @param {Number} S Current Stock price
  * @param {Number} X Exercise Price
- * @param {Number} r Short-term risk free interest rate
  * @param {Number} T Time remaining to the expiration Date (in years)
+ * @param {Number} r Short-term risk free interest rate
  * @param {Number} v Standard deviation of stock price (implied volatility)
- * @param {String} optionType The type of option - cts.CALL or cts.PUT
  * @returns {Number} The Price of the option
  */
 

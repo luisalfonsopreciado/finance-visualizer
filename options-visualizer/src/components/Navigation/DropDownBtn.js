@@ -23,7 +23,9 @@ const DropDownBtn = ({ setPortfolio, optionData }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
-  const { currentPrice, volatility } = useSelector((state) => state.stockData);
+  const { currentPrice, volatility, interest } = useSelector(
+    (state) => state.stockData
+  );
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -33,7 +35,10 @@ const DropDownBtn = ({ setPortfolio, optionData }) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-    newPortfolio && setPortfolio(newPortfolio(currentPrice, volatility, optionData));
+    newPortfolio &&
+      setPortfolio(
+        newPortfolio(currentPrice, volatility, optionData, interest)
+      );
     setOpen(false);
   };
 
@@ -92,16 +97,24 @@ const DropDownBtn = ({ setPortfolio, optionData }) => {
                   >
                     Bull Call Spread
                   </MenuItem>
-                  <MenuItem onClick={(e) => handleClose(e, util.getBearPutSpread)}>
+                  <MenuItem
+                    onClick={(e) => handleClose(e, util.getBearPutSpread)}
+                  >
                     Bear Put Spread
                   </MenuItem>
-                  <MenuItem onClick={(e) => handleClose(e, util.getLongStraddle)}>
+                  <MenuItem
+                    onClick={(e) => handleClose(e, util.getLongStraddle)}
+                  >
                     Long Straddle
                   </MenuItem>
-                  <MenuItem onClick={(e) => handleClose(e, util.getShortStraddle)}>
+                  <MenuItem
+                    onClick={(e) => handleClose(e, util.getShortStraddle)}
+                  >
                     Short Straddle
                   </MenuItem>
-                  <MenuItem onClick={(e) => handleClose(e, util.getLongButterfly)}>
+                  <MenuItem
+                    onClick={(e) => handleClose(e, util.getLongButterfly)}
+                  >
                     Long Butterfly
                   </MenuItem>
                   <MenuItem
@@ -112,7 +125,9 @@ const DropDownBtn = ({ setPortfolio, optionData }) => {
                   <MenuItem onClick={(e) => handleClose(e, util.getLongCondor)}>
                     Long Condor
                   </MenuItem>
-                  <MenuItem onClick={(e) => handleClose(e, util.getShortCondor)}>
+                  <MenuItem
+                    onClick={(e) => handleClose(e, util.getShortCondor)}
+                  >
                     Short Condor
                   </MenuItem>
                 </MenuList>

@@ -29,7 +29,7 @@ const Contract = (props) => {
   const dateDiff = util.dateDiffInYears(data.date);
 
   // Calculate the price based on Black-Scholes model
-  const [price, setPrice] = useState();
+  const [price, setPrice] = useState(data.price);
 
   // Update the current price every time something changes
   useEffect(() => {
