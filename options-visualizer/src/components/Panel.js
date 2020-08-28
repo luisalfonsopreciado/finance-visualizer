@@ -146,8 +146,10 @@ const Contract = (props) => {
         <select
           id="direction"
           className="form-control"
-          value={selectedDirection}
-          onChange={(e) => setSelectedDirection(e.target.value)}
+          value={data.direction}
+          onChange={(e) =>
+            updateContract(data.contractName, "direction", e.target.value)
+          }
         >
           <option>Buy</option>
           <option>Sell</option>
@@ -169,8 +171,10 @@ const Contract = (props) => {
       <td>
         <select
           className="form-control"
-          onChange={(e) => setSelectedType(e.target.value)}
-          value={selectedType}
+          onChange={(e) =>
+            updateContract(data.contractName, "type", e.target.value)
+          }
+          value={data.type}
         >
           <option>Call</option>
           <option>Put</option>
