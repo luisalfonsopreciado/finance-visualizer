@@ -75,6 +75,15 @@ const setPortfolio = (state, action) => {
   return action.newPortfolio;
 };
 
+const updatePrices = (state, action) => {
+  const newPortfolio = { ...state };
+  for (let key in newPortfolio) {
+    const contract = newPortfolio[key];
+    contract.price = getPrice(contract, action.stockData);
+  }
+  return newPortfolio;
+};
+
 export default (state = initialState, action) => {
   switch (action.type) {
     case cts.UPDATE_AMOUNT:
@@ -95,7 +104,8 @@ export default (state = initialState, action) => {
       return setPortfolio(state, action);
     case cts.REMOVE_CONTRACT:
       return removeContract(state, action);
-
+    case cts.UPDATE_PRICES:
+      return updatePrices(state, action);
     default:
       // Will be run initially
       return state;

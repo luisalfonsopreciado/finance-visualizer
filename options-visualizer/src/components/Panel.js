@@ -32,24 +32,6 @@ const Contract = (props) => {
   // Calculate the price based on Black-Scholes model
   const [price, setPrice] = useState(data.price);
 
-  // // Update the current price every time something changes
-  // useEffect(() => {
-  //   if (optionData) {
-  //   } else if (!optionData && data.type !== util.CASH) {
-  //     // TODO, calculate this in redux store
-  //     setPrice(
-  //       BlackScholes(
-  //         data.type,
-  //         +stockData.currentPrice,
-  //         +data.strike,
-  //         +dateDiff,
-  //         +stockData.interest,
-  //         +stockData.volatility
-  //       ).toFixed(2)
-  //     );
-  //   }
-  // });
-
   // Update the price every time it changes
   useUpdateEffect(() => {
     updateContract(data.contractName, "price", price);
@@ -94,7 +76,6 @@ const Contract = (props) => {
       }
     }
 
-    updateContract(data.contractName, "strike", data.strike);
   }, [data.strike, setPrice]);
 
   useUpdateEffect(() => {
@@ -299,7 +280,7 @@ const Contract = (props) => {
 };
 
 const Panel = (props) => {
-  const { setPortfolio, optionData } = props; // removed portfolio
+  const { optionData } = props; // removed portfolio
   const portfolio = useSelector((state) => state.portfolio);
   const stockData = useSelector((state) => state.stockData);
   const dispatch = useDispatch();
@@ -308,28 +289,10 @@ const Panel = (props) => {
     const result = [];
     for (let id in portfolio) {
       result.push(
-        <Contract
-          optionData={optionData}
-          removeContract={removeContract}
-          updateContract={updateContract}
-          data={portfolio[id]}
-          key={id}
-        />
+        <Contract optionData={optionData} data={portfolio[id]} key={id} />
       );
     }
     return result;
-  };
-
-  const updateContract = (id, property, value) => {
-    const newPortfolio = { ...portfolio };
-    newPortfolio[id][property] = value;
-    setPortfolio(newPortfolio);
-  };
-
-  const removeContract = (id) => {
-    const newPortfolio = { ...portfolio };
-    delete newPortfolio[id];
-    setPortfolio(newPortfolio);
   };
 
   const calculateTotal = () => {

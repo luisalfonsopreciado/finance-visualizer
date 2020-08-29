@@ -7,6 +7,7 @@ export const ADD_CONTRACT = "ADD_CONTRACT";
 export const REMOVE_CONTRACT = "REMOVE_CONTRACT";
 export const RESET_PORTFOLIO = "RESET_PORTFOLIO";
 export const SET_PORTFOLIO = "SET_PORTFOLIO";
+export const UPDATE_PRICES = "UPDATE_PRICES";
 
 export const updateDirection = (contractName, direction, stockData) => {
   return {
@@ -79,6 +80,13 @@ export const setPortfolio = (newPortfolio, stockData) => {
   return {
     type: SET_PORTFOLIO,
     newPortfolio,
+    stockData,
+  };
+};
+
+export const updatePrices = (stockData) => {
+  return {
+    type: UPDATE_PRICES,
     stockData,
   };
 };

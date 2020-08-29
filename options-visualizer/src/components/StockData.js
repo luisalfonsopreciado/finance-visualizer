@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as stockActions from "../store/actions/stockData";
+import * as portfolioActions from "../store/actions/portfolio";
 
 const StockData = ({ liveMode }) => {
   const stockData = useSelector((state) => state.stockData);
@@ -20,9 +21,15 @@ const StockData = ({ liveMode }) => {
                 className="form-control"
                 value={stockData.currentPrice}
                 disabled={liveMode}
-                onChange={(e) =>
-                  dispatch(stockActions.updatePrice(e.target.value))
-                }
+                onChange={(e) => {
+                  dispatch(stockActions.updatePrice(e.target.value));
+                  dispatch(
+                    portfolioActions.updatePrices({
+                      ...stockData,
+                      price: e.target.value,
+                    })
+                  );
+                }}
               />
             </div>
           </div>
