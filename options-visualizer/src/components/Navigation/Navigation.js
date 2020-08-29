@@ -9,7 +9,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import DropDownBtn from "./DropDownBtn";
 import { useDispatch } from "react-redux";
-import * as actions from "../../store/actions/stockData";
+import * as actions from "../../store/actions/portfolio";
 
 const useStyles = makeStyles((theme) => ({
   root: {

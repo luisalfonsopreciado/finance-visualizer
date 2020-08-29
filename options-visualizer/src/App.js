@@ -10,7 +10,7 @@ import { liveDataContext } from "./context/liveData";
 import Search from "./components/Search";
 import axios from "axios";
 import ColorPicker from "./utility/DS/ColorPicker";
-import * as actions from "./store/actions/stockData";
+import * as actions from "./store/actions/portfolio";
 import * as portfolioActions from "./store/actions/portfolio";
 import { Row, Col, Container } from "react-bootstrap";
 import useUpdateEffect from "./hooks/useUpdateEffect";
@@ -24,12 +24,12 @@ import HighChart from "./components/PayoffHighChart";
 import HighStock from "./components/HighStock";
 
 const App = () => {
-  const portfolio = useSelector((state) => state.portfolio);
+  const { portfolio, stockData } = useSelector((state) => state.portfolio);
+  const { volatility, interest, currentPrice } = stockData;
   const dispatch = useDispatch();
   const [data, setData] = useState(null);
   const [errors, setErrors] = useState(null);
   const [stockErrors, setStockErrors] = useState(null);
-  const stockData = useSelector((state) => state.stockData);
   const [liveMode, setLiveMode] = useState(false);
   const [optionData, setOptionData] = useState();
   const [minX, setMinX] = useState();
@@ -39,9 +39,6 @@ const App = () => {
   const [viewHighStock, setViewHighStock] = useState(true);
   const [hcData, setHcData] = useState(null);
   const value = { liveMode, setLiveMode };
-  const { volatility, interest, currentPrice } = useSelector(
-    (state) => state.stockData
-  );
   const [daysToExpiration, setDaysToExpiration] = useState(null);
 
   // Set Error Message as JSX
@@ -324,7 +321,7 @@ const App = () => {
   useUpdateEffect(() => {
     // To be run on update
     setErrors(null);
-    dispatch();
+    // dispatch();
     dispatch(portfolioActions.resetPortfolio());
     setData(null);
     setOptionData(null);
@@ -387,7 +384,7 @@ const App = () => {
       const newDate = util.addDays(new Date(), days);
       contract.date = moment(newDate).format("YYYY-MM-DD");
     }
-    dispatch(portfolioActions.setPortfolio(newPortfolio, stockData))
+    dispatch(portfolioActions.setPortfolio(newPortfolio, stockData));
     setDaysToExpiration(days);
   };
 

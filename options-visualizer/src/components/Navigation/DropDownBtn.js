@@ -10,12 +10,11 @@ import * as util from "../../utility";
 import { useSelector, useDispatch } from "react-redux";
 import * as portfolioActions from "../../store/actions/portfolio";
 
-const DropDownBtn = ({ setPortfolio, optionData }) => {
+const DropDownBtn = ({ optionData }) => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
-  const { currentPrice, volatility, interest } = useSelector(
-    (state) => state.stockData
-  );
+  const { stockData } = useSelector((state) => state.portfolio);
+  const { currentPrice, volatility, interest } = stockData;
   const dispatch = useDispatch();
 
   const handleToggle = () => {

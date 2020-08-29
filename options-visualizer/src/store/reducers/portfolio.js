@@ -1,8 +1,11 @@
 import * as cts from "../actions/portfolio";
 import { initialPortfolio, getPrice } from "../../utility/constants";
-import { BlackScholes } from "../../utility/options";
+import { stockDataInitialState } from "../../utility/constants";
 
-export const initialState = { ...initialPortfolio };
+export const initialState = {
+  portfolio: { ...initialPortfolio },
+  stockData: { ...stockDataInitialState },
+};
 
 const resetPortfolio = () => {
   return {};
@@ -86,6 +89,7 @@ const updatePrices = (state, action) => {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    // Portfolio
     case cts.UPDATE_AMOUNT:
       return updateAmount(state, action);
     case cts.UPDATE_DIRECTION:
@@ -106,6 +110,18 @@ export default (state = initialState, action) => {
       return removeContract(state, action);
     case cts.UPDATE_PRICES:
       return updatePrices(state, action);
+
+    // Stock Data
+    case cts.UPDATE_PRICE:
+      return { ...state, currentPrice: action.price };
+    case cts.UPDATE_VOLATILITY:
+      return { ...state, volatility: action.volatility };
+    case cts.UPDATE_INTEREST:
+      return { ...state, interest: action.interest };
+    case cts.UPDATE_TICKER:
+      return { ...state, ticker: action.ticker };
+    case cts.RESET_DATA:
+      return { ...stockDataInitialState };
     default:
       // Will be run initially
       return state;

@@ -24,7 +24,7 @@ const Contract = (props) => {
   const dispatch = useDispatch();
 
   // Stock data from redux
-  const stockData = useSelector((state) => state.stockData);
+  const { stockData } = useSelector((state) => state.portfolio);
 
   // Calculate dateDifference in years, used in theoretical black scholes
   const dateDiff = util.dateDiffInYears(data.date);
@@ -75,7 +75,6 @@ const Contract = (props) => {
         setPrice(contract.bid);
       }
     }
-
   }, [data.strike, setPrice]);
 
   useUpdateEffect(() => {
@@ -281,8 +280,7 @@ const Contract = (props) => {
 
 const Panel = (props) => {
   const { optionData } = props; // removed portfolio
-  const portfolio = useSelector((state) => state.portfolio);
-  const stockData = useSelector((state) => state.stockData);
+  const { portfolio, stockData } = useSelector((state) => state.portfolio);
   const dispatch = useDispatch();
 
   const renderContracts = () => {

@@ -1,10 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import * as stockActions from "../store/actions/stockData";
+import * as stockActions from "../store/actions/portfolio";
 import * as portfolioActions from "../store/actions/portfolio";
 
 const StockData = ({ liveMode }) => {
-  const stockData = useSelector((state) => state.stockData);
+  const { stockData } = useSelector((state) => state.portfolio);
   const dispatch = useDispatch();
 
   return (
