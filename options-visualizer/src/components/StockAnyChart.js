@@ -7,7 +7,7 @@ const StockAnyChart = ({ data, ticker }) => {
   const newData = [];
   data.forEach((pnt) => {
     newData.push([
-      util.UNIXToDateString(pnt[0]),
+      util.UNIXToDateString(pnt[0] / 1000), // Divide by 1000 to convert to UNIX seconds
       pnt[1],
       pnt[2],
       pnt[3],

@@ -3,7 +3,7 @@ import Payoff from "./components/Payoff";
 import StockData from "./components/StockData";
 import Panel from "./components/Panel";
 import * as util from "./utility";
-import { useSelector, useDispatch, connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Navigation from "./components/Navigation/Navigation";
 import moment from "moment";
 import { liveDataContext } from "./context/liveData";
@@ -275,7 +275,7 @@ const App = () => {
 
     // Clear the Errors
     setErrors(null);
-    console.log(result);
+
     if (viewHighChart) {
       const res = [];
       // Parse data into HighChart Format
@@ -329,13 +329,13 @@ const App = () => {
   useUpdateEffect(() => {
     dispatch(actions.resetPortfolio());
     setStockChartData(null); // Display Loading
-    fetchStockData();
+    // fetchStockData();
   }, [optionData]);
 
   // Updating data to display
   useEffect(() => {
     updateData();
-  }, [portfolio, maxX, minX]);
+  }, [portfolio, maxX, minX, viewHighChart]);
 
   // Fetch the option Data when Search is Clicked
   const fetchOptionData = async (ticker) => {
@@ -351,6 +351,7 @@ const App = () => {
         setStockErrs(util.STOCK_NO_OPTIONS, setStockErrors);
       } else {
         setStockErrors(null);
+        fetchStockData(ticker);
       }
     } catch (err) {
       setStockErrs(util.STOCK_ERR_FETCH, setStockErrors);
@@ -359,20 +360,25 @@ const App = () => {
 
   const fetchStockData = async (ticker) => {
     var unix = Math.round(+new Date() / 1000);
-    const { data } = await axios.get(
-      `https://finnhub.io/api/v1/stock/candle?symbol=TSLA&resolution=D&from=1199145600&to=${unix}&token=` +
-        process.env.REACT_APP_API_KEY
-    );
+    try {
+      const { data } = await axios.get(
+        `https://finnhub.io/api/v1/stock/candle?symbol=${ticker}&resolution=D&from=1199145600&to=${unix}&token=` +
+          process.env.REACT_APP_API_KEY
+      );
 
-    const length = data.c.length;
+      const length = data.c.length;
 
-    const result = [];
+      const result = [];
 
-    for (let i = 0; i < length; i++) {
-      result.push([data.t[i], data.o[i], data.h[i], data.l[i], data.c[i]]);
+      // Unix milliseconds
+      for (let i = 0; i < length; i++) {
+        result.push([data.t[i] * (1000) , data.o[i], data.h[i], data.l[i], data.c[i]]);
+      }
+      console.log(result);
+      setStockChartData(result);
+    } catch (err) {
+      setStockErrs(err.message + stockData.ticker);
     }
-
-    setStockChartData(result);
   };
 
   const updateDaysToExpiration = (days) => {
@@ -488,7 +494,6 @@ const App = () => {
                       </div>
                     </div>
                   </div>
-                  {/* <Demo /> */}
                 </Col>
               </Row>
               <Row>
@@ -502,7 +507,6 @@ const App = () => {
                           className="form-control form-control-inline"
                           placeholder="Auto"
                           onBlur={(e) => setMinX(e.target.value)}
-                          // value={minX}
                         />
                       </Col>
                       <Col md={2}>
@@ -512,7 +516,6 @@ const App = () => {
                           max="5000"
                           className="form-control form-control-inline"
                           placeholder="Auto"
-                          // value={maxX}
                           onBlur={(e) => setMaxX(e.target.value)}
                         />
                       </Col>
@@ -545,7 +548,10 @@ const App = () => {
             {stockChartData && optionData ? (
               <>
                 {viewHighStock ? (
-                  <HighStock mockData={stockChartData} />
+                  <HighStock
+                    mockData={stockChartData}
+                    ticker={stockData.ticker}
+                  />
                 ) : (
                   <AnyChart data={stockChartData} ticker={stockData.ticker} />
                 )}

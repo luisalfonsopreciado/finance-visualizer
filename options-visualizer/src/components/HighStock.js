@@ -2,8 +2,7 @@ import React from "react";
 import HighStock from "highcharts/highstock";
 import HighchartsReact from "highcharts-react-official";
 
-function App({ mockData }) {
-  console.log(mockData);
+function App({ mockData, ticker }) {
   let groupingUnits = [
     [
       "week", // unit name
@@ -18,7 +17,7 @@ function App({ mockData }) {
     },
 
     title: {
-      text: "AAPL Historical",
+      text: ticker + " Historical",
     },
 
     yAxis: [
@@ -59,6 +58,9 @@ function App({ mockData }) {
       {
         type: "candlestick",
         data: mockData,
+        dataGrouping: {
+          units: groupingUnits,
+        },
       },
       {
         type: "column",
