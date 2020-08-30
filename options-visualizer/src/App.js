@@ -11,7 +11,6 @@ import Search from "./components/Search";
 import axios from "axios";
 import ColorPicker from "./utility/DS/ColorPicker";
 import * as actions from "./store/actions/portfolio";
-import * as portfolioActions from "./store/actions/portfolio";
 import { Row, Col, Container } from "react-bootstrap";
 import useUpdateEffect from "./hooks/useUpdateEffect";
 import Error from "./components/Error/Error";
@@ -323,14 +322,14 @@ const App = () => {
     // To be run on update
     setErrors(null);
     // dispatch();
-    dispatch(portfolioActions.resetPortfolio());
+    dispatch(actions.resetPortfolio());
     setData(null);
     setOptionData(null);
   }, [liveMode]);
 
   // Custom hook used to Reset Porfolio only when optionData changes
   useUpdateEffect(() => {
-    dispatch(portfolioActions.resetPortfolio());
+    dispatch(actions.resetPortfolio());
     setStockChartData(null); // Display Loading
     fetchStockData();
   }, [optionData]);
@@ -348,8 +347,8 @@ const App = () => {
           process.env.REACT_APP_API_KEY
       );
       setOptionData(data);
-      dispatch(actions.updatePrice(data.lastTradePrice));
-      dispatch(actions.updateTicker(data.code));
+      dispatch(actions.updateStockData("currentPrice", data.lastTradePrice));
+      dispatch(actions.updateStockData("ticker", data.code));
       if (data.data.length === 0) {
         setStockErrs(util.STOCK_NO_OPTIONS, setStockErrors);
       } else {
@@ -385,7 +384,7 @@ const App = () => {
       const newDate = util.addDays(new Date(), days);
       contract.date = moment(newDate).format("YYYY-MM-DD");
     }
-    dispatch(portfolioActions.setPortfolio(newPortfolio, stockData));
+    dispatch(actions.setPortfolio(newPortfolio));
     setDaysToExpiration(days);
   };
 
@@ -425,14 +424,18 @@ const App = () => {
                     max={150}
                     title={"Volatility"}
                     value={+volatility}
-                    setValue={(val) => dispatch(actions.updateVolatility(val))}
+                    setValue={(val) =>
+                      dispatch(actions.updateStockData("volatility", val))
+                    }
                   />
                   <Slider
                     min={-20}
                     max={150}
                     title={"Interest"}
                     value={+interest}
-                    setValue={(val) => dispatch(actions.updateInterest(val))}
+                    setValue={(val) =>
+                      dispatch(actions.updateStockData("interest", val))
+                    }
                   />
                   {!liveMode && (
                     <Slider
@@ -449,7 +452,9 @@ const App = () => {
                       max={2000}
                       title={"StockPrice"}
                       value={currentPrice}
-                      setValue={(val) => dispatch(actions.updatePrice(val))}
+                      setValue={(val) =>
+                        dispatch(actions.updateStockData("currentPrice", val))
+                      }
                     />
                   )}
                 </div>

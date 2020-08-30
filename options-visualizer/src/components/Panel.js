@@ -4,7 +4,7 @@ import { BlackScholes, SELL } from "../utility";
 import { useSelector, useDispatch } from "react-redux";
 import * as util from "../utility";
 import useUpdateEffect from "../hooks/useUpdateEffect";
-import * as portfolioActions from "../store/actions/portfolio";
+import * as actions from "../store/actions/portfolio";
 
 // TODO: make contract component lean by outsorcing logic to redux
 const Contract = (props) => {
@@ -126,7 +126,7 @@ const Contract = (props) => {
           value={data.direction}
           onChange={(e) =>
             dispatch(
-              portfolioActions.updateContract(
+              actions.updateContract(
                 data.contractName,
                 "direction",
                 e.target.value
@@ -146,7 +146,7 @@ const Contract = (props) => {
           className="form-control form-control-inline"
           onChange={(e) =>
             dispatch(
-              portfolioActions.updateContract(
+              actions.updateContract(
                 data.contractName,
                 "amount",
                 e.target.value
@@ -162,7 +162,7 @@ const Contract = (props) => {
           className="form-control"
           onChange={(e) =>
             dispatch(
-              portfolioActions.updateContract(
+              actions.updateContract(
                 data.contractName,
                 "type",
                 e.target.value
@@ -186,7 +186,7 @@ const Contract = (props) => {
                 id="exampleFormControlSelect1"
                 onChange={(e) =>
                   dispatch(
-                    portfolioActions.updateContract(
+                    actions.updateContract(
                       data.contractName,
                       "strike",
                       e.target.value
@@ -207,7 +207,7 @@ const Contract = (props) => {
               className="form-control form-control-inline"
               onChange={(e) =>
                 dispatch(
-                  portfolioActions.updateContract(
+                  actions.updateContract(
                     data.contractName,
                     "strike",
                     e.target.value
@@ -229,7 +229,7 @@ const Contract = (props) => {
               className="form-control form-control-inline"
               onChange={(e) =>
                 dispatch(
-                  portfolioActions.updateContract(
+                  actions.updateContract(
                     data.contractName,
                     "date",
                     e.target.value
@@ -268,7 +268,7 @@ const Contract = (props) => {
           aria-label="Left Align"
           className="btn btn-danger btn-s"
           onClick={() =>
-            dispatch(portfolioActions.removeContract(data.contractName))
+            dispatch(actions.removeContract(data.contractName))
           }
         >
           <span aria-hidden="true">Remove</span>
@@ -335,7 +335,7 @@ const Panel = (props) => {
                   className="btn btn-success btn-s"
                   onClick={() =>
                     dispatch(
-                      portfolioActions.addContract(new Option(), stockData)
+                      actions.addContract(new Option(), stockData)
                     )
                   }
                 >
@@ -367,7 +367,7 @@ const Panel = (props) => {
                   type="button"
                   aria-label="Left Align"
                   className="btn btn-danger btn-s"
-                  onClick={() => dispatch(portfolioActions.resetPortfolio())}
+                  onClick={() => dispatch(actions.resetPortfolio())}
                 >
                   <span aria-hidden="true">Remove All</span>
                 </button>

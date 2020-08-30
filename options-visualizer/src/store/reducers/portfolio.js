@@ -1,5 +1,8 @@
 import * as cts from "../actions/portfolio";
-import { initialPortfolio, getPrice } from "../../utility/constants";
+import {
+  initialPortfolio,
+  updatePortfolioPrices,
+} from "../../utility/constants";
 import { stockDataInitialState } from "../../utility/constants";
 
 export const initialState = {
@@ -21,34 +24,36 @@ const addContract = (state, action) => {
   const { contractName } = action.newContract;
   const newPortfolio = { ...state.portfolio };
   newPortfolio[contractName] = action.newContract;
-  newPortfolio[contractName].price = getPrice(
-    newPortfolio[contractName],
-    state.stockData
-  );
+  updatePortfolioPrices(newPortfolio, state.stockData);
   return { portfolio: newPortfolio, stockData: { ...state.stockData } };
 };
 
 const updateContract = (state, action) => {
   const newPortfolio = { ...state.portfolio };
   newPortfolio[action.contractName][action.property] = action.value;
-  newPortfolio[action.contractName].price = getPrice(
-    newPortfolio[action.contractName],
-    state.stockData
-  );
+  updatePortfolioPrices(newPortfolio, state.stockData);
   return { portfolio: newPortfolio, ...state };
 };
 
 const setPortfolio = (state, action) => {
-  return action.newPortfolio;
+  return { portfolio: action.newPortfolio, stockData: { ...state.stockData } };
 };
 
 const updatePrices = (state, action) => {
   const newPortfolio = { ...state.portfolio };
-  for (let key in newPortfolio) {
-    const contract = newPortfolio[key];
-    contract.price = getPrice(contract, state.stockData);
-  }
-  return { portfolio: newPortfolio, ...state };
+  updatePortfolioPrices(newPortfolio, state.stockData);
+  return { portfolio: newPortfolio, stockData: { ...state.stockData } };
+};
+
+const updateStockData = (state, action) => {
+  const newStockData = { ...state.stockData };
+  newStockData[action.property] = action.value;
+  const newPortfolio = { ...state.portfolio };
+  updatePortfolioPrices(newPortfolio, newStockData);
+  return {
+    portfolio: newPortfolio,
+    stockData: newStockData,
+  };
 };
 
 export default (state = initialState, action) => {
@@ -68,26 +73,8 @@ export default (state = initialState, action) => {
       return updatePrices(state, action);
 
     // Stock Data
-    case cts.UPDATE_PRICE:
-      return {
-        ...state,
-        stockData: { ...state.stockData, currentPrice: action.price },
-      };
-    case cts.UPDATE_VOLATILITY:
-      return {
-        ...state,
-        stockData: { ...state.stockData, volatility: action.volatility },
-      };
-    case cts.UPDATE_INTEREST:
-      return {
-        ...state,
-        stockData: { ...state.stockData, interest: action.interest },
-      };
-    case cts.UPDATE_TICKER:
-      return {
-        ...state,
-        stockData: { ...state.stockData, ticker: action.ticker },
-      };
+    case cts.UPDATE_STOCK_DATA:
+      return updateStockData(state, action);
     case cts.RESET_DATA:
       return { ...state, stockData: { ...stockDataInitialState } };
     default:

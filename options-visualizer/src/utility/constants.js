@@ -19,7 +19,14 @@ export const stockDataInitialState = {
   interest: 2,
 };
 
-export const getPrice = (contract, stockData) => {
+export const updatePortfolioPrices = (portfolio, stockData) => {
+  for (let key in portfolio) {
+    const contract = portfolio[key];
+    contract.price = getPrice(contract, stockData);
+  }
+};
+
+const getPrice = (contract, stockData) => {
   const timeDiff = dateDiffInYears(contract.date);
   return round(
     BlackScholes(

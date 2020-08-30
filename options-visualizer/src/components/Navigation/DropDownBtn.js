@@ -8,7 +8,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
 import * as util from "../../utility";
 import { useSelector, useDispatch } from "react-redux";
-import * as portfolioActions from "../../store/actions/portfolio";
+import * as actions from "../../store/actions/portfolio";
 
 const DropDownBtn = ({ optionData }) => {
   const [open, setOpen] = React.useState(false);
@@ -28,7 +28,7 @@ const DropDownBtn = ({ optionData }) => {
 
     if (newPortfolio) {
       dispatch(
-        portfolioActions.setPortfolio(
+        actions.setPortfolio(
           newPortfolio(currentPrice, volatility, optionData, interest)
         )
       );

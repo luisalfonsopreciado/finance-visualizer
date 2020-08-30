@@ -53,32 +53,13 @@ export const UPDATE_VOLATILITY = "UPDATE_VOLATILITY";
 export const UPDATE_INTEREST = "UPDATE_INTEREST";
 export const UPDATE_TICKER = "UPDATE_TICKER";
 export const RESET_DATA = "RESET_DATA";
+export const UPDATE_STOCK_DATA = "UPDATE_STOCK_DATA";
 
-export const updatePrice = (price) => {
+export const updateStockData = (property, value) => {
   return {
-    type: UPDATE_PRICE,
-    price,
-  };
-};
-
-export const updateTicker = (ticker) => {
-  return {
-    type: UPDATE_TICKER,
-    ticker,
-  };
-};
-
-export const updateVolatility = (volatility) => {
-  return {
-    type: UPDATE_VOLATILITY,
-    volatility,
-  };
-};
-
-export const updateInterest = (interest) => {
-  return {
-    type: UPDATE_INTEREST,
-    interest,
+    type: UPDATE_STOCK_DATA,
+    property,
+    value,
   };
 };
 
