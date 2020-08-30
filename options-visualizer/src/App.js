@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import Payoff from "./components/Payoff";
 import StockData from "./components/StockData";
 import Panel from "./components/Panel";
 import * as util from "./utility";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, connect } from "react-redux";
 import Navigation from "./components/Navigation/Navigation";
 import moment from "moment";
 import { liveDataContext } from "./context/liveData";
@@ -25,7 +25,6 @@ import HighStock from "./components/HighStock";
 const App = () => {
   const { portfolio, stockData } = useSelector((state) => state.portfolio);
   const { volatility, interest, currentPrice } = stockData;
-  console.log(portfolio);
   const dispatch = useDispatch();
   const [data, setData] = useState(null);
   const [errors, setErrors] = useState(null);
@@ -54,7 +53,7 @@ const App = () => {
   }, []);
 
   // Update and Validate User Input Data
-  const updateData = useCallback(() => {
+  const updateData = () => {
     // Validate Empty Portfolio
     if (Object.keys(portfolio).length === 0)
       return setErrs("Add contracts to Visualize");
@@ -315,13 +314,12 @@ const App = () => {
     }
 
     setData({ data: result, Ydomain });
-  }, [portfolio, stockData, setErrs, maxX, minX, viewHighChart]);
+  };
 
   // Custom hook used to Reset Portfolio only when liveMode is Toggled
   useUpdateEffect(() => {
     // To be run on update
     setErrors(null);
-    // dispatch();
     dispatch(actions.resetPortfolio());
     setData(null);
     setOptionData(null);
@@ -334,10 +332,10 @@ const App = () => {
     fetchStockData();
   }, [optionData]);
 
-  // Custom hook used to Update/Validate portfolio whenever changed
-  useUpdateEffect(() => {
+  // Updating data to display
+  useEffect(() => {
     updateData();
-  }, [portfolio, updateData, viewHighChart]);
+  }, [portfolio, maxX, minX]);
 
   // Fetch the option Data when Search is Clicked
   const fetchOptionData = async (ticker) => {

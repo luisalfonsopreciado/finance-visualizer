@@ -9,7 +9,6 @@ import * as actions from "../store/actions/portfolio";
 // TODO: make contract component lean by outsorcing logic to redux
 const Contract = (props) => {
   const { data, optionData } = props;
-  const { updateContract } = props;
 
   /*
    If optionData is defined then the strike prices must adjust to the
@@ -26,16 +25,8 @@ const Contract = (props) => {
   // Stock data from redux
   const { stockData } = useSelector((state) => state.portfolio);
 
-  // Calculate dateDifference in years, used in theoretical black scholes
-  const dateDiff = util.dateDiffInYears(data.date);
-
   // Calculate the price based on Black-Scholes model
   const [price, setPrice] = useState(data.price);
-
-  // Update the price every time it changes
-  useUpdateEffect(() => {
-    updateContract(data.contractName, "price", price);
-  }, [price]);
 
   // Set expiration Dates when component mounts
   useEffect(() => {
@@ -70,9 +61,13 @@ const Contract = (props) => {
 
       // Set the price depending if we are short or long
       if (data.direction === "Buy") {
-        setPrice(contract.ask);
+        dispatch(
+          actions.updateContract(data.contractName, "price", contract.ask)
+        );
       } else {
-        setPrice(contract.bid);
+        dispatch(
+          actions.updateContract(data.contractName, "price", contract.bid)
+        );
       }
     }
   }, [data.strike, setPrice]);
@@ -98,15 +93,11 @@ const Contract = (props) => {
 
       // Update strikeprices
       setStrikePrices(strikesAtDate);
-
-      updateContract(data.contractName, "date", selectedDate);
     }
   }, [selectedDate]);
 
   // Update type
   useUpdateEffect(() => {
-    // updateContract(data.contractName, "type", data.type);
-
     // If we just changed to cash
     if (data.type === util.CASH) {
       // Set Debit/Credit equal to the stock price
@@ -162,11 +153,7 @@ const Contract = (props) => {
           className="form-control"
           onChange={(e) =>
             dispatch(
-              actions.updateContract(
-                data.contractName,
-                "type",
-                e.target.value
-              )
+              actions.updateContract(data.contractName, "type", e.target.value)
             )
           }
           value={data.type}
@@ -259,7 +246,7 @@ const Contract = (props) => {
       </td>
       {/* Debit/Credit: TODO add as property in Option Obj, updated in */}
       <td style={{ verticalAlign: "middle" }}>
-        <b>{(data.direction === SELL ? price : -price) * data.amount} </b>
+        <b>{data.debitCredit * data.amount} </b>
       </td>
       {/* Remove Button */}
       <td style={{ verticalAlign: "middle" }}>
@@ -267,9 +254,7 @@ const Contract = (props) => {
           type="button"
           aria-label="Left Align"
           className="btn btn-danger btn-s"
-          onClick={() =>
-            dispatch(actions.removeContract(data.contractName))
-          }
+          onClick={() => dispatch(actions.removeContract(data.contractName))}
         >
           <span aria-hidden="true">Remove</span>
         </button>
@@ -334,9 +319,7 @@ const Panel = (props) => {
                   type="submit"
                   className="btn btn-success btn-s"
                   onClick={() =>
-                    dispatch(
-                      actions.addContract(new Option(), stockData)
-                    )
+                    dispatch(actions.addContract(new Option(), stockData))
                   }
                 >
                   Add Leg

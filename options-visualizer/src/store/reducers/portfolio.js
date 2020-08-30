@@ -32,10 +32,11 @@ const updateContract = (state, action) => {
   const newPortfolio = { ...state.portfolio };
   newPortfolio[action.contractName][action.property] = action.value;
   updatePortfolioPrices(newPortfolio, state.stockData);
-  return { portfolio: newPortfolio, ...state };
+  return { portfolio: newPortfolio, stockData: { ...state.stockData } };
 };
 
 const setPortfolio = (state, action) => {
+  updatePortfolioPrices(action.newPortfolio, state.stockData);
   return { portfolio: action.newPortfolio, stockData: { ...state.stockData } };
 };
 

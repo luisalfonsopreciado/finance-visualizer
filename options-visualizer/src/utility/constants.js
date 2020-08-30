@@ -22,7 +22,13 @@ export const stockDataInitialState = {
 export const updatePortfolioPrices = (portfolio, stockData) => {
   for (let key in portfolio) {
     const contract = portfolio[key];
-    contract.price = getPrice(contract, stockData);
+    if (contract.type === CASH) {
+      contract.price = stockData.currentPrice;
+    } else {
+      contract.price = getPrice(contract, stockData);
+    }
+    contract.debitCredit =
+      contract.direction === SELL ? contract.price : -contract.price;
   }
 };
 
@@ -132,6 +138,8 @@ const initialPortfolioId = {
 const price = getPrice(initialPortfolioId, stockDataInitialState);
 
 initialPortfolioId.price = price;
+
+initialPortfolioId.debitCredit = price;
 
 // The initial Theoretical Option Portfolio
 export const initialPortfolio = {
