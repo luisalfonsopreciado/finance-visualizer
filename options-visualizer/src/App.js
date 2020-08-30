@@ -26,6 +26,7 @@ import HighStock from "./components/HighStock";
 const App = () => {
   const { portfolio, stockData } = useSelector((state) => state.portfolio);
   const { volatility, interest, currentPrice } = stockData;
+  console.log(portfolio);
   const dispatch = useDispatch();
   const [data, setData] = useState(null);
   const [errors, setErrors] = useState(null);

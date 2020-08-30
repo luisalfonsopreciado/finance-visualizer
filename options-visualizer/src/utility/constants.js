@@ -21,13 +21,15 @@ export const stockDataInitialState = {
 
 export const getPrice = (contract, stockData) => {
   const timeDiff = dateDiffInYears(contract.date);
-  return BlackScholes(
-    contract.type,
-    stockData.currentPrice,
-    contract.strike,
-    timeDiff,
-    stockData.interest,
-    stockData.volatility
+  return round(
+    BlackScholes(
+      contract.type,
+      stockData.currentPrice,
+      contract.strike,
+      timeDiff,
+      stockData.interest,
+      stockData.volatility
+    )
   );
 };
 

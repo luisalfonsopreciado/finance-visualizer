@@ -126,10 +126,10 @@ const Contract = (props) => {
           value={data.direction}
           onChange={(e) =>
             dispatch(
-              portfolioActions.updateDirection(
+              portfolioActions.updateContract(
                 data.contractName,
-                e.target.value,
-                stockData
+                "direction",
+                e.target.value
               )
             )
           }
@@ -146,10 +146,10 @@ const Contract = (props) => {
           className="form-control form-control-inline"
           onChange={(e) =>
             dispatch(
-              portfolioActions.updateAmount(
+              portfolioActions.updateContract(
                 data.contractName,
-                e.target.value,
-                stockData
+                "amount",
+                e.target.value
               )
             )
           }
@@ -162,10 +162,10 @@ const Contract = (props) => {
           className="form-control"
           onChange={(e) =>
             dispatch(
-              portfolioActions.updateKind(
+              portfolioActions.updateContract(
                 data.contractName,
-                e.target.value,
-                stockData
+                "type",
+                e.target.value
               )
             )
           }
@@ -186,10 +186,10 @@ const Contract = (props) => {
                 id="exampleFormControlSelect1"
                 onChange={(e) =>
                   dispatch(
-                    portfolioActions.updateStrike(
+                    portfolioActions.updateContract(
                       data.contractName,
-                      e.target.value,
-                      stockData
+                      "strike",
+                      e.target.value
                     )
                   )
                 }
@@ -207,10 +207,10 @@ const Contract = (props) => {
               className="form-control form-control-inline"
               onChange={(e) =>
                 dispatch(
-                  portfolioActions.updateStrike(
+                  portfolioActions.updateContract(
                     data.contractName,
-                    e.target.value,
-                    stockData
+                    "strike",
+                    e.target.value
                   )
                 )
               }
@@ -229,10 +229,10 @@ const Contract = (props) => {
               className="form-control form-control-inline"
               onChange={(e) =>
                 dispatch(
-                  portfolioActions.updateExpiry(
+                  portfolioActions.updateContract(
                     data.contractName,
-                    e.target.value,
-                    stockData
+                    "date",
+                    e.target.value
                   )
                 )
               }

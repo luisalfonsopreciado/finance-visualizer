@@ -7,71 +7,35 @@ export const initialState = {
   stockData: { ...stockDataInitialState },
 };
 
-const resetPortfolio = () => {
-  return {};
+const resetPortfolio = (state, action) => {
+  return { portfolio: {}, stockData: { ...state.stockData } };
 };
 
 const removeContract = (state, action) => {
-  const newPortfolio = { ...state };
+  const newPortfolio = { ...state.portfolio };
   delete newPortfolio[action.contractId];
-  return newPortfolio;
+  return { portfolio: newPortfolio, stockData: { ...state.stockData } };
 };
 
 const addContract = (state, action) => {
   const { contractName } = action.newContract;
-  const newState = { ...state };
-  newState[contractName] = action.newContract;
-  newState[contractName].price = getPrice(
-    newState[contractName],
-    action.stockData
+  const newPortfolio = { ...state.portfolio };
+  newPortfolio[contractName] = action.newContract;
+  newPortfolio[contractName].price = getPrice(
+    newPortfolio[contractName],
+    state.stockData
   );
-  return newState;
+  return { portfolio: newPortfolio, stockData: { ...state.stockData } };
 };
 
-const updateStrike = (state, action) => {
-  const newPortfolio = { ...state };
-  newPortfolio[action.contractName].strike = action.strike;
+const updateContract = (state, action) => {
+  const newPortfolio = { ...state.portfolio };
+  newPortfolio[action.contractName][action.property] = action.value;
   newPortfolio[action.contractName].price = getPrice(
     newPortfolio[action.contractName],
-    action.stockData
+    state.stockData
   );
-  return newPortfolio;
-};
-
-const updateKind = (state, action) => {
-  const newPortfolio = { ...state };
-  newPortfolio[action.contractName].type = action.kind;
-  newPortfolio[action.contractName].price = getPrice(
-    newPortfolio[action.contractName],
-    action.stockData
-  );
-  return newPortfolio;
-};
-
-const updateExpiry = (state, action) => {
-  const newPortfolio = { ...state };
-  newPortfolio[action.contractName].date = action.expiry;
-  newPortfolio[action.contractName].price = getPrice(
-    newPortfolio[action.contractName],
-    action.stockData
-  );
-  return newPortfolio;
-};
-
-const updateAmount = (state, action) => {
-  const newPortfolio = { ...state };
-  newPortfolio[action.contractName].amount = action.amount;
-  return newPortfolio;
-};
-
-const updateDirection = (state, action) => {
-  const newPortfolio = { ...state };
-  newPortfolio[action.contractName].direction = action.direction;
-  newPortfolio[action.contractName].price = getPrice(
-    newPortfolio[action.contractName],
-    action.stockData
-  );
-  return newPortfolio;
+  return { portfolio: newPortfolio, ...state };
 };
 
 const setPortfolio = (state, action) => {
@@ -79,49 +43,53 @@ const setPortfolio = (state, action) => {
 };
 
 const updatePrices = (state, action) => {
-  const newPortfolio = { ...state };
+  const newPortfolio = { ...state.portfolio };
   for (let key in newPortfolio) {
     const contract = newPortfolio[key];
-    contract.price = getPrice(contract, action.stockData);
+    contract.price = getPrice(contract, state.stockData);
   }
-  return newPortfolio;
+  return { portfolio: newPortfolio, ...state };
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
     // Portfolio
-    case cts.UPDATE_AMOUNT:
-      return updateAmount(state, action);
-    case cts.UPDATE_DIRECTION:
-      return updateDirection(state, action);
-    case cts.UPDATE_EXPIRY:
-      return updateExpiry(state, action);
-    case cts.UPDATE_KIND:
-      return updateKind(state, action);
-    case cts.UPDATE_STRIKE:
-      return updateStrike(state, action);
     case cts.ADD_CONTRACT:
       return addContract(state, action);
     case cts.RESET_PORTFOLIO:
-      return resetPortfolio();
+      return resetPortfolio(state, action);
     case cts.SET_PORTFOLIO:
       return setPortfolio(state, action);
     case cts.REMOVE_CONTRACT:
       return removeContract(state, action);
+    case cts.UPDATE_CONTRACT:
+      return updateContract(state, action);
     case cts.UPDATE_PRICES:
       return updatePrices(state, action);
 
     // Stock Data
     case cts.UPDATE_PRICE:
-      return { ...state, currentPrice: action.price };
+      return {
+        ...state,
+        stockData: { ...state.stockData, currentPrice: action.price },
+      };
     case cts.UPDATE_VOLATILITY:
-      return { ...state, volatility: action.volatility };
+      return {
+        ...state,
+        stockData: { ...state.stockData, volatility: action.volatility },
+      };
     case cts.UPDATE_INTEREST:
-      return { ...state, interest: action.interest };
+      return {
+        ...state,
+        stockData: { ...state.stockData, interest: action.interest },
+      };
     case cts.UPDATE_TICKER:
-      return { ...state, ticker: action.ticker };
+      return {
+        ...state,
+        stockData: { ...state.stockData, ticker: action.ticker },
+      };
     case cts.RESET_DATA:
-      return { ...stockDataInitialState };
+      return { ...state, stockData: { ...stockDataInitialState } };
     default:
       // Will be run initially
       return state;
