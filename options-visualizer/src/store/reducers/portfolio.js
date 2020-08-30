@@ -56,6 +56,16 @@ const updateStockData = (state, action) => {
   };
 };
 
+const updateAllContracts = (state, action) => {
+  const newPortfolio = { ...state.portfolio };
+  for (let key in newPortfolio) {
+    const contract = newPortfolio[key];
+    contract[action.property] = action.value;
+  }
+  updatePortfolioPrices(state.portfolio, state.stockData);
+  return { portfolio: newPortfolio, stockData: { ...state.stockData } };
+};
+
 export default (state = initialState, action) => {
   switch (action.type) {
     // Portfolio
@@ -71,6 +81,8 @@ export default (state = initialState, action) => {
       return updateContract(state, action);
     case cts.UPDATE_PRICES:
       return updatePrices(state, action);
+    case cts.UPDATE_ALL_CONTRACTS:
+      return updateAllContracts(state, action);
 
     // Stock Data
     case cts.UPDATE_STOCK_DATA:

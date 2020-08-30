@@ -4,6 +4,7 @@ export const RESET_PORTFOLIO = "RESET_PORTFOLIO";
 export const SET_PORTFOLIO = "SET_PORTFOLIO";
 export const UPDATE_PRICES = "UPDATE_PRICES";
 export const UPDATE_CONTRACT = "UPDATE_CONTRACT";
+export const UPDATE_ALL_CONTRACTS = "UPDATE_ALL_CONTRACTS";
 
 export const addContract = (newContract) => {
   return {
@@ -18,6 +19,14 @@ export const updateContract = (contractName, property, value) => {
     property,
     value,
     contractName,
+  };
+};
+
+export const updateAllContracts = (property, value) => {
+  return {
+    type: UPDATE_ALL_CONTRACTS,
+    property,
+    value,
   };
 };
 

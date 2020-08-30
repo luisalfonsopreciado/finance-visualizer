@@ -378,13 +378,9 @@ const App = () => {
   };
 
   const updateDaysToExpiration = (days) => {
-    const newPortfolio = { ...portfolio };
-    for (let key in newPortfolio) {
-      const contract = newPortfolio[key];
-      const newDate = util.addDays(new Date(), days);
-      contract.date = moment(newDate).format("YYYY-MM-DD");
-    }
-    dispatch(actions.setPortfolio(newPortfolio));
+    let newDate = util.addDays(new Date(), days);
+    newDate = moment(newDate).format("YYYY-MM-DD");
+    dispatch(actions.updateAllContracts("date", newDate));
     setDaysToExpiration(days);
   };
 
