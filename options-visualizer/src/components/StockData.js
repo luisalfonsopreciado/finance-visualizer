@@ -1,9 +1,9 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import * as stockActions from "../store/actions/stockData";
+import * as actions from "../store/actions/portfolio";
 
 const StockData = ({ liveMode }) => {
-  const stockData = useSelector((state) => state.stockData);
+  const { stockData } = useSelector((state) => state.portfolio);
   const dispatch = useDispatch();
 
   return (
@@ -20,9 +20,11 @@ const StockData = ({ liveMode }) => {
                 className="form-control"
                 value={stockData.currentPrice}
                 disabled={liveMode}
-                onChange={(e) =>
-                  dispatch(stockActions.updatePrice(e.target.value))
-                }
+                onChange={(e) => {
+                  dispatch(
+                    actions.updateStockData("currentPrice", e.target.value)
+                  );
+                }}
               />
             </div>
           </div>
@@ -35,7 +37,9 @@ const StockData = ({ liveMode }) => {
                 className="form-control"
                 value={stockData.volatility}
                 onChange={(e) =>
-                  dispatch(stockActions.updateVolatility(e.target.value))
+                  dispatch(
+                    actions.updateStockData("volatility", e.target.value)
+                  )
                 }
               />
             </div>
@@ -49,7 +53,9 @@ const StockData = ({ liveMode }) => {
                 className="form-control"
                 value={stockData.interest}
                 onChange={(e) =>
-                  dispatch(stockActions.updateInterest(e.target.value))
+                  dispatch(
+                    actions.updateStockData("interest", e.target.value)
+                  )
                 }
               />
             </div>

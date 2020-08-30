@@ -1,16 +1,16 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import Payoff from "./components/Payoff";
 import StockData from "./components/StockData";
 import Panel from "./components/Panel";
 import * as util from "./utility";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, connect } from "react-redux";
 import Navigation from "./components/Navigation/Navigation";
 import moment from "moment";
 import { liveDataContext } from "./context/liveData";
 import Search from "./components/Search";
 import axios from "axios";
 import ColorPicker from "./utility/DS/ColorPicker";
-import * as actions from "./store/actions/stockData";
+import * as actions from "./store/actions/portfolio";
 import { Row, Col, Container } from "react-bootstrap";
 import useUpdateEffect from "./hooks/useUpdateEffect";
 import Error from "./components/Error/Error";
@@ -23,11 +23,12 @@ import HighChart from "./components/PayoffHighChart";
 import HighStock from "./components/HighStock";
 
 const App = () => {
-  const [portfolio, setPortfolio] = useState(util.initialPortfolio);
+  const { portfolio, stockData } = useSelector((state) => state.portfolio);
+  const { volatility, interest, currentPrice } = stockData;
+  const dispatch = useDispatch();
   const [data, setData] = useState(null);
   const [errors, setErrors] = useState(null);
   const [stockErrors, setStockErrors] = useState(null);
-  const stockData = useSelector((state) => state.stockData);
   const [liveMode, setLiveMode] = useState(false);
   const [optionData, setOptionData] = useState();
   const [minX, setMinX] = useState();
@@ -37,8 +38,6 @@ const App = () => {
   const [viewHighStock, setViewHighStock] = useState(true);
   const [hcData, setHcData] = useState(null);
   const value = { liveMode, setLiveMode };
-  const dispatch = useDispatch();
-  const { volatility, interest, currentPrice } = useSelector((state) => state.stockData);
   const [daysToExpiration, setDaysToExpiration] = useState(null);
 
   // Set Error Message as JSX
@@ -54,7 +53,7 @@ const App = () => {
   }, []);
 
   // Update and Validate User Input Data
-  const updateData = useCallback(() => {
+  const updateData = () => {
     // Validate Empty Portfolio
     if (Object.keys(portfolio).length === 0)
       return setErrs("Add contracts to Visualize");
@@ -315,28 +314,28 @@ const App = () => {
     }
 
     setData({ data: result, Ydomain });
-  }, [portfolio, stockData, setErrs, maxX, minX, viewHighChart]);
+  };
 
   // Custom hook used to Reset Portfolio only when liveMode is Toggled
   useUpdateEffect(() => {
     // To be run on update
     setErrors(null);
-    setPortfolio({});
+    dispatch(actions.resetPortfolio());
     setData(null);
     setOptionData(null);
   }, [liveMode]);
 
   // Custom hook used to Reset Porfolio only when optionData changes
   useUpdateEffect(() => {
-    setPortfolio({});
+    dispatch(actions.resetPortfolio());
     setStockChartData(null); // Display Loading
     fetchStockData();
   }, [optionData]);
 
-  // Custom hook used to Update/Validate portfolio whenever changed
-  useUpdateEffect(() => {
+  // Updating data to display
+  useEffect(() => {
     updateData();
-  }, [portfolio, updateData, viewHighChart]);
+  }, [portfolio, maxX, minX]);
 
   // Fetch the option Data when Search is Clicked
   const fetchOptionData = async (ticker) => {
@@ -346,8 +345,8 @@ const App = () => {
           process.env.REACT_APP_API_KEY
       );
       setOptionData(data);
-      dispatch(actions.updatePrice(data.lastTradePrice));
-      dispatch(actions.updateTicker(data.code));
+      dispatch(actions.updateStockData("currentPrice", data.lastTradePrice));
+      dispatch(actions.updateStockData("ticker", data.code));
       if (data.data.length === 0) {
         setStockErrs(util.STOCK_NO_OPTIONS, setStockErrors);
       } else {
@@ -377,20 +376,16 @@ const App = () => {
   };
 
   const updateDaysToExpiration = (days) => {
-    const newPortfolio = { ...portfolio };
-    for (let key in newPortfolio) {
-      const contract = newPortfolio[key];
-      const newDate = util.addDays(new Date(), days);
-      contract.date = moment(newDate).format("YYYY-MM-DD");
-    }
-    setPortfolio(newPortfolio);
+    let newDate = util.addDays(new Date(), days);
+    newDate = moment(newDate).format("YYYY-MM-DD");
+    dispatch(actions.updateAllContracts("date", newDate));
     setDaysToExpiration(days);
   };
 
   return (
     <>
       <liveDataContext.Provider value={value}>
-        <Navigation setPortfolio={setPortfolio} optionData={optionData} />
+        <Navigation optionData={optionData} />
         <Container>
           <Row>
             <Col md={12}>
@@ -408,9 +403,7 @@ const App = () => {
               <Panel
                 optionData={optionData}
                 portfolio={portfolio}
-                setPortfolio={setPortfolio}
                 visualize={updateData}
-                // currentPrice={100}
               />
             </Col>
           </Row>
@@ -425,14 +418,18 @@ const App = () => {
                     max={150}
                     title={"Volatility"}
                     value={+volatility}
-                    setValue={(val) => dispatch(actions.updateVolatility(val))}
+                    setValue={(val) =>
+                      dispatch(actions.updateStockData("volatility", val))
+                    }
                   />
                   <Slider
                     min={-20}
                     max={150}
                     title={"Interest"}
                     value={+interest}
-                    setValue={(val) => dispatch(actions.updateInterest(val))}
+                    setValue={(val) =>
+                      dispatch(actions.updateStockData("interest", val))
+                    }
                   />
                   {!liveMode && (
                     <Slider
@@ -449,7 +446,9 @@ const App = () => {
                       max={2000}
                       title={"StockPrice"}
                       value={currentPrice}
-                      setValue={(val) => dispatch(actions.updatePrice(val))}
+                      setValue={(val) =>
+                        dispatch(actions.updateStockData("currentPrice", val))
+                      }
                     />
                   )}
                 </div>

@@ -4,7 +4,7 @@ import { Card } from "react-bootstrap";
 import moment from "moment";
 
 const SecurityInfo = () => {
-  const stockData = useSelector((state) => state.stockData);
+  const { stockData } = useSelector((state) => state.portfolio);
 
   return (
     <Card>

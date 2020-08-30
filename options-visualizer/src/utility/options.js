@@ -1,7 +1,6 @@
 import * as cts from "./constants";
 import Option from "./Option";
 
-
 /**
  * Evaluates a Payoff Function
  *
@@ -64,9 +63,9 @@ export function BlackScholes(optionType, S, X, T, r, v) {
   var d1 = (Math.log(S / X) + (r + (v * v) / 2) * T) / (v * Math.sqrt(T));
   var d2 = d1 - v * Math.sqrt(T);
   if (optionType === cts.CALL) {
-    return S * CND(d1) - X * Math.exp(-r * T) * CND(d2);
+    return cts.round(S * CND(d1) - X * Math.exp(-r * T) * CND(d2));
   } else {
-    return X * Math.exp(-r * T) * CND(-d2) - S * CND(-d1);
+    return cts.round(X * Math.exp(-r * T) * CND(-d2) - S * CND(-d1));
   }
 }
 

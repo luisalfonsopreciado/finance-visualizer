@@ -6,26 +6,16 @@ import Paper from "@material-ui/core/Paper";
 import Popper from "@material-ui/core/Popper";
 import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
-import { makeStyles } from "@material-ui/core/styles";
 import * as util from "../../utility";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import * as actions from "../../store/actions/portfolio";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
-  paper: {
-    marginRight: theme.spacing(2),
-  },
-}));
-
-const DropDownBtn = ({ setPortfolio, optionData }) => {
-  const classes = useStyles();
+const DropDownBtn = ({ optionData }) => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
-  const { currentPrice, volatility, interest } = useSelector(
-    (state) => state.stockData
-  );
+  const { stockData } = useSelector((state) => state.portfolio);
+  const { currentPrice, volatility, interest } = stockData;
+  const dispatch = useDispatch();
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -35,10 +25,15 @@ const DropDownBtn = ({ setPortfolio, optionData }) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-    newPortfolio &&
-      setPortfolio(
-        newPortfolio(currentPrice, volatility, optionData, interest)
+
+    if (newPortfolio) {
+      dispatch(
+        actions.setPortfolio(
+          newPortfolio(currentPrice, volatility, optionData, interest)
+        )
       );
+    }
+
     setOpen(false);
   };
 
