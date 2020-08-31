@@ -1,68 +1,66 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../store/actions/portfolio";
+import {
+  Card,
+  CardContent,
+  CardActions,
+  Typography,
+  TextField,
+  InputLabel,
+  CardHeader,
+} from "@material-ui/core";
+import moment from "moment"
 
 const StockData = ({ liveMode }) => {
   const { stockData } = useSelector((state) => state.portfolio);
   const dispatch = useDispatch();
 
   return (
-    <div className="panel panel-primary">
-      <div className="panel-heading">Underlying stock</div>
-      <div className="panel-body">
-        <form className="form-horizontal">
-          <div className="form-group">
-            <label className="col-sm-5 control-label">Current price ($)</label>
-            <div className="col-sm-7">
-              <input
-                type="number"
-                placeholder="CurrentPrice"
-                className="form-control"
-                value={stockData.currentPrice}
-                disabled={liveMode}
-                onChange={(e) => {
-                  dispatch(
-                    actions.updateStockData("currentPrice", e.target.value)
-                  );
-                }}
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="col-sm-5 control-label">Volatility (%)</label>
-            <div className="col-sm-7">
-              <input
-                type="number"
-                placeholder="Volatility"
-                className="form-control"
-                value={stockData.volatility}
-                onChange={(e) =>
-                  dispatch(
-                    actions.updateStockData("volatility", e.target.value)
-                  )
-                }
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="col-sm-5 control-label">Interest Rate (%)</label>
-            <div className="col-sm-7">
-              <input
-                type="number"
-                placeholder="Interest Rate"
-                className="form-control"
-                value={stockData.interest}
-                onChange={(e) =>
-                  dispatch(
-                    actions.updateStockData("interest", e.target.value)
-                  )
-                }
-              />
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
+    <Card>
+      <CardHeader
+        title="Stock Data"
+        subheader={moment().format("MM-DD-YYYY")}
+      ></CardHeader>
+      <CardContent>
+        <InputLabel htmlFor="current-price">Current Stock Price ($)</InputLabel>
+        <TextField
+          id="current-price"
+          label="Current Price"
+          variant="filled"
+          type="number"
+          placeholder="Current Price"
+          onChange={(e) => {
+            dispatch(actions.updateStockData("currentPrice", e.target.value));
+          }}
+          value={stockData.currentPrice}
+        ></TextField>
+        <InputLabel htmlFor="current-price">Volatility (%)</InputLabel>
+        <TextField
+          id="outlined-basic"
+          label="Volatility"
+          variant="filled"
+          type="number"
+          placeholder="Volatility"
+          onChange={(e) =>
+            dispatch(actions.updateStockData("volatility", e.target.value))
+          }
+          value={stockData.volatility}
+        ></TextField>
+        <InputLabel htmlFor="current-price">Interest Rate(%)</InputLabel>
+        <TextField
+          id="outlined-basic"
+          label="Interest"
+          variant="filled"
+          type="number"
+          placeholder="Interest"
+          onChange={(e) =>
+            dispatch(actions.updateStockData("interest", e.target.value))
+          }
+          value={stockData.volatility}
+        ></TextField>
+      </CardContent>
+    </Card>
   );
 };
 

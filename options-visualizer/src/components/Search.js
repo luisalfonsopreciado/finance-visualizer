@@ -3,8 +3,8 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import symbols from "../symbols.json";
 import { Button } from "@material-ui/core";
-import { Container, Col, Row } from "react-bootstrap";
-import { makeStyles } from "@material-ui/core";
+import {  Col, Row } from "react-bootstrap";
+import { makeStyles, Container } from "@material-ui/core";
 
 const useStyles = makeStyles({
   item: {
@@ -30,8 +30,6 @@ const Search = ({ searchFunc }) => {
     return options.filter((o) => o.displaySymbol.includes(query));
   };
 
-  // console.log("Search Rendered")
-
   return (
     <>
       {/* A Warning message is outputed in console: Fix later */}
@@ -40,6 +38,7 @@ const Search = ({ searchFunc }) => {
           <Col md={10}>
             <Autocomplete
               id="combo-box-demo"
+              color="primary"
               options={symbols}
               getOptionLabel={(option) =>
                 option.displaySymbol + ": " + option.description
@@ -51,6 +50,7 @@ const Search = ({ searchFunc }) => {
                   {...params}
                   label="Search Ticker"
                   variant="outlined"
+                  color="primary"
                 />
               )}
               noOptionsText={

@@ -10,6 +10,8 @@ import FormGroup from "@material-ui/core/FormGroup";
 import DropDownBtn from "./DropDownBtn";
 import { useDispatch } from "react-redux";
 import * as actions from "../../store/actions/portfolio";
+import GitHubIcon from "@material-ui/icons/GitHub";
+import { IconButton } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,7 +41,7 @@ export default function MenuAppBar({ setPortfolio, optionData }) {
         <Typography variant="h3" className={classes.title}>
           Option Strategy Builder
         </Typography>
-        <DropDownBtn setPortfolio={setPortfolio} optionData={optionData}/>
+        <DropDownBtn setPortfolio={setPortfolio} optionData={optionData} />
         <FormGroup>
           <FormControlLabel
             control={
@@ -57,6 +59,14 @@ export default function MenuAppBar({ setPortfolio, optionData }) {
             label={"Live Data Mode"}
           />
         </FormGroup>
+        <IconButton
+          aria-label="delete"
+          color="secondary"
+          href="https://github.com/luisalfonsopreciado/finance-visualizer"
+          target="_blank"
+        >
+          <GitHubIcon />
+        </IconButton>
       </Toolbar>
     </AppBar>
   );

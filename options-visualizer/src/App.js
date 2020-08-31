@@ -11,14 +11,14 @@ import Search from "./components/Search";
 import axios from "axios";
 import ColorPicker from "./utility/DS/ColorPicker";
 import * as actions from "./store/actions/portfolio";
-import { Row, Col, Container } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import useUpdateEffect from "./hooks/useUpdateEffect";
 import Error from "./components/Error/Error";
 import SecurityInfo from "./components/SecurityInfo";
 import Slider from "./components/Slider";
 import AnyChart from "./components/StockAnyChart";
 import { Switch } from "@material-ui/core";
-import { FormGroup, FormControlLabel } from "@material-ui/core";
+import { FormGroup, FormControlLabel, Container } from "@material-ui/core";
 import HighChart from "./components/PayoffHighChart";
 import HighStock from "./components/HighStock";
 
