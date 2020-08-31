@@ -11,7 +11,6 @@ import Search from "./components/Search";
 import axios from "axios";
 import ColorPicker from "./utility/DS/ColorPicker";
 import * as actions from "./store/actions/portfolio";
-import { Row, Col } from "react-bootstrap";
 import useUpdateEffect from "./hooks/useUpdateEffect";
 import Error from "./components/Error/Error";
 import SecurityInfo from "./components/SecurityInfo";
@@ -19,6 +18,8 @@ import Slider from "./components/Slider";
 import AnyChart from "./components/StockAnyChart";
 import { Switch } from "@material-ui/core";
 import { FormGroup, FormControlLabel, Container } from "@material-ui/core";
+import { Card, CardHeader, CardContent } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import HighChart from "./components/PayoffHighChart";
 import HighStock from "./components/HighStock";
 
@@ -372,7 +373,13 @@ const App = () => {
 
       // Unix milliseconds
       for (let i = 0; i < length; i++) {
-        result.push([data.t[i] * (1000) , data.o[i], data.h[i], data.l[i], data.c[i]]);
+        result.push([
+          data.t[i] * 1000,
+          data.o[i],
+          data.h[i],
+          data.l[i],
+          data.c[i],
+        ]);
       }
       console.log(result);
       setStockChartData(result);
@@ -393,32 +400,32 @@ const App = () => {
       <liveDataContext.Provider value={value}>
         <Navigation optionData={optionData} />
         <Container>
-          <Row>
-            <Col md={12}>
+          <Grid container>
+            <Grid item md={12}>
               {stockData.ticker !== "Theoretical" && <SecurityInfo />}
-            </Col>
-          </Row>
-          <Row>
-            <Col md={12}>
+            </Grid>
+          </Grid>
+          <Grid container>
+            <Grid item md={12}>
               {liveMode && <Search searchFunc={fetchOptionData} />}
               {stockErrors}
-            </Col>
-          </Row>
-          <Row>
-            <Col md={12}>
+            </Grid>
+          </Grid>
+          <Grid container>
+            <Grid item md={12}>
               <Panel
                 optionData={optionData}
                 portfolio={portfolio}
                 visualize={updateData}
               />
-            </Col>
-          </Row>
-          <Row>
-            <Col md={3}>
+            </Grid>
+          </Grid>
+          <Grid container>
+            <Grid md={3}>
               <StockData liveMode={liveMode} />
-              <div className="panel panel-primary">
-                <div className="panel-heading">Toggle</div>
-                <div className="panel-body">
+              <Card>
+                <CardHeader title="Toggle" />
+                <CardContent>
                   <Slider
                     min={0}
                     max={150}
@@ -457,80 +464,67 @@ const App = () => {
                       }
                     />
                   )}
-                </div>
-              </div>
-            </Col>
-            <Col md={9}>
-              <Row>
-                <Col md={12}>
-                  {errors ? errors : null}
-                  <div className="row">
-                    <div className="col-sm-12">
-                      <div className="panel panel-primary">
-                        <div className="panel-heading">
-                          Option Payoff
-                          <FormGroup>
-                            <FormControlLabel
-                              control={
-                                <Switch
-                                  checked={!viewHighChart}
-                                  onChange={() =>
-                                    setViewHighChart((prev) => !prev)
-                                  }
-                                  aria-label="live mode switch"
-                                />
-                              }
-                              label={"Switch Graph Type"}
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid md={9}>
+              {errors ? errors : null}
+              <Grid container>
+                <Grid item md={12}>
+                  <Card variant="outlined">
+                    <CardHeader title="Option Payoff" />
+                    <CardContent>
+                      <FormGroup>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={!viewHighChart}
+                              onChange={() => setViewHighChart((prev) => !prev)}
+                              aria-label="live mode switch"
                             />
-                          </FormGroup>
-                        </div>
-                        <div className="panel-body">
-                          {!viewHighChart ? (
-                            <Payoff data={data} />
-                          ) : (
-                            <HighChart data={hcData} />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Col>
-              </Row>
-              <Row>
-                <Col md={12}>
-                  <div className="panel panel-primary">
-                    <div className="panel-heading">Change Domain</div>
-                    <div className="panel-body">
-                      <Col md={2}>
-                        <input
-                          type="number"
-                          className="form-control form-control-inline"
-                          placeholder="Auto"
-                          onBlur={(e) => setMinX(e.target.value)}
+                          }
+                          label={"Switch Graph Type"}
                         />
-                      </Col>
-                      <Col md={2}>
-                        <input
-                          type="number"
-                          min="1"
-                          max="5000"
-                          className="form-control form-control-inline"
-                          placeholder="Auto"
-                          onBlur={(e) => setMaxX(e.target.value)}
-                        />
-                      </Col>
-                    </div>
-                  </div>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
+                      </FormGroup>
+
+                      {!viewHighChart ? (
+                        <Payoff data={data} />
+                      ) : (
+                        <HighChart data={hcData} />
+                      )}
+                      <Grid container>
+                        <Grid item md={2}>
+                          <input
+                            type="number"
+                            className="form-control form-control-inline"
+                            placeholder="Auto"
+                            onBlur={(e) => setMinX(e.target.value)}
+                          />
+                        </Grid>
+                        <Grid item md={8}></Grid>
+                        <Grid item md={2}>
+                          <input
+                            type="number"
+                            min="1"
+                            max="5000"
+                            className="form-control form-control-inline"
+                            placeholder="Auto"
+                            onBlur={(e) => setMaxX(e.target.value)}
+                          />
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
         </Container>
       </liveDataContext.Provider>
       <Container>
-        <div className="panel panel-primary">
-          <div className="panel-heading">
-            {stockData.ticker}{" "}
+        <Card variant="outlined">
+          <CardHeader title={stockData.ticker} />
+          <CardContent>
             <FormGroup>
               <FormControlLabel
                 control={
@@ -543,8 +537,6 @@ const App = () => {
                 label={"Switch Chart Type"}
               />
             </FormGroup>
-          </div>
-          <div className="panel-body">
             {stockChartData && optionData ? (
               <>
                 {viewHighStock ? (
@@ -571,8 +563,8 @@ const App = () => {
                 )}
               </>
             )}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </Container>
     </>
   );

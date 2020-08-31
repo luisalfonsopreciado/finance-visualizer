@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import * as util from "../utility";
 import useUpdateEffect from "../hooks/useUpdateEffect";
 import * as actions from "../store/actions/portfolio";
+import { Card, CardHeader, CardContent } from "@material-ui/core";
 
 // TODO: make contract component lean by outsorcing logic to redux
 const Contract = (props) => {
@@ -301,9 +302,9 @@ const Panel = (props) => {
   const { premium, debitcredit, amount } = calculateTotal();
 
   return (
-    <div className="panel panel-primary">
-      <div className="panel-heading">Option Portfolio</div>
-      <div className="panel-body">
+    <Card variant="outlined">
+      <CardHeader title="Option Portfolio" />
+      <CardContent>
         <table className="table table-condensed">
           <thead>
             <tr>
@@ -358,8 +359,8 @@ const Panel = (props) => {
             </tr>
           </tbody>
         </table>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

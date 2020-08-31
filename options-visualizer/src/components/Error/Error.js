@@ -1,19 +1,15 @@
 import React from "react";
+import MuiAlert from '@material-ui/lab/Alert';
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const Error = (props) => {
   return (
-    <div className="alert alert-danger " role="alert">
-      <strong>{props.children}</strong>
-      <button
-        type="button"
-        className="close"
-        data-dismiss="alert"
-        aria-label="Close"
-        onClick={props.removeFunc}
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
+    <Alert severity="error" onClick={props.removeFunc}>
+      {props.children}
+    </Alert>
   );
 };
 export default Error;

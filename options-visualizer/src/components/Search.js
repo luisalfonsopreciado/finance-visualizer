@@ -3,8 +3,7 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import symbols from "../symbols.json";
 import { Button } from "@material-ui/core";
-import {  Col, Row } from "react-bootstrap";
-import { makeStyles, Container } from "@material-ui/core";
+import { makeStyles, Container, Grid } from "@material-ui/core";
 
 const useStyles = makeStyles({
   item: {
@@ -34,8 +33,8 @@ const Search = ({ searchFunc }) => {
     <>
       {/* A Warning message is outputed in console: Fix later */}
       <Container>
-        <Row>
-          <Col md={10}>
+        <Grid container>
+          <Grid item md={10}>
             <Autocomplete
               id="combo-box-demo"
               color="primary"
@@ -59,8 +58,8 @@ const Search = ({ searchFunc }) => {
                   : "No Symbols Found"
               }
             />
-          </Col>
-          <Col md={2}>
+          </Grid>
+          <Grid item md={2}>
             <Button
               color="primary"
               variant="contained"
@@ -69,8 +68,8 @@ const Search = ({ searchFunc }) => {
             >
               Submit
             </Button>
-          </Col>
-        </Row>
+          </Grid>
+        </Grid>
       </Container>
     </>
   );

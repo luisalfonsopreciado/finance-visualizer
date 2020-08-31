@@ -4,18 +4,11 @@ import App from "./App";
 import { Provider } from "react-redux";
 import portfolioReducer from "./store/reducers/portfolio";
 import { createStore, combineReducers } from "redux";
-import { ThemeProvider, createMuiTheme } from "@material-ui/core";
-import { grey, } from '@material-ui/core/colors';
+import { ThemeProvider, createMuiTheme, Paper } from "@material-ui/core";
 
 const theme = createMuiTheme({
   palette: {
-    type: 'dark',
-    primary: {
-      main: grey[800],
-    },
-    secondary: {
-      main: grey[200],
-    },
+    type: "light",
   },
 });
 
@@ -29,7 +22,9 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <App />
+        <Paper>
+          <App />
+        </Paper>
       </ThemeProvider>
     </Provider>
   </React.StrictMode>,
