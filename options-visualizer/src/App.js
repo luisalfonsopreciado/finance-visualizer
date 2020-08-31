@@ -16,12 +16,13 @@ import Error from "./components/Error/Error";
 import SecurityInfo from "./components/SecurityInfo";
 import Slider from "./components/Slider";
 import AnyChart from "./components/StockAnyChart";
-import { Switch } from "@material-ui/core";
+import { Switch, Typography } from "@material-ui/core";
 import { FormGroup, FormControlLabel, Container } from "@material-ui/core";
 import { Card, CardHeader, CardContent } from "@material-ui/core";
 import { Grid } from "@material-ui/core";
 import HighChart from "./components/PayoffHighChart";
 import HighStock from "./components/HighStock";
+import Snackbar from "./components/Snackbar";
 
 const App = () => {
   const { portfolio, stockData } = useSelector((state) => state.portfolio);
@@ -551,12 +552,14 @@ const App = () => {
             ) : (
               <>
                 {optionData && liveMode ? (
-                  <h1>Loading...</h1>
+                  <Typography variant="h1">Loading...</Typography>
                 ) : (
                   <>
                     {!liveMode && (
                       <>
-                        <h1>Switch to live mode to view stock chart</h1>
+                        <Typography variant="h1">
+                          Switch to live mode to view stock chart
+                        </Typography>
                       </>
                     )}
                   </>
@@ -566,6 +569,7 @@ const App = () => {
           </CardContent>
         </Card>
       </Container>
+      <Snackbar errors={errors} />
     </>
   );
 };

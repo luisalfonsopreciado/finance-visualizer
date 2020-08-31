@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import Option from "../utility/Option";
-import { BlackScholes, SELL } from "../utility";
 import { useSelector, useDispatch } from "react-redux";
 import * as util from "../utility";
 import useUpdateEffect from "../hooks/useUpdateEffect";
 import * as actions from "../store/actions/portfolio";
 import { Card, CardHeader, CardContent } from "@material-ui/core";
-
+import { Table, TableCell, TableContainer } from "@material-ui/core";
+import { TableRow, TableHead } from "@material-ui/core";
 // TODO: make contract component lean by outsorcing logic to redux
 const Contract = (props) => {
   const { data, optionData } = props;
@@ -109,9 +109,9 @@ const Contract = (props) => {
   const cashContract = data.type === util.CASH;
 
   return (
-    <tr>
+    <TableRow>
       {/* Direction: Fully Using Redux */}
-      <td>
+      <TableCell>
         <select
           id="direction"
           className="form-control"
@@ -129,9 +129,9 @@ const Contract = (props) => {
           <option>Buy</option>
           <option>Sell</option>
         </select>
-      </td>
+      </TableCell>
       {/* Amount: Fully Using Redux */}
-      <td>
+      <TableCell>
         <input
           type="number"
           placeholder="Amount"
@@ -147,9 +147,9 @@ const Contract = (props) => {
           }
           value={data.amount}
         />
-      </td>
+      </TableCell>
       {/* Kind: Fully Using Redux*/}
-      <td>
+      <TableCell>
         <select
           className="form-control"
           onChange={(e) =>
@@ -163,9 +163,9 @@ const Contract = (props) => {
           <option>Put</option>
           <option>Cash</option>
         </select>
-      </td>
+      </TableCell>
       {/* Strike Price: TODO UPDATE REDUX */}
-      <td>
+      <TableCell>
         {!cashContract ? (
           optionData ? (
             <div class="form-group">
@@ -206,9 +206,9 @@ const Contract = (props) => {
             />
           )
         ) : null}
-      </td>
+      </TableCell>
       {/* Expiry Date */}
-      <td>
+      <TableCell>
         {!cashContract &&
           (!optionData ? (
             <input
@@ -240,17 +240,17 @@ const Contract = (props) => {
               </select>
             </div>
           ))}
-      </td>
+      </TableCell>
       {/* Premium/Price */}
-      <td style={{ verticalAlign: "middle" }}>
+      <TableCell style={{ verticalAlign: "middle" }}>
         <b>{data.price * data.amount}</b>
-      </td>
+      </TableCell>
       {/* Debit/Credit: TODO add as property in Option Obj, updated in */}
-      <td style={{ verticalAlign: "middle" }}>
+      <TableCell style={{ verticalAlign: "middle" }}>
         <b>{data.debitCredit * data.amount} </b>
-      </td>
+      </TableCell>
       {/* Remove Button */}
-      <td style={{ verticalAlign: "middle" }}>
+      <TableCell style={{ verticalAlign: "middle" }}>
         <button
           type="button"
           aria-label="Left Align"
@@ -259,8 +259,8 @@ const Contract = (props) => {
         >
           <span aria-hidden="true">Remove</span>
         </button>
-      </td>
-    </tr>
+      </TableCell>
+    </TableRow>
   );
 };
 
@@ -288,7 +288,7 @@ const Panel = (props) => {
       const contract = portfolio[key];
       premium += +contract.price * +contract.amount;
       const debitToAdd =
-        contract.direction === SELL ? +contract.price : -+contract.price;
+        contract.direction === util.SELL ? +contract.price : -+contract.price;
       debitcredit += debitToAdd * +contract.amount;
       amount += +contract.amount;
     }
@@ -305,60 +305,62 @@ const Panel = (props) => {
     <Card variant="outlined">
       <CardHeader title="Option Portfolio" />
       <CardContent>
-        <table className="table table-condensed">
-          <thead>
-            <tr>
-              <th>Direction</th>
-              <th>Amount</th>
-              <th>Kind</th>
-              <th>Strike</th>
-              <th>Expiry</th>
-              <th>Premium</th>
-              <th>Debit/Credit</th>
-              <th>
-                <button
-                  type="submit"
-                  className="btn btn-success btn-s"
-                  onClick={() =>
-                    dispatch(actions.addContract(new Option(), stockData))
-                  }
-                >
-                  Add Leg
-                </button>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {renderContracts()}
-            <tr>
-              <td>
-                <b>Total</b>
-              </td>
-              <td>
-                <b>{amount}</b>
-              </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>
-                <b>{premium}</b>
-              </td>
-              <td>
-                <b>{debitcredit}</b>
-              </td>
-              <td>
-                <button
-                  type="button"
-                  aria-label="Left Align"
-                  className="btn btn-danger btn-s"
-                  onClick={() => dispatch(actions.resetPortfolio())}
-                >
-                  <span aria-hidden="true">Remove All</span>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <TableContainer>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Direction</TableCell>
+                <TableCell>Amount</TableCell>
+                <TableCell>Kind</TableCell>
+                <TableCell>Strike</TableCell>
+                <TableCell>Expiry</TableCell>
+                <TableCell>Premium</TableCell>
+                <TableCell>Debit/Credit</TableCell>
+                <TableCell>
+                  <button
+                    type="submit"
+                    className="btn btn-success btn-s"
+                    onClick={() =>
+                      dispatch(actions.addContract(new Option(), stockData))
+                    }
+                  >
+                    Add Leg
+                  </button>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <tbody>
+              {renderContracts()}
+              <TableRow>
+                <TableCell>
+                  <b>Total</b>
+                </TableCell>
+                <TableCell>
+                  <b>{amount}</b>
+                </TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell>
+                  <b>{premium}</b>
+                </TableCell>
+                <TableCell>
+                  <b>{debitcredit}</b>
+                </TableCell>
+                <TableCell>
+                  <button
+                    type="button"
+                    aria-label="Left Align"
+                    className="btn btn-danger btn-s"
+                    onClick={() => dispatch(actions.resetPortfolio())}
+                  >
+                    <span aria-hidden="true">Remove All</span>
+                  </button>
+                </TableCell>
+              </TableRow>
+            </tbody>
+          </Table>
+        </TableContainer>
       </CardContent>
     </Card>
   );
