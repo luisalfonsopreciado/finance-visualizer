@@ -22,7 +22,6 @@ import { Card, CardHeader, CardContent } from "@material-ui/core";
 import { Grid } from "@material-ui/core";
 import HighChart from "./components/PayoffHighChart";
 import HighStock from "./components/HighStock";
-import Snackbar from "./components/Snackbar";
 
 const App = () => {
   const { portfolio, stockData } = useSelector((state) => state.portfolio);
@@ -569,7 +568,6 @@ const App = () => {
           </CardContent>
         </Card>
       </Container>
-      <Snackbar errors={errors} />
     </>
   );
 };

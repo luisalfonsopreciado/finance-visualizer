@@ -6,10 +6,25 @@ import useUpdateEffect from "../hooks/useUpdateEffect";
 import * as actions from "../store/actions/portfolio";
 import { Card, CardHeader, CardContent } from "@material-ui/core";
 import { Table, TableCell, TableContainer } from "@material-ui/core";
-import { TableRow, TableHead } from "@material-ui/core";
+import { TableRow, TableHead, makeStyles } from "@material-ui/core";
+import { FormControl, InputLabel, Select } from "@material-ui/core";
+import { MenuItem, TextField, TableBody, Button } from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete";
+
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
+
 // TODO: make contract component lean by outsorcing logic to redux
 const Contract = (props) => {
   const { data, optionData } = props;
+  const classes = useStyles();
 
   /*
    If optionData is defined then the strike prices must adjust to the
@@ -112,30 +127,39 @@ const Contract = (props) => {
     <TableRow>
       {/* Direction: Fully Using Redux */}
       <TableCell>
-        <select
-          id="direction"
-          className="form-control"
-          value={data.direction}
-          onChange={(e) =>
-            dispatch(
-              actions.updateContract(
-                data.contractName,
-                "direction",
-                e.target.value
+        <FormControl variant="outlined" className={classes.formControl}>
+          <InputLabel id="demo-simple-select-outlined-label">
+            Direction
+          </InputLabel>
+          <Select
+            labelId="demo-simple-select-outlined-label"
+            id="demo-simple-select-outlined"
+            value={data.direction}
+            onChange={(e) =>
+              dispatch(
+                actions.updateContract(
+                  data.contractName,
+                  "direction",
+                  e.target.value
+                )
               )
-            )
-          }
-        >
-          <option>Buy</option>
-          <option>Sell</option>
-        </select>
+            }
+            label="Direction"
+          >
+            <MenuItem value={util.BUY}>Buy</MenuItem>
+            <MenuItem value={util.SELL}>Sell</MenuItem>
+          </Select>
+        </FormControl>
       </TableCell>
       {/* Amount: Fully Using Redux */}
       <TableCell>
-        <input
+        <TextField
+          id="outlined-number"
+          label="Amount"
           type="number"
-          placeholder="Amount"
-          className="form-control form-control-inline"
+          InputLabelProps={{
+            shrink: true,
+          }}
           onChange={(e) =>
             dispatch(
               actions.updateContract(
@@ -146,32 +170,46 @@ const Contract = (props) => {
             )
           }
           value={data.amount}
+          variant="outlined"
         />
       </TableCell>
       {/* Kind: Fully Using Redux*/}
       <TableCell>
-        <select
-          className="form-control"
-          onChange={(e) =>
-            dispatch(
-              actions.updateContract(data.contractName, "type", e.target.value)
-            )
-          }
-          value={data.type}
-        >
-          <option>Call</option>
-          <option>Put</option>
-          <option>Cash</option>
-        </select>
+        <FormControl variant="outlined" className={classes.formControl}>
+          <InputLabel id="demo-simple-select-outlined-label">Kind</InputLabel>
+          <Select
+            labelId="demo-simple-select-outlined-label"
+            id="demo-simple-select-outlined"
+            value={data.type}
+            onChange={(e) =>
+              dispatch(
+                actions.updateContract(
+                  data.contractName,
+                  "type",
+                  e.target.value
+                )
+              )
+            }
+            label="Kind"
+          >
+            <MenuItem value={util.CALL}>Call</MenuItem>
+            <MenuItem value={util.PUT}>Put</MenuItem>
+            <MenuItem value={util.CASH}>Cash</MenuItem>
+          </Select>
+        </FormControl>
       </TableCell>
       {/* Strike Price: TODO UPDATE REDUX */}
       <TableCell>
         {!cashContract ? (
           optionData ? (
-            <div class="form-group">
-              <select
-                class="form-control"
-                id="exampleFormControlSelect1"
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel id="demo-simple-select-outlined-label">
+                Strike
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
+                value={data.strike}
                 onChange={(e) =>
                   dispatch(
                     actions.updateContract(
@@ -181,18 +219,23 @@ const Contract = (props) => {
                     )
                   )
                 }
-                value={data.strike}
+                label="Kind"
               >
                 {strikePrices.map((price) => (
-                  <option>{isNaN(price) ? null : price}</option>
+                  <MenuItem value={price}>
+                    {isNaN(price) ? null : price}
+                  </MenuItem>
                 ))}
-              </select>
-            </div>
+              </Select>
+            </FormControl>
           ) : (
-            <input
+            <TextField
+              id="outlined-number"
+              label="Strike"
               type="number"
-              placeholder="Strike"
-              className="form-control form-control-inline"
+              InputLabelProps={{
+                shrink: true,
+              }}
               onChange={(e) =>
                 dispatch(
                   actions.updateContract(
@@ -203,6 +246,7 @@ const Contract = (props) => {
                 )
               }
               value={data.strike}
+              variant="outlined"
             />
           )
         ) : null}
@@ -211,10 +255,12 @@ const Contract = (props) => {
       <TableCell>
         {!cashContract &&
           (!optionData ? (
-            <input
+            <TextField
+              id="date"
+              label="Expiry"
               type="date"
-              placeholder="Expiry"
-              className="form-control form-control-inline"
+              value={data.date}
+              className={classes.textField}
               onChange={(e) =>
                 dispatch(
                   actions.updateContract(
@@ -224,21 +270,27 @@ const Contract = (props) => {
                   )
                 )
               }
-              value={data.date}
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
           ) : (
-            <div class="form-group">
-              <select
-                class="form-control"
-                id="exampleFormControlSelect1"
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel id="demo-simple-select-outlined-label">
+                Expiry
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
                 onChange={(e) => setSelectedDate(e.target.value)}
                 value={selectedDate}
+                label="Expiry"
               >
                 {expirationDates.map((date) => (
-                  <option>{date}</option>
+                  <MenuItem value={date}>{date}</MenuItem>
                 ))}
-              </select>
-            </div>
+              </Select>
+            </FormControl>
           ))}
       </TableCell>
       {/* Premium/Price */}
@@ -251,14 +303,15 @@ const Contract = (props) => {
       </TableCell>
       {/* Remove Button */}
       <TableCell style={{ verticalAlign: "middle" }}>
-        <button
-          type="button"
-          aria-label="Left Align"
-          className="btn btn-danger btn-s"
+        <Button
+          variant="contained"
+          color="secondary"
+          className={classes.button}
+          startIcon={<DeleteIcon />}
           onClick={() => dispatch(actions.removeContract(data.contractName))}
         >
-          <span aria-hidden="true">Remove</span>
-        </button>
+          Remove
+        </Button>
       </TableCell>
     </TableRow>
   );
@@ -317,19 +370,20 @@ const Panel = (props) => {
                 <TableCell>Premium</TableCell>
                 <TableCell>Debit/Credit</TableCell>
                 <TableCell>
-                  <button
+                  <Button
                     type="submit"
-                    className="btn btn-success btn-s"
+                    variant="contained"
+                    color="primary"
                     onClick={() =>
                       dispatch(actions.addContract(new Option(), stockData))
                     }
                   >
                     Add Leg
-                  </button>
+                  </Button>
                 </TableCell>
               </TableRow>
             </TableHead>
-            <tbody>
+            <TableBody>
               {renderContracts()}
               <TableRow>
                 <TableCell>
@@ -348,17 +402,17 @@ const Panel = (props) => {
                   <b>{debitcredit}</b>
                 </TableCell>
                 <TableCell>
-                  <button
-                    type="button"
-                    aria-label="Left Align"
-                    className="btn btn-danger btn-s"
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<DeleteIcon />}
                     onClick={() => dispatch(actions.resetPortfolio())}
                   >
-                    <span aria-hidden="true">Remove All</span>
-                  </button>
+                    Remove All
+                  </Button>
                 </TableCell>
               </TableRow>
-            </tbody>
+            </TableBody>
           </Table>
         </TableContainer>
       </CardContent>

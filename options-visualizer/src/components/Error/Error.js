@@ -1,5 +1,4 @@
 import React from "react";
-import MuiAlert from "@material-ui/lab/Alert";
 import { Snackbar, IconButton} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -16,7 +15,7 @@ const Error = (props) => {
     <Snackbar
       anchorOrigin={{
         vertical: "top",
-        horizontal: "right",
+        horizontal: "left",
       }}
       open={true}
       autoHideDuration={6000}
