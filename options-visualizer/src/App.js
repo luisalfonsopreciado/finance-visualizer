@@ -18,7 +18,7 @@ import Slider from "./components/Slider";
 import AnyChart from "./components/StockAnyChart";
 import { Switch, Typography, makeStyles } from "@material-ui/core";
 import { FormGroup, FormControlLabel, Container } from "@material-ui/core";
-import { Card, CardHeader, CardContent, TextField } from "@material-ui/core";
+import { Card, CardContent, TextField } from "@material-ui/core";
 import { Grid } from "@material-ui/core";
 import HighChart from "./components/PayoffHighChart";
 import HighStock from "./components/HighStock";
@@ -29,7 +29,7 @@ const useStyles = makeStyles({
   },
 });
 
-const App = () => {
+const App = ({ changeTheme, theme }) => {
   const { portfolio, stockData } = useSelector((state) => state.portfolio);
   const { volatility, interest, currentPrice } = stockData;
   const dispatch = useDispatch();
@@ -405,9 +405,13 @@ const App = () => {
   return (
     <>
       <liveDataContext.Provider value={value}>
-        <Navigation optionData={optionData} />
+        <Navigation
+          optionData={optionData}
+          changeTheme={changeTheme}
+          theme={theme}
+        />
         <Container>
-          <Grid container>
+          <Grid container spacing={1}>
             <Grid item md={12}>
               {stockData.ticker !== "Theoretical" && <SecurityInfo />}
             </Grid>
@@ -425,7 +429,7 @@ const App = () => {
               />
             </Grid>
             <Grid item md={3}>
-              <Grid container>
+              <Grid container spacing={1}>
                 <Grid item md={12}>
                   <StockData liveMode={liveMode} />
                 </Grid>
@@ -568,7 +572,7 @@ const App = () => {
                         <>
                           {!liveMode && (
                             <>
-                              <Typography variant="h1">
+                              <Typography variant="h3">
                                 Switch to live mode to view stock chart
                               </Typography>
                             </>

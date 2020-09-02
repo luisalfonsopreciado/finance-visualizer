@@ -12,6 +12,8 @@ import { useDispatch } from "react-redux";
 import * as actions from "../../store/actions/portfolio";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import { IconButton } from "@material-ui/core";
+import Brightness7Icon from "@material-ui/icons/Brightness7";
+import Brightness4Icon from "@material-ui/icons/Brightness4";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,7 +32,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MenuAppBar({ setPortfolio, optionData }) {
+export default function MenuAppBar({
+  setPortfolio,
+  optionData,
+  changeTheme,
+  theme,
+}) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { liveMode, setLiveMode } = useContext(liveDataContext);
@@ -41,6 +48,9 @@ export default function MenuAppBar({ setPortfolio, optionData }) {
         <Typography variant="h3" className={classes.title}>
           Option Strategy Builder
         </Typography>
+        <div onClick={changeTheme}>
+          {theme === "dark" ? <Brightness4Icon /> : <Brightness7Icon />}
+        </div>
         <DropDownBtn setPortfolio={setPortfolio} optionData={optionData} />
         <FormGroup>
           <FormControlLabel
