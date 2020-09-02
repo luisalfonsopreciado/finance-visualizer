@@ -58,7 +58,7 @@ const StockData = ({ liveMode }) => {
             onChange={(e) =>
               dispatch(actions.updateStockData("interest", e.target.value))
             }
-            value={stockData.volatility}
+            value={stockData.interest}
           ></TextField>
         </CardContent>
       </Card>

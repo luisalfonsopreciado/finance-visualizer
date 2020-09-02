@@ -3,5 +3,5 @@ Other Features
 - Be Able to Visualize The Greeks: Hover over each contract to view greek details
 - Save a given strategy on a server and be able to come back to it given a unique URL
 - DONE: Sample strategies are flexible: meaning they can adjust to live strike prices
-- Make the application intuitive
-- Add a Theme (After core functionality is working)
+- Make the application intuitive/ Add Help Modal
+- DONE: Add a Theme (After core functionality is working)
