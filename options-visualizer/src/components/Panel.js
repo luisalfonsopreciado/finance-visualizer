@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import * as util from "../utility";
 import useUpdateEffect from "../hooks/useUpdateEffect";
 import * as actions from "../store/actions/portfolio";
-import { Card, CardHeader, CardContent } from "@material-ui/core";
+import { Card, CardHeader, CardContent, Typography } from "@material-ui/core";
 import { Table, TableCell, TableContainer } from "@material-ui/core";
 import { TableRow, TableHead, makeStyles } from "@material-ui/core";
 import { FormControl, InputLabel, Select } from "@material-ui/core";
@@ -295,11 +295,15 @@ const Contract = (props) => {
       </TableCell>
       {/* Premium/Price */}
       <TableCell style={{ verticalAlign: "middle" }}>
-        <b>{data.price * data.amount}</b>
+        <Typography variant="h6">
+          <b>{data.price * data.amount}</b>
+        </Typography>
       </TableCell>
       {/* Debit/Credit: TODO add as property in Option Obj, updated in */}
       <TableCell style={{ verticalAlign: "middle" }}>
-        <b>{data.debitCredit * data.amount} </b>
+        <Typography variant="h6">
+          <b>{data.debitCredit * data.amount} </b>
+        </Typography>
       </TableCell>
       {/* Remove Button */}
       <TableCell style={{ verticalAlign: "middle" }}>
@@ -356,19 +360,32 @@ const Panel = (props) => {
 
   return (
     <Card variant="outlined">
-      <CardHeader title="Option Portfolio" />
       <CardContent>
         <TableContainer>
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Direction</TableCell>
-                <TableCell>Amount</TableCell>
-                <TableCell>Kind</TableCell>
-                <TableCell>Strike</TableCell>
-                <TableCell>Expiry</TableCell>
-                <TableCell>Premium</TableCell>
-                <TableCell>Debit/Credit</TableCell>
+                <TableCell>
+                  <Typography variant="h5">Direction</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h5">Amount</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h5">Kind</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h5">Strike</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h5">Expiry</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h5">Premium</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h5">Debit/Credit</Typography>
+                </TableCell>
                 <TableCell>
                   <Button
                     type="submit"
@@ -387,19 +404,19 @@ const Panel = (props) => {
               {renderContracts()}
               <TableRow>
                 <TableCell>
-                  <b>Total</b>
+                  <Typography variant="h6">Total</Typography>
                 </TableCell>
                 <TableCell>
-                  <b>{amount}</b>
+                  <Typography variant="h6">{amount}</Typography>
                 </TableCell>
                 <TableCell></TableCell>
                 <TableCell></TableCell>
                 <TableCell></TableCell>
                 <TableCell>
-                  <b>{premium}</b>
+                  <Typography variant="h6">{premium}</Typography>
                 </TableCell>
                 <TableCell>
-                  <b>{debitcredit}</b>
+                  <Typography variant="h6">{debitcredit}</Typography>
                 </TableCell>
                 <TableCell>
                   <Button

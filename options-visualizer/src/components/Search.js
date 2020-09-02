@@ -31,46 +31,40 @@ const Search = ({ searchFunc }) => {
 
   return (
     <>
-      {/* A Warning message is outputed in console: Fix later */}
-      <Container>
-        <Grid container>
-          <Grid item md={10}>
-            <Autocomplete
-              id="combo-box-demo"
+      <Grid item md={11}>
+        {/* A Warning message is outputed in console: Fix later */}
+        <Autocomplete
+          id="combo-box-demo"
+          color="primary"
+          options={symbols}
+          getOptionLabel={(option) =>
+            option.displaySymbol + ": " + option.description
+          }
+          filterOptions={(options, state) => filterOptions(options, state)}
+          className={classes.item}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Search Ticker"
+              variant="outlined"
               color="primary"
-              options={symbols}
-              getOptionLabel={(option) =>
-                option.displaySymbol + ": " + option.description
-              }
-              filterOptions={(options, state) => filterOptions(options, state)}
-              className={classes.item}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Search Ticker"
-                  variant="outlined"
-                  color="primary"
-                />
-              )}
-              noOptionsText={
-                inputValue.length <= 1
-                  ? "Type a Ticker Symbol"
-                  : "No Symbols Found"
-              }
             />
-          </Grid>
-          <Grid item md={2}>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => searchFunc(inputValue)}
-              className={classes.item}
-            >
-              Submit
-            </Button>
-          </Grid>
-        </Grid>
-      </Container>
+          )}
+          noOptionsText={
+            inputValue.length <= 1 ? "Type a Ticker Symbol" : "No Symbols Found"
+          }
+        />
+      </Grid>
+      <Grid item md={1}>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => searchFunc(inputValue)}
+          className={classes.item}
+        >
+          Submit
+        </Button>
+      </Grid>
     </>
   );
 };
