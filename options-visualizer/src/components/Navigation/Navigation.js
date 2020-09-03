@@ -48,6 +48,7 @@ export default function MenuAppBar({
         <Typography variant="h3" className={classes.title}>
           Option Strategy Builder
         </Typography>
+
         <div onClick={changeTheme}>
           {theme === "dark" ? <Brightness4Icon /> : <Brightness7Icon />}
         </div>

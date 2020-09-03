@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import * as util from "../utility";
 import useUpdateEffect from "../hooks/useUpdateEffect";
 import * as actions from "../store/actions/portfolio";
-import { Card, CardHeader, CardContent, Typography } from "@material-ui/core";
+import { Card, CardContent, Typography } from "@material-ui/core";
 import { Table, TableCell, TableContainer } from "@material-ui/core";
 import { TableRow, TableHead, makeStyles } from "@material-ui/core";
 import { FormControl, InputLabel, Select } from "@material-ui/core";

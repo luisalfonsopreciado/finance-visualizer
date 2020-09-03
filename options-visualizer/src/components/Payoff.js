@@ -4,7 +4,7 @@ import * as nv from "nvd3";
 
 const Payoff = ({ data }) => {
   // Clear the Charts
-  d3.selectAll("svg > *").remove();
+  d3.selectAll("nvd3chart").remove();
 
   const drawChart = ({ data: myData, Ydomain }) => {
     /*These lines are all chart setup.  Pick and choose which chart features you want to utilize. */
@@ -39,18 +39,12 @@ const Payoff = ({ data }) => {
     });
   };
 
-  // UseEffect with no deps so that a chart is always rendered
-  useEffect(() => {
-    data && drawChart(data);
-  });
-
-  // console.log("Payoff Rendered");
-
+  data && drawChart(data);
   return (
     <>
       <div className="panel-body">
         <div id="chart">
-          <svg></svg>
+          <svg id="nvd3chart"></svg>
         </div>
       </div>
     </>

@@ -491,10 +491,10 @@ const App = ({ changeTheme, theme }) => {
                         <Switch
                           checked={!viewHighChart}
                           onChange={() => setViewHighChart((prev) => !prev)}
-                          aria-label="live mode switch"
+                          aria-label="graph type switch"
                         />
                       }
-                      label={"Switch Graph Type"}
+                      label="Switch Graph Type"
                     />
                   </FormGroup>
 
