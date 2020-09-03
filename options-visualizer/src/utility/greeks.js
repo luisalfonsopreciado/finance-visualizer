@@ -67,7 +67,7 @@ export function _callDelta(s, k, t, v, r) {
  */
 export function _putDelta(s, k, t, v, r) {
   var delta = _callDelta(s, k, t, v, r) - 1;
-  return delta == -1 && k == s ? 0 : delta;
+  return delta === -1 && k === s ? 0 : delta;
 }
 
 /**
