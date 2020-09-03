@@ -17,18 +17,6 @@ const useStyles = makeStyles({
   },
 });
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
-
 export default function SimpleTable() {
   const classes = useStyles();
   const { portfolio, stockData } = useSelector((state) => state.portfolio);
@@ -51,7 +39,14 @@ export default function SimpleTable() {
         <TableBody>
           {keys.map((key) => {
             const contract = portfolio[key];
-
+            console.log(
+              stockData.currentPrice,
+              contract.strike,
+              util.dateDiffInYears(contract.date),
+              stockData.volatility / 100,
+              stockData.interest / 100,
+              contract.type
+            );
             return (
               <TableRow key={key}>
                 <TableCell component="th" scope="row">
@@ -66,61 +61,61 @@ export default function SimpleTable() {
                   {greeks
                     .getDelta(
                       stockData.currentPrice,
-                      contract.price,
+                      contract.strike,
                       util.dateDiffInYears(contract.date),
                       stockData.volatility / 100,
                       stockData.interest / 100,
-                      contract.TYPE
+                      contract.type
                     )
-                    .toFixed(2)}
+                    .toFixed(4)}
                 </TableCell>
                 <TableCell align="right">
                   {greeks
                     .getGamma(
                       stockData.currentPrice,
-                      contract.price,
+                      contract.strike,
                       util.dateDiffInYears(contract.date),
                       stockData.volatility / 100,
                       stockData.interest / 100,
                       contract.TYPE
                     )
-                    .toFixed(2)}
+                    .toFixed(4)}
                 </TableCell>
                 <TableCell align="right">
                   {greeks
                     .getRho(
                       stockData.currentPrice,
-                      contract.price,
+                      contract.strike,
                       util.dateDiffInYears(contract.date),
                       stockData.volatility / 100,
                       stockData.interest / 100,
                       contract.TYPE
                     )
-                    .toFixed(2)}
+                    .toFixed(4)}
                 </TableCell>
                 <TableCell align="right">
                   {greeks
                     .getTheta(
                       stockData.currentPrice,
-                      contract.price,
+                      contract.strike,
                       util.dateDiffInYears(contract.date),
                       stockData.volatility / 100,
                       stockData.interest / 100,
                       contract.TYPE
                     )
-                    .toFixed(2)}
+                    .toFixed(4)}
                 </TableCell>
                 <TableCell align="right">
                   {greeks
                     .getVega(
                       stockData.currentPrice,
-                      contract.price,
+                      contract.strike,
                       util.dateDiffInYears(contract.date),
                       stockData.volatility / 100,
                       stockData.interest / 100,
                       contract.TYPE
                     )
-                    .toFixed(2)}
+                    .toFixed(4)}
                 </TableCell>
               </TableRow>
             );
