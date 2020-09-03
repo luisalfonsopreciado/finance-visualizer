@@ -501,7 +501,7 @@ const App = ({ changeTheme, theme }) => {
                   {!viewHighChart ? (
                     <Payoff data={data} />
                   ) : (
-                    <HighChart data={hcData} />
+                    <HighChart data={hcData} theme={theme}/>
                   )}
                   <Grid container>
                     <Grid item md={2}>

@@ -76,7 +76,7 @@ export default function MenuAppBar({
           href="https://github.com/luisalfonsopreciado/finance-visualizer"
           target="_blank"
         >
-          <GitHubIcon />
+          <GitHubIcon color="action" />
         </IconButton>
       </Toolbar>
     </AppBar>
