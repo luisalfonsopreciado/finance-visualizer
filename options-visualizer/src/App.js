@@ -18,14 +18,20 @@ import Slider from "./components/Slider";
 import AnyChart from "./components/StockAnyChart";
 import { Switch, Typography, makeStyles } from "@material-ui/core";
 import { FormGroup, FormControlLabel, Container } from "@material-ui/core";
-import { Card, CardContent, TextField } from "@material-ui/core";
-import { Grid } from "@material-ui/core";
+import { Card, CardContent, TextField, CardHeader } from "@material-ui/core";
+import { Grid, Button } from "@material-ui/core";
 import HighChart from "./components/PayoffHighChart";
 import HighStock from "./components/HighStock";
+import ShowChartIcon from "@material-ui/icons/ShowChart";
+import TocIcon from "@material-ui/icons/Toc";
+import GreekTable from "./components/GreekTable";
 
 const useStyles = makeStyles({
   payoff: {
     height: "100%",
+  },
+  btn: {
+    margin: "2px",
   },
 });
 
@@ -43,6 +49,7 @@ const App = ({ changeTheme, theme }) => {
   const [stockChartData, setStockChartData] = useState();
   const [viewHighChart, setViewHighChart] = useState(true);
   const [viewHighStock, setViewHighStock] = useState(true);
+  const [view, setView] = useState("payoff");
   const [hcData, setHcData] = useState(null);
   const value = { liveMode, setLiveMode };
   const [daysToExpiration, setDaysToExpiration] = useState(null);
@@ -484,54 +491,91 @@ const App = ({ changeTheme, theme }) => {
             <Grid item md={9}>
               {errors ? errors : null}
               <Card variant="outlined" className={classes.payoff}>
+                <CardHeader
+                  avatar={
+                    <>
+                      {view === "payoff" ? (
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={!viewHighChart}
+                                onChange={() =>
+                                  setViewHighChart((prev) => !prev)
+                                }
+                                aria-label="graph type switch"
+                              />
+                            }
+                            label="Switch Graph Type"
+                          />
+                        </FormGroup>
+                      ) : null}
+                    </>
+                  }
+                  action={
+                    <>
+                      <Button
+                        variant="outlined"
+                        startIcon={<ShowChartIcon fontSize="large" />}
+                        className={classes.btn}
+                        onClick={() => setView("payoff")}
+                      >
+                        Payoff
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        startIcon={<TocIcon fontSize="large" />}
+                        className={classes.btn}
+                        onClick={() => setView("greeks")}
+                      >
+                        Greeks
+                      </Button>
+                    </>
+                  }
+                />
                 <CardContent>
-                  <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={!viewHighChart}
-                          onChange={() => setViewHighChart((prev) => !prev)}
-                          aria-label="graph type switch"
-                        />
-                      }
-                      label="Switch Graph Type"
-                    />
-                  </FormGroup>
-
-                  {!viewHighChart ? (
-                    <Payoff data={data} />
+                  {view === "greeks" ? (
+                    <>
+                      <GreekTable />
+                    </>
                   ) : (
-                    <HighChart data={hcData} theme={theme}/>
+                    <>
+                      {!viewHighChart ? (
+                        <Payoff data={data} />
+                      ) : (
+                        <HighChart data={hcData} theme={theme} />
+                      )}
+                      <Grid container>
+                        <Grid item md={2}>
+                          <TextField
+                            id="outlined-number"
+                            label="Low"
+                            placeholder="Auto"
+                            type="number"
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            onBlur={(e) => setMinX(e.target.value)}
+                            variant="outlined"
+                          />
+                        </Grid>
+                        <Grid item md={8}></Grid>
+                        <Grid item md={2}>
+                          <TextField
+                            id="outlined-number"
+                            label="High"
+                            placeholder="Auto"
+                            type="number"
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            onBlur={(e) => setMaxX(e.target.value)}
+                            variant="outlined"
+                          />
+                        </Grid>
+                      </Grid>
+                    </>
                   )}
-                  <Grid container>
-                    <Grid item md={2}>
-                      <TextField
-                        id="outlined-number"
-                        label="Low"
-                        placeholder="Auto"
-                        type="number"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        onBlur={(e) => setMinX(e.target.value)}
-                        variant="outlined"
-                      />
-                    </Grid>
-                    <Grid item md={8}></Grid>
-                    <Grid item md={2}>
-                      <TextField
-                        id="outlined-number"
-                        label="High"
-                        placeholder="Auto"
-                        type="number"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        onBlur={(e) => setMaxX(e.target.value)}
-                        variant="outlined"
-                      />
-                    </Grid>
-                  </Grid>
                 </CardContent>
               </Card>
             </Grid>
