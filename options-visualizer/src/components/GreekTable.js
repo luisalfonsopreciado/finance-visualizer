@@ -28,6 +28,7 @@ export default function SimpleTable() {
         <TableHead>
           <TableRow>
             <TableCell>Position</TableCell>
+            <TableCell>Amount</TableCell>
             <TableCell align="right">IV</TableCell>
             <TableCell align="right">Delta</TableCell>
             <TableCell align="right">Gamma</TableCell>
@@ -55,6 +56,9 @@ export default function SimpleTable() {
                     contract.type +
                     "  " +
                     stockData.currentPrice}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {contract.amount}
                 </TableCell>
                 <TableCell align="right">{stockData.interest + "%"}</TableCell>
                 <TableCell align="right">
