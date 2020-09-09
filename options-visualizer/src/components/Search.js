@@ -3,7 +3,7 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import symbols from "../symbols.json";
 import { Button } from "@material-ui/core";
-import { makeStyles, Container, Grid } from "@material-ui/core";
+import { makeStyles, Grid } from "@material-ui/core";
 
 const useStyles = makeStyles({
   item: {
@@ -42,6 +42,9 @@ const Search = ({ searchFunc }) => {
           }
           filterOptions={(options, state) => filterOptions(options, state)}
           className={classes.item}
+          onChange={(event, value) =>
+            value && setInputValue(value.displaySymbol)
+          }
           renderInput={(params) => (
             <TextField
               {...params}
