@@ -38,12 +38,6 @@ const Contract = (props) => {
 
   const dispatch = useDispatch();
 
-  // Stock data from redux
-  const { stockData } = useSelector((state) => state.portfolio);
-
-  // Calculate the price based on Black-Scholes model
-  const [price, setPrice] = useState(data.price);
-
   // Set expiration Dates when component mounts
   useEffect(() => {
     if (optionData) {
@@ -86,7 +80,7 @@ const Contract = (props) => {
         );
       }
     }
-  }, [data.strike, setPrice]);
+  }, [data.strike]);
 
   useUpdateEffect(() => {
     if (optionData) {
@@ -111,15 +105,6 @@ const Contract = (props) => {
       setStrikePrices(strikesAtDate);
     }
   }, [selectedDate]);
-
-  // Update type
-  useUpdateEffect(() => {
-    // If we just changed to cash
-    if (data.type === util.CASH) {
-      // Set Debit/Credit equal to the stock price
-      setPrice(stockData.currentPrice);
-    }
-  }, [data.type]);
 
   const cashContract = data.type === util.CASH;
 

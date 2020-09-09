@@ -1,5 +1,4 @@
 import * as cts from "./constants";
-import Option from "./Option";
 
 /**
  * Evaluates a Payoff Function
