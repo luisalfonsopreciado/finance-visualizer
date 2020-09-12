@@ -67,6 +67,12 @@ const updateAllContracts = (state, action) => {
   return { portfolio: newPortfolio, stockData: { ...state.stockData } };
 };
 
+const setData = (state, action) => {
+  const { portfolio, stockData } = action.data;
+  updatePortfolioPrices(portfolio, stockData);
+  return { portfolio: portfolio, stockData: stockData };
+};
+
 export default (state = initialState, action) => {
   switch (action.type) {
     // Portfolio
@@ -90,6 +96,9 @@ export default (state = initialState, action) => {
       return updateStockData(state, action);
     case cts.RESET_DATA:
       return { ...state, stockData: { ...stockDataInitialState } };
+
+    case cts.SET_DATA:
+      return setData(state, action);
     default:
       // Will be run initially
       return state;

@@ -25,6 +25,7 @@ import HighStock from "./components/HighStock";
 import ShowChartIcon from "@material-ui/icons/ShowChart";
 import TocIcon from "@material-ui/icons/Toc";
 import GreekTable from "./components/GreekTable";
+import { useLocation } from "react-router-dom";
 
 const useStyles = makeStyles({
   payoff: {
@@ -54,6 +55,7 @@ const App = ({ changeTheme, theme }) => {
   const value = { liveMode, setLiveMode };
   const [daysToExpiration, setDaysToExpiration] = useState(null);
   const classes = useStyles();
+  const location = useLocation()
 
   // Set Error Message as JSX
   const setErrs = useCallback((message) => {
@@ -330,6 +332,17 @@ const App = ({ changeTheme, theme }) => {
 
     setData({ data: result, Ydomain });
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await axios.get(
+        process.env.REACT_APP_API_URL + "/api/strategy" + location.pathname
+      );
+      console.log(res.data);
+      dispatch(actions.setData(res.data))
+    };
+    fetchData();
+  }, []);
 
   // Custom hook used to Reset Portfolio only when liveMode is Toggled
   useUpdateEffect(() => {

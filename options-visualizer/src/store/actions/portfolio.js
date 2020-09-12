@@ -5,6 +5,7 @@ export const SET_PORTFOLIO = "SET_PORTFOLIO";
 export const UPDATE_PRICES = "UPDATE_PRICES";
 export const UPDATE_CONTRACT = "UPDATE_CONTRACT";
 export const UPDATE_ALL_CONTRACTS = "UPDATE_ALL_CONTRACTS";
+export const SET_DATA = "SET_DATA";
 
 export const addContract = (newContract) => {
   return {
@@ -75,5 +76,15 @@ export const updateStockData = (property, value) => {
 export const resetData = () => {
   return {
     type: RESET_DATA,
+  };
+};
+
+
+// Both StockData and Portfolio
+
+export const setData = (data) => {
+  return {
+    type: SET_DATA,
+    data,
   };
 };
