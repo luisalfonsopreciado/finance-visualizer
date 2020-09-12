@@ -26,7 +26,7 @@ import ShowChartIcon from "@material-ui/icons/ShowChart";
 import TocIcon from "@material-ui/icons/Toc";
 import GreekTable from "./components/GreekTable";
 import { useLocation } from "react-router-dom";
-import SaveIcon from '@material-ui/icons/Save';
+import SaveIcon from "@material-ui/icons/Save";
 
 const useStyles = makeStyles({
   payoff: {
@@ -78,7 +78,7 @@ const App = ({ changeTheme, theme }) => {
         stockData,
       }
     );
-    const msg = "Strategy saved at url: " + process.env.REACT_APP_HOST+ "/";
+    const msg = "Strategy saved at url: " + process.env.REACT_APP_HOST + "/";
     setErrs(msg + res.data.id);
   };
 
@@ -556,14 +556,16 @@ const App = ({ changeTheme, theme }) => {
                       >
                         Greeks
                       </Button>
-                      <Button
-                        variant="outlined"
-                        startIcon={<SaveIcon fontSize="large" />}
-                        className={classes.btn}
-                        onClick={saveStrategy}
-                      >
-                        Save Strategy
-                      </Button>
+                      {!liveMode && (
+                        <Button
+                          variant="outlined"
+                          startIcon={<SaveIcon fontSize="large" />}
+                          className={classes.btn}
+                          onClick={saveStrategy}
+                        >
+                          Save Strategy
+                        </Button>
+                      )}
                     </>
                   }
                 />
