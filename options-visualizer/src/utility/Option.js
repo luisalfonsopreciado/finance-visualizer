@@ -3,7 +3,7 @@ import * as cts from "./constants";
 // Option definition class
 export default class Option {
   constructor(contractName) {
-    this.contractName = new Date().toISOString()
+    this.contractName = new Date().toISOString().replace(".", "|"); // Replace because of mongoose error
     this.strike = 100;
     this.date = cts.date;
     this.direction = cts.BUY;

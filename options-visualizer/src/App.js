@@ -55,7 +55,7 @@ const App = ({ changeTheme, theme }) => {
   const value = { liveMode, setLiveMode };
   const [daysToExpiration, setDaysToExpiration] = useState(null);
   const classes = useStyles();
-  const location = useLocation()
+  const location = useLocation();
 
   // Set Error Message as JSX
   const setErrs = useCallback((message) => {
@@ -68,6 +68,18 @@ const App = ({ changeTheme, theme }) => {
       <Error removeFunc={() => setStockErrors(null)}>{message}</Error>
     );
   }, []);
+
+  const saveStrategy = async () => {
+    const res = await axios.post(
+      process.env.REACT_APP_API_URL + "/api/strategy",
+      {
+        portfolio,
+        stockData,
+      }
+    );
+    const msg = "Strategy saved at url" + process.env.REACT_APP_HOST+ "/";
+    setErrs(msg + res.data.id);
+  };
 
   // Update and Validate User Input Data
   const updateData = () => {
@@ -339,7 +351,7 @@ const App = ({ changeTheme, theme }) => {
         process.env.REACT_APP_API_URL + "/api/strategy" + location.pathname
       );
       console.log(res.data);
-      dispatch(actions.setData(res.data))
+      dispatch(actions.setData(res.data));
     };
     fetchData();
   }, []);
@@ -542,6 +554,14 @@ const App = ({ changeTheme, theme }) => {
                         onClick={() => setView("greeks")}
                       >
                         Greeks
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        startIcon={<TocIcon fontSize="large" />}
+                        className={classes.btn}
+                        onClick={saveStrategy}
+                      >
+                        Save Strategy
                       </Button>
                     </>
                   }
