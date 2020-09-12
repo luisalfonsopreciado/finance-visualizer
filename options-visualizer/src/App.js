@@ -26,6 +26,7 @@ import ShowChartIcon from "@material-ui/icons/ShowChart";
 import TocIcon from "@material-ui/icons/Toc";
 import GreekTable from "./components/GreekTable";
 import { useLocation } from "react-router-dom";
+import SaveIcon from '@material-ui/icons/Save';
 
 const useStyles = makeStyles({
   payoff: {
@@ -557,7 +558,7 @@ const App = ({ changeTheme, theme }) => {
                       </Button>
                       <Button
                         variant="outlined"
-                        startIcon={<TocIcon fontSize="large" />}
+                        startIcon={<SaveIcon fontSize="large" />}
                         className={classes.btn}
                         onClick={saveStrategy}
                       >
