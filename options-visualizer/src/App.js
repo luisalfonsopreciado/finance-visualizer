@@ -77,7 +77,7 @@ const App = ({ changeTheme, theme }) => {
         stockData,
       }
     );
-    const msg = "Strategy saved at url" + process.env.REACT_APP_HOST+ "/";
+    const msg = "Strategy saved at url: " + process.env.REACT_APP_HOST+ "/";
     setErrs(msg + res.data.id);
   };
 
