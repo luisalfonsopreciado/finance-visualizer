@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import portfolioReducer from "./store/reducers/portfolio";
 import { createStore, combineReducers } from "redux";
 import { ThemeProvider, createMuiTheme, Paper } from "@material-ui/core";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 
 const rootReducer = combineReducers({
   portfolio: portfolioReducer,
@@ -29,7 +29,7 @@ const Index = () => {
 
   return (
     <React.StrictMode>
-      <BrowserRouter>
+      <HashRouter>
         <Provider store={store}>
           <ThemeProvider theme={theme}>
             <Paper>
@@ -37,7 +37,7 @@ const Index = () => {
             </Paper>
           </ThemeProvider>
         </Provider>
-      </BrowserRouter>
+      </HashRouter>
     </React.StrictMode>
   );
 };
