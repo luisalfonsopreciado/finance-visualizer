@@ -27,6 +27,7 @@ import TocIcon from "@material-ui/icons/Toc";
 import GreekTable from "./components/GreekTable";
 import { useLocation } from "react-router-dom";
 import SaveIcon from "@material-ui/icons/Save";
+import InfoMessage from "./components/InfoMessage";
 
 const useStyles = makeStyles({
   payoff: {
@@ -39,6 +40,7 @@ const useStyles = makeStyles({
 
 const App = ({ changeTheme, theme }) => {
   const { portfolio, stockData } = useSelector((state) => state.portfolio);
+  const info = useSelector((state) => state.strategyInfo);
   const { volatility, interest, currentPrice } = stockData;
   const dispatch = useDispatch();
   const [data, setData] = useState(null);
@@ -57,6 +59,8 @@ const App = ({ changeTheme, theme }) => {
   const [daysToExpiration, setDaysToExpiration] = useState(null);
   const classes = useStyles();
   const location = useLocation();
+
+  console.log(info.info);
 
   // Set Error Message as JSX
   const setErrs = useCallback((message) => {
@@ -665,6 +669,7 @@ const App = ({ changeTheme, theme }) => {
               </Card>
             </Grid>
           </Grid>
+          <InfoMessage />
         </Container>
       </liveDataContext.Provider>
     </>

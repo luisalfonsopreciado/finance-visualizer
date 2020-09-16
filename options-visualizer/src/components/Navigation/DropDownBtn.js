@@ -9,6 +9,7 @@ import MenuList from "@material-ui/core/MenuList";
 import * as util from "../../utility";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../../store/actions/portfolio";
+import * as strategyActions from "../../store/actions/strategy-info";
 
 const DropDownBtn = ({ optionData }) => {
   const [open, setOpen] = React.useState(false);
@@ -21,7 +22,7 @@ const DropDownBtn = ({ optionData }) => {
     setOpen((prevOpen) => !prevOpen);
   };
 
-  const handleClose = (event, newPortfolio) => {
+  const handleClose = (event, newPortfolio, ct) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
@@ -32,6 +33,7 @@ const DropDownBtn = ({ optionData }) => {
           newPortfolio(currentPrice, volatility, optionData, interest)
         )
       );
+      dispatch(strategyActions.setInfo(ct));
     }
 
     setOpen(false);
@@ -88,40 +90,70 @@ const DropDownBtn = ({ optionData }) => {
                   onKeyDown={handleListKeyDown}
                 >
                   <MenuItem
-                    onClick={(e) => handleClose(e, util.getBullCallSpread)}
+                    onClick={(e) =>
+                      handleClose(
+                        e,
+                        util.getBullCallSpread,
+                        util.BULL_CALL_SPREAD
+                      )
+                    }
                   >
                     Bull Call Spread
                   </MenuItem>
                   <MenuItem
-                    onClick={(e) => handleClose(e, util.getBearPutSpread)}
+                    onClick={(e) =>
+                      handleClose(
+                        e,
+                        util.getBearPutSpread,
+                        util.BEAR_PUT_SPREAD
+                      )
+                    }
                   >
                     Bear Put Spread
                   </MenuItem>
                   <MenuItem
-                    onClick={(e) => handleClose(e, util.getLongStraddle)}
+                    onClick={(e) =>
+                      handleClose(e, util.getLongStraddle, util.LONG_STRADDLE)
+                    }
                   >
                     Long Straddle
                   </MenuItem>
                   <MenuItem
-                    onClick={(e) => handleClose(e, util.getShortStraddle)}
+                    onClick={(e) =>
+                      handleClose(e, util.getShortStraddle, util.SHORT_STRADDLE)
+                    }
                   >
                     Short Straddle
                   </MenuItem>
                   <MenuItem
-                    onClick={(e) => handleClose(e, util.getLongButterfly)}
+                    onClick={(e) =>
+                      handleClose(e, util.getLongButterfly, util.LONG_BUTTERFLY)
+                    }
                   >
                     Long Butterfly
                   </MenuItem>
                   <MenuItem
-                    onClick={(e) => handleClose(e, util.getShortButterfly)}
+                    onClick={(e) =>
+                      handleClose(
+                        e,
+                        util.getShortButterfly,
+                        util.SHORT_BUTTERFLY
+                      )
+                    }
                   >
                     Short Butterfly
                   </MenuItem>
-                  <MenuItem onClick={(e) => handleClose(e, util.getLongCondor)}>
+                  <MenuItem
+                    onClick={(e) =>
+                      handleClose(e, util.getLongCondor, util.LONG_CONDOR)
+                    }
+                  >
                     Long Condor
                   </MenuItem>
                   <MenuItem
-                    onClick={(e) => handleClose(e, util.getShortCondor)}
+                    onClick={(e) =>
+                      handleClose(e, util.getShortCondor, util.SHORT_CONDOR)
+                    }
                   >
                     Short Condor
                   </MenuItem>

@@ -327,6 +327,8 @@ export const getLongCondor = (
   };
 };
 
+export const LONG_CONDOR = "LONG_CONDOR";
+
 export const getShortCondor = (
   currentPrice,
   impliedVol,
@@ -425,6 +427,8 @@ export const getShortCondor = (
   };
 };
 
+export const SHORT_CONDOR = "SHORT_CONDOR";
+
 export const getBullCallSpread = (
   currentPrice,
   impliedVol,
@@ -479,6 +483,8 @@ export const getBullCallSpread = (
   };
 };
 
+export const BULL_CALL_SPREAD = "BULL_CALL_SPREAD";
+
 export const getBearPutSpread = (
   currentPrice,
   impliedVol,
@@ -525,6 +531,8 @@ export const getBearPutSpread = (
     },
   };
 };
+
+export const BEAR_PUT_SPREAD = "BEAR_PUT_SPREAD";
 
 export const getLongStraddle = (
   currentPrice,
@@ -573,6 +581,8 @@ export const getLongStraddle = (
   };
 };
 
+export const LONG_STRADDLE = "LONG_STRADDLE";
+
 export const getShortStraddle = (
   currentPrice,
   impliedVol,
@@ -620,7 +630,9 @@ export const getShortStraddle = (
   };
 };
 
-export const getLongStradde = (
+export const SHORT_STRADDLE = "SHORT_STRADDLE";
+
+export const getLongStrangle = (
   currentPrice,
   impliedVol,
   optionData,
@@ -673,6 +685,8 @@ export const getLongStradde = (
     },
   };
 };
+
+export const LONG_STRANGLE = "LONG_STRANGLE";
 
 export const getShortStrangle = (
   currentPrice,
@@ -727,6 +741,8 @@ export const getShortStrangle = (
     },
   };
 };
+
+export const SHORT_STRANGLE = "SHORT_STRANGLE";
 
 export const getLongButterfly = (
   currentPrice,
@@ -803,6 +819,8 @@ export const getLongButterfly = (
     },
   };
 };
+
+export const LONG_BUTTERFLY = "LONG_BUTTERFLY";
 
 export const getShortButterfly = (
   currentPrice,
@@ -901,3 +919,5 @@ export const getShortButterfly = (
     },
   };
 };
+
+export const SHORT_BUTTERFLY = "SHORT_BUTTERFLY";

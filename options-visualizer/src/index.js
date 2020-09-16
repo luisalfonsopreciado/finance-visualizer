@@ -3,12 +3,14 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import { Provider } from "react-redux";
 import portfolioReducer from "./store/reducers/portfolio";
+import strategyReducer from "./store/reducers/strategy-info";
 import { createStore, combineReducers } from "redux";
 import { ThemeProvider, createMuiTheme, Paper } from "@material-ui/core";
 import { HashRouter } from "react-router-dom";
 
 const rootReducer = combineReducers({
   portfolio: portfolioReducer,
+  strategyInfo: strategyReducer,
 });
 
 const store = createStore(rootReducer);
