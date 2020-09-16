@@ -6,6 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import { useSelector } from "react-redux";
 import useUpdateEffect from "../hooks/useUpdateEffect";
+import * as cts from "../utility/constants";
 
 const useStyles = makeStyles((theme) => ({
   close: {
@@ -47,7 +48,7 @@ export default function ConsecutiveSnackbars() {
         open={open}
         onClose={handleClose}
         onExited={handleExited}
-        message={messageInfo}
+        message={cts.strategyInfo[messageInfo]}
         action={
           <React.Fragment>
             <IconButton

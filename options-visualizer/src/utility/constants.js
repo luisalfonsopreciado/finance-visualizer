@@ -921,3 +921,78 @@ export const getShortButterfly = (
 };
 
 export const SHORT_BUTTERFLY = "SHORT_BUTTERFLY";
+
+const strategyInfo = {};
+
+strategyInfo[
+  LONG_CONDOR
+] = `The Long Condor can be viewed as a variation of the Long Butterfly options strategy, the difference being that the strikes of the 'wings' of the strategy are different.
+   This widens the price range at which the strategy is profitable (and thus increases the probability of being profitable), but the maximum profit becomes lower, while the maximum loss increases.`;
+
+strategyInfo[
+  SHORT_CONDOR
+] = `The Short Condor can be viewed as a variation of the Short Butterfly options strategy, with the legs of the strategy using different strikes instead of a single one.
+  
+  The strategy is constructed using options with 4 different strikes, and can be designed in a number of ways (using only calls, only puts, or both) and be either a debit or credit strategy.`;
+
+strategyInfo[
+  BULL_CALL_SPREAD
+] = `The Bull Call Spread is an options strategy involving the purchase of a Call with a lower strike and the selling of a Call with a higher strike.
+
+The motivation of the strategy is to generate a profit if the stock rises, but make the strategy cheaper than simply buying a call option. However, the Profit / Loss of a Bull Call Spread is limited (whereas the one of a plain call is unlimited).`;
+
+strategyInfo[
+  BEAR_PUT_SPREAD
+] = `The Bear Put Spread is an options strategy that involves the purchase of a Put Option with a higher strike and the selling of another Put Option with a lower strike.
+
+The sold put makes the strategy cheaper (compared to the purchase of a single put), while still allowing the investor to get a profit if the stock price decreases.
+
+The disadvantage of a Bear Put Spread (compared to a simple Long Put position) is that the P/L of the strategy is limited.`;
+
+strategyInfo[
+  LONG_STRADDLE
+] = `The Long Straddle is an options strategy involving the purchase of a Call and a Put option with the same strike.
+
+The strategy generates a profit if the stock price rises or drops considerably.`;
+
+strategyInfo[
+  SHORT_STRADDLE
+] = `The Short Straddle is an options strategy involving the simultaneous selling of a Call and a Put with the same strike.
+
+The investor receives the premium from the sold options, and hopes that the stock price will end at the strike level (or not too far from it) on the expiry date.
+
+The profit of a Short Straddle is limited to the premium received, whereas its loss is unlimited.`;
+
+strategyInfo[
+  LONG_STRANGLE
+] = `The Long Strangle is an options strategy resembling the Long Straddle, the only difference being that the strike of the options are different: an investor is buying a Call with a higher strike and a Put with a lower strike.
+
+The strategy generates a profit in case the stock price rises or falls significantly by the expiry date.
+
+The Strangle is cheaper than the Straddle.`;
+
+strategyInfo[
+  SHORT_STRANGLE
+] = `The Short Strangle is an options strategy similar to the Short Straddle, with one difference: the strikes of the sold options are different (you sell a Call with a higher strike and a Put with a lower strike)
+
+The strategy will generate a profit if the stock price stays between the two strikes by the expiry date.
+
+Compared to the Short Straddle, the Short Stangle has a lower profit, but higher probability of being profitable.`;
+
+strategyInfo[
+  LONG_BUTTERFLY
+] = `The Long Butterfly is an options strategy that consists of options with 3 different strikes being sold and purchased at the same time.
+
+The strategy can be considered as an improved version of the Short Straddle, the improvement being that the maximum loss becomes limited and thus under full control.
+
+The Long Butterfly can be constructed in a number of ways (using only calls, using only puts, or using both), and the resulting strategies differ primarily in being either credit or debit ones.
+
+Below you can see an example of a debit Long Butterfly made of Call options.`;
+
+strategyInfo[
+  SHORT_BUTTERFLY
+] = `The Short Butterfly is an options strategy that can be considered as an improved version of a Long Straddle, the improvement being that the maximum loss becomes lower – unfortunately, at the expense of limiting the profit of the strategy.
+
+It is constructed using options with 3 different strikes.`;
+
+export { strategyInfo };
