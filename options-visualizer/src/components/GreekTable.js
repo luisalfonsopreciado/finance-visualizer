@@ -22,6 +22,16 @@ export default function SimpleTable() {
   const { portfolio, stockData } = useSelector((state) => state.portfolio);
   const keys = Object.keys(portfolio);
 
+  const portfolioStats = {
+    amount: 0,
+    IV: 0,
+    delta: 0,
+    gamma: 0,
+    rho: 0,
+    theta: 0,
+    vega: 0,
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
@@ -46,10 +56,84 @@ export default function SimpleTable() {
               util.dateDiffInYears(contract.date),
               stockData.volatility / 100,
               stockData.interest / 100,
-              contract.type
+              contract
             );
+
+            console.log(contract)
+
+            // Calculate greeks
+            const contractDelta =
+              contract.amount *
+              greeks.getDelta(
+                stockData.currentPrice,
+                contract.strike,
+                util.dateDiffInYears(contract.date),
+                stockData.volatility / 100,
+                stockData.interest / 100,
+                contract
+              ) *
+              100;
+
+            const contractGamma =
+              contract.amount *
+              greeks.getGamma(
+                stockData.currentPrice,
+                contract.strike,
+                util.dateDiffInYears(contract.date),
+                stockData.volatility / 100,
+                stockData.interest / 100,
+                contract
+              ) *
+              100;
+
+            const contractRho =
+              contract.amount *
+              greeks.getRho(
+                stockData.currentPrice,
+                contract.strike,
+                util.dateDiffInYears(contract.date),
+                stockData.volatility / 100,
+                stockData.interest / 100,
+                contract
+              ) *
+              100;
+
+            const contractTheta =
+              contract.amount *
+              greeks.getTheta(
+                stockData.currentPrice,
+                contract.strike,
+                util.dateDiffInYears(contract.date),
+                stockData.volatility / 100,
+                stockData.interest / 100,
+                contract
+              ) *
+              100;
+
+            const contractVega =
+              contract.amount *
+              greeks.getVega(
+                stockData.currentPrice,
+                contract.strike,
+                util.dateDiffInYears(contract.date),
+                stockData.volatility / 100,
+                stockData.interest / 100,
+                contract
+              ) *
+              100;
+
+            // Add greeks to portfolio total
+            portfolioStats.IV += stockData.interest;
+            portfolioStats.amount += contract.amount;
+            portfolioStats.delta += contractDelta;
+            portfolioStats.gamma += contractGamma;
+            portfolioStats.rho += contractRho;
+            portfolioStats.theta += contractTheta;
+            portfolioStats.vega += contractVega;
+
             return (
               <TableRow key={key}>
+                {/* Position */}
                 <TableCell component="th" scope="row">
                   {contract.direction +
                     " " +
@@ -57,73 +141,47 @@ export default function SimpleTable() {
                     "  " +
                     stockData.currentPrice}
                 </TableCell>
+                {/* Amount */}
                 <TableCell component="th" scope="row">
                   {contract.amount}
                 </TableCell>
+                {/* Interest Rate */}
                 <TableCell align="right">{stockData.interest + "%"}</TableCell>
-                <TableCell align="right">
-                  {greeks
-                    .getDelta(
-                      stockData.currentPrice,
-                      contract.strike,
-                      util.dateDiffInYears(contract.date),
-                      stockData.volatility / 100,
-                      stockData.interest / 100,
-                      contract.type
-                    )
-                    .toFixed(4)}
-                </TableCell>
-                <TableCell align="right">
-                  {greeks
-                    .getGamma(
-                      stockData.currentPrice,
-                      contract.strike,
-                      util.dateDiffInYears(contract.date),
-                      stockData.volatility / 100,
-                      stockData.interest / 100,
-                      contract.TYPE
-                    )
-                    .toFixed(4)}
-                </TableCell>
-                <TableCell align="right">
-                  {greeks
-                    .getRho(
-                      stockData.currentPrice,
-                      contract.strike,
-                      util.dateDiffInYears(contract.date),
-                      stockData.volatility / 100,
-                      stockData.interest / 100,
-                      contract.TYPE
-                    )
-                    .toFixed(4)}
-                </TableCell>
-                <TableCell align="right">
-                  {greeks
-                    .getTheta(
-                      stockData.currentPrice,
-                      contract.strike,
-                      util.dateDiffInYears(contract.date),
-                      stockData.volatility / 100,
-                      stockData.interest / 100,
-                      contract.TYPE
-                    )
-                    .toFixed(4)}
-                </TableCell>
-                <TableCell align="right">
-                  {greeks
-                    .getVega(
-                      stockData.currentPrice,
-                      contract.strike,
-                      util.dateDiffInYears(contract.date),
-                      stockData.volatility / 100,
-                      stockData.interest / 100,
-                      contract.TYPE
-                    )
-                    .toFixed(4)}
-                </TableCell>
+                {/* Delta*/}
+                <TableCell align="right">{contractDelta.toFixed(1)}</TableCell>
+                {/* Gamma */}
+                <TableCell align="right">{contractGamma.toFixed(1)}</TableCell>
+                {/* Rho*/}
+                <TableCell align="right">{contractRho.toFixed(1)}</TableCell>
+                {/* Theta */}
+                <TableCell align="right">{contractTheta.toFixed(1)}</TableCell>
+                {/* Vega */}
+                <TableCell align="right">{contractVega.toFixed(1)}</TableCell>
               </TableRow>
             );
           })}
+          <TableRow key="Total">
+            {/* Position */}
+            <TableCell component="th" scope="row">
+              Total
+            </TableCell>
+            {/* Amount */}
+            <TableCell component="th" scope="row">
+              {portfolioStats.amount}
+            </TableCell>
+            {/* Interest Rate */}
+            <TableCell align="right">{stockData.interest + "%"}</TableCell>
+            {/* Delta*/}
+            <TableCell align="right">{portfolioStats.delta.toFixed(1)}</TableCell>
+            {/* Gamma */}
+            <TableCell align="right">{portfolioStats.gamma.toFixed(1)}</TableCell>
+            {/* Rho*/}
+            <TableCell align="right">{portfolioStats.rho.toFixed(1)}</TableCell>
+            {/* Theta */}
+            <TableCell align="right">{portfolioStats.theta.toFixed(1)}</TableCell>
+            {/* Vega */}
+            <TableCell align="right">{portfolioStats.vega.toFixed(1)}</TableCell>
+          </TableRow>
         </TableBody>
       </Table>
     </TableContainer>

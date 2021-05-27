@@ -20,16 +20,23 @@ export function _stdNormDensity(x) {
  * @param {Number} t Time to experiation in years
  * @param {Number} v Volatility as a decimal
  * @param {Number} r Anual risk-free interest rate as a decimal
- * @param {String} callPut The type of option - cts.CALL or cts.PUT
+ * @param {Object} contract The contract object
  * @returns {Number} The delta of the option
  */
-export function getDelta(s, k, t, v, r, callPut) {
-  if (callPut === cts.CALL) {
+export function getDelta(s, k, t, v, r, contract) {
+  if (contract.type === cts.CASH) {
+    if(contract.direction === cts.SELL){
+      return -1;
+    }
+    return 1;
+  } else if (contract.type === cts.CALL) {
     return _callDelta(s, k, t, v, r);
   } // put
-  else {
+  else if (contract.type === cts.PUT) {
     return _putDelta(s, k, t, v, r);
   }
+  // Default
+  return -1;
 }
 
 /**
@@ -78,18 +85,20 @@ export function _putDelta(s, k, t, v, r) {
  * @param {Number} t Time to experiation in years
  * @param {Number} v Volatility as a decimal
  * @param {Number} r Anual risk-free interest rate as a decimal
- * @param {String} callPut The type of option - cts.CALL or cts.PUT
+ * @param {Object} contract The contract object
  * @param {String} [scale=100] The value to scale rho by (100=100BPS=1%, 10000=1BPS=.01%)
  * @returns {Number} The rho of the option
  */
-export function getRho(s, k, t, v, r, callPut, scale) {
+export function getRho(s, k, t, v, r, contract, scale) {
   scale = scale || 100;
-  if (callPut === cts.CALL) {
+  if (contract.type === cts.CASH) return 0;
+  if (contract.type === cts.CALL) {
     return _callRho(s, k, t, v, r) / scale;
   } // put
-  else {
+  else if (contract.type === cts.PUT) {
     return _putRho(s, k, t, v, r) / scale;
   }
+  return 0;
 }
 
 /**
@@ -148,9 +157,13 @@ export function _putRho(s, k, t, v, r) {
  * @param {Number} t Time to experiation in years
  * @param {Number} v Volatility as a decimal
  * @param {Number} r Anual risk-free interest rate as a decimal
+ * @param {Object} contract The contract object
  * @returns {Number} The vega of the option
  */
-export function getVega(s, k, t, v, r) {
+export function getVega(s, k, t, v, r, contract) {
+  if (contract.type === cts.CASH) {
+    return 0;
+  }
   var w = bs.getW(s, k, t, v, r);
   return isFinite(w) ? (s * Math.sqrt(t) * _stdNormDensity(w)) / 100 : 0;
 }
@@ -163,18 +176,20 @@ export function getVega(s, k, t, v, r) {
  * @param {Number} t Time to experiation in years
  * @param {Number} v Volatility as a decimal
  * @param {Number} r Anual risk-free interest rate as a decimal
- * @param {String} callPut The type of option - cts.CALL or cts.PUT
+ * @param {Object} contract The contract object
  * @param {String} [scale=365] The number of days to scale theta by - usually 365 or 252
  * @returns {Number} The theta of the option
  */
-export function getTheta(s, k, t, v, r, callPut, scale) {
+export function getTheta(s, k, t, v, r, contract, scale) {
   scale = scale || 365;
-  if (callPut === cts.CALL) {
+  if (contract.type === cts.CASH) return 0;
+  if (contract.type === cts.CALL) {
     return _callTheta(s, k, t, v, r) / scale;
   } // put
-  else {
+  else if (contract.type === cts.PUT) {
     return _putTheta(s, k, t, v, r) / scale;
   }
+  return 0;
 }
 
 /**
@@ -231,9 +246,11 @@ export function _putTheta(s, k, t, v, r) {
  * @param {Number} t Time to experiation in years
  * @param {Number} v Volatility as a decimal
  * @param {Number} r Anual risk-free interest rate as a decimal
+ * @param {Object} contract Contract object
  * @returns {Number} The gamma of the option
  */
-export function getGamma(s, k, t, v, r) {
+export function getGamma(s, k, t, v, r, contract) {
+  if (contract.type === cts.CASH) return 0;
   var w = bs.getW(s, k, t, v, r);
   return isFinite(w) ? _stdNormDensity(w) / (s * v * Math.sqrt(t)) : 0;
 }
