@@ -44,3 +44,30 @@ To view the complete project <a href="https://luisalfonsopreciado.github.io/fina
 
 
 Made by Luis Alfonso Preciado [Get in touch!](https://www.linkedin.com/in/luis-alfonso-preciado-91256015b/)
+
+## Environment Setup
+
+Make sure you have a .env-cmdrc.json file in the options-visualizer directory. This file defines the environment variables when the app is run.
+
+The .env-cmdrc.json file should have the following properties.
+
+```
+{
+  "env": {
+    "REACT_APP_API_KEY": "",
+    "REACT_APP_API_URL": "",
+    "REACT_APP_HOST" : ""
+  },
+  "dev": {
+    "REACT_APP_API_KEY": "",
+    "REACT_APP_API_URL": "http://localhost:8000",
+    "REACT_APP_HOST": "http://localhost:3000"
+  }
+}
+```
+
+REACT_APP_API_KEY should have a valid API key from [Finnhub](https://finnhub.io/)/
+
+REACT_APP_API_URL should have the url location of the backend service to store option strategy data.
+
+REACT_APP_HOST should contain the name of the host.
